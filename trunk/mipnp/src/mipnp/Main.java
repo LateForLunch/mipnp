@@ -9,6 +9,9 @@
  */
 package mipnp;
 
+import cli.MainController;
+import domain.shutdown.ShutdownHook;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
@@ -19,6 +22,22 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        /*
+         * TEST:
+         * - Don't use the stop button in NetBeans.
+         * - Use 'q' <Enter> instead.
+         * - ShutdownHook should print "Shutdown" when the program is shutting down.
+         * - ShutdownHook should work with System.exit(int), ^C, etc...
+         */
+        new ShutdownHook();
+        new MainController();
+
+        while (true) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
