@@ -17,8 +17,8 @@
  */
 
 /*
- * IPacket.java
- * Created on Oct 20, 2010, 3:52:09 PM
+ * PacketFactory.java
+ * Created on Oct 20, 2010, 4:45:56 PM
  */
 package domain;
 
@@ -26,9 +26,6 @@ package domain;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface IPacket {
+public class PacketFactory {
 
-    String getRawData();
-    void setRawData(String rawData);
-    String getData();
 }

@@ -28,10 +28,62 @@ package domain;
  */
 public class SsdpPacket implements IPacket {
 
+    public static final int TYPE_NOTIFY = 0;
+    public static final int TYPE_M_SREACH = 1;
+    public static final int TYPE_STATUS_OK = 2;
+
+    private static final String[] START_LINES = {
+        "NOTIFY * HTTP/1.1\r\n",
+        "M-SEARCH * HTTP/1.1\r\n",
+        "HTTP/1.1 200 OK\r\n"};
+
+    private static final String HEADER = "HOST: 239.255.255.250:1900\r\n";
+
     /*
-     * Start lines:
-     * NOTIFY * HTTP/1.1\r\n
-     * M-SEARCH * HTTP/1.1\r\n
-     * HTTP/1.1 200 OK\r\n
+     * SSDP format:
+     * Start line
+     * - NOTIFY * HTTP/1.1\r\n
+     * - M-SEARCH * HTTP/1.1\r\n
+     * - HTTP/1.1 200 OK\r\n
+     *
+     * SSDP Header
+     * Example: HOST: 239.255.255.250:1900
      */
+
+    /*
+     * Advertisement - Device available (p29)
+     * NOTIFY * HTTP/1.1
+     * HOST: 239.255.255.250:1900
+     * CACHE-CONTROL: max-age = 'seconds until advertisement expires'
+     * LOCATION: 'URL for UPnP description for root device'
+     * NT: 'notification type'
+     * NTS: ssdp:alive
+     * SERVER: 'OS/version' UPnP/1.1 'product/version'
+     * USN: 'composite identifier for the advertisement'
+     * BOOTID.UPNP.ORG: 'number increased each time device sends an initial announce or an update message'
+     * CONFIGID.UPNP.ORG: 'number used for caching description information'
+     * SEARCHPORT.UPNP.ORG: 'number identifies port on which device responds to unicast M-SEARCH'
+     * 'Blank line'
+     */
+
+    private String startLine;
+    private String header;
+    private String rawData;
+
+    public SsdpPacket(int type) {
+        this.startLine = START_LINES[type];
+        this.header = HEADER;
+    }
+
+    public String getRawData() {
+        return rawData;
+    }
+
+    public void setRawData(String rawData) {
+        this.rawData = rawData;
+    }
+
+    public String getData() {
+        return startLine + header + getRawData();
+    }
 }
