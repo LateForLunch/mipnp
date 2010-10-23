@@ -33,7 +33,7 @@ public class SearchResponseThread implements Runnable {
     private Device rootDevice;
     private MulticastSocket socket;
 
-    public SearchResponseThread() {
+    public SearchResponseThread(Device rootDevice, MulticastSocket socket) {
         setRootDevice(rootDevice);
         setSocket(socket);
     }

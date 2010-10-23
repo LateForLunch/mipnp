@@ -40,6 +40,7 @@ public class DiscoveryHandler {
     private InetAddress group;
     private MulticastSocket socket;
     private Thread aliveThread;
+    private Thread searchResponseThread;
 
     /**
      *
@@ -61,9 +62,14 @@ public class DiscoveryHandler {
      */
     public void start() throws IOException {
         socket.joinGroup(group);
+
         DiscoveryAliveThread dat = new DiscoveryAliveThread(rootDevice, socket);
         this.aliveThread = new Thread(dat);
         aliveThread.start();
+
+        SearchResponseThread srt = new SearchResponseThread(rootDevice, socket);
+        this.searchResponseThread = new Thread(srt);
+        searchResponseThread.start();
     }
 
     /**
@@ -75,6 +81,14 @@ public class DiscoveryHandler {
             aliveThread.interrupt();
             try {
                 aliveThread.join();
+            } catch (InterruptedException ex) {
+                // This should not happen.
+            }
+        }
+        if (searchResponseThread.isAlive()) {
+            searchResponseThread.interrupt();
+            try {
+                searchResponseThread.join();
             } catch (InterruptedException ex) {
                 // This should not happen.
             }
