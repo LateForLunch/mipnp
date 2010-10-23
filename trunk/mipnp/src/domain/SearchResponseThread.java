@@ -17,32 +17,36 @@
  */
 
 /*
- * PacketFactory.java
- * Created on Oct 20, 2010, 4:45:56 PM
+ * SearchResponseThread.java
+ * Created on Oct 23, 2010, 4:10:44 PM
  */
 package domain;
+
+import java.net.MulticastSocket;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class PacketFactory {
+public class SearchResponseThread implements Runnable {
 
-    public static IPacket[] createRootDeviceDiscMess(Device rootDevice) {
-        IPacket[] packets = new IPacket[3];
-        // p. 27 - Table 1-1
-        return packets;
+    private Device rootDevice;
+    private MulticastSocket socket;
+
+    public SearchResponseThread() {
+        setRootDevice(rootDevice);
+        setSocket(socket);
     }
 
-    public static IPacket[] createEmbeddedDeviceDiscMess(Device device) {
-        IPacket[] packets = new IPacket[2];
-        // p. 27 - Table 1-2
-        return packets;
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public static IPacket createServiceDiscMess(Service service) {
-        IPacket packet = null;
-        // p. 27 - Table 1-3
-        return packet;
+    private void setRootDevice(Device rootDevice) {
+        this.rootDevice = rootDevice;
+    }
+
+    private void setSocket(MulticastSocket socket) {
+        this.socket = socket;
     }
 }
