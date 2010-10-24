@@ -36,6 +36,26 @@ public interface HttpConstants {
      */
 
     /*
+     * Version
+     */
+    static final int VERSION_MAJOR = 1;
+    static final int VERSION_MINOR = 1;
+
+    static final String VERSION = "HTTP/" + VERSION_MAJOR + "." + VERSION_MINOR;
+
+    /*
+     * TODO: Request methods:
+     * OPTIONS
+     * GET
+     * HEAD
+     * POST
+     * PUT
+     * DELETE
+     * TRACE
+     * CONNECT
+     */
+
+    /*
      * Response status codes
      */
     static final Map<Integer, String> STATUS = new HashMap<Integer, String>() {
