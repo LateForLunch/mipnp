@@ -49,18 +49,19 @@ public class DiscoveryHandler {
      * @throws IOException if an I/O exception occurs while creating the MulticastSocket.
      */
     public DiscoveryHandler(Device rootDevice)
-            throws UnknownHostException, IOException {
+            throws UnknownHostException {
 
         setRootDevice(rootDevice);
         this.group = InetAddress.getByName(ADDRESS);
-        this.socket = new MulticastSocket(PORT);
     }
 
     /**
      *
-     * @throws IOException if there is an error joining the multicast group.
+     * @throws IOException if an I/O exception occurs while creating the
+     * MulticastSocket or if there is an error joining the multicast group.
      */
     public void start() throws IOException {
+        this.socket = new MulticastSocket(PORT);
         socket.joinGroup(group);
 
         DiscoveryAliveThread dat = new DiscoveryAliveThread(rootDevice, socket);
@@ -77,23 +78,12 @@ public class DiscoveryHandler {
      * @throws IOException if there is an error leaving the multicast group.
      */
     public void stop() throws IOException {
-        if (aliveThread.isAlive()) {
-            aliveThread.interrupt();
-            try {
-                aliveThread.join();
-            } catch (InterruptedException ex) {
-                // This should not happen.
-            }
+        interruptThread(aliveThread);
+        interruptThread(searchResponseThread);
+        if (socket != null) {
+            socket.leaveGroup(group);
+            socket.close();
         }
-        if (searchResponseThread.isAlive()) {
-            searchResponseThread.interrupt();
-            try {
-                searchResponseThread.join();
-            } catch (InterruptedException ex) {
-                // This should not happen.
-            }
-        }
-        socket.leaveGroup(group);
     }
 
     public Device getRootDevice() {
@@ -102,5 +92,16 @@ public class DiscoveryHandler {
 
     public void setRootDevice(Device rootDevice) {
         this.rootDevice = rootDevice;
+    }
+
+    private void interruptThread(Thread t) {
+        if (t != null && t.isAlive()) {
+            t.interrupt();
+            try {
+                t.join();
+            } catch (InterruptedException ex) {
+                // This should not happen.
+            }
+        }
     }
 }
