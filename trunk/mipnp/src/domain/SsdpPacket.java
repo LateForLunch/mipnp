@@ -33,11 +33,12 @@ public class SsdpPacket implements IPacket {
     public static final int TYPE_STATUS_OK = 2;
 
     private static final String[] START_LINES = {
-        "NOTIFY * HTTP/1.1\r\n",
-        "M-SEARCH * HTTP/1.1\r\n",
-        "HTTP/1.1 200 OK\r\n"};
+        "NOTIFY * " + Http.VERSION + Http.CRLF,
+        "M-SEARCH * " + Http.VERSION + Http.CRLF,
+        Http.VERSION + " 200 " + Http.STATUS.get(200) + Http.CRLF
+    };
 
-    private static final String HEADER = "HOST: 239.255.255.250:1900\r\n";
+    private static final String HEADER = "HOST: 239.255.255.250:1900" + Http.CRLF;
 
     /*
      * SSDP format:
@@ -65,7 +66,6 @@ public class SsdpPacket implements IPacket {
      * SEARCHPORT.UPNP.ORG: 'number identifies port on which device responds to unicast M-SEARCH'
      * 'Blank line'
      */
-
     private String startLine;
     private String header;
     private String rawData;

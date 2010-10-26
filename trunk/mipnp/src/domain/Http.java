@@ -15,33 +15,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/*
- * HttpConstants.java
- * Created on Oct 24, 2010, 10:54:07 AM
- */
 package domain;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Created on Oct 24, 2010, 10:54:07 AM
+ * 
+ * See RFC 2616: http://www.ietf.org/rfc/rfc2616.txt
+ * 
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public interface HttpConstants {
+public class Http {
 
-    /*
-     * See rfc2616
-     */
+    public static final char CR = '\r';
+    public static final char LF = '\n';
+    public static final char HT = '\t';
+    public static final String CRLF = ""+CR+LF;
 
     /*
      * Version
      */
-    static final int VERSION_MAJOR = 1;
-    static final int VERSION_MINOR = 1;
-
-    static final String VERSION = "HTTP/" + VERSION_MAJOR + "." + VERSION_MINOR;
+    public static final int VERSION_MAJOR = 1;
+    public static final int VERSION_MINOR = 1;
+    public static final String VERSION = "HTTP/" + VERSION_MAJOR + "." + VERSION_MINOR;
 
     /*
      * TODO: Request methods:
@@ -58,7 +57,7 @@ public interface HttpConstants {
     /*
      * Response status codes
      */
-    static final Map<Integer, String> STATUS = new HashMap<Integer, String>() {
+    public static final Map<Integer, String> STATUS = new HashMap<Integer, String>() {
         {
             put(100, "Continue");
             put(101, "Switching Protocols");
