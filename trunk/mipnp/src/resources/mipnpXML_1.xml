@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+<specVersion>
+<major>1</major>
+<minor>0</minor>
+</specVersion>
+<URLBase>URLBase wop wop wop</URLBase>
+<device>
+<deviceType> urn:schemas-upnp-org:device:MediaServer:1</deviceType>
+<friendlyName>MiPnP v0.1</friendlyName>
+<manufacturer>MiPnP devs</manufacturer>
+<manufacturerURL>https://code.google.com/p/mipnp/</manufacturerURL>
+<modelDescription>MiPnP: Minimal UPnP MediaServer</modelDescription>
+<modelName>Modelname: MiPnP xxx</modelName>
+<modelNumber>01</modelNumber>
+<modelURL>https://code.google.com/p/mipnp/</modelURL>
+<serialNumber>serialNumber</serialNumber>
+<UDN>uuid:UUID</UDN>
+<UPC>Universal Product Code</UPC>
+<serviceList>
+<service>
+<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1 </serviceType>
+<serviceId>urn:upnp-org:serviceId:ContentDirectory </serviceId>
+<SCPDURL>URL to service description</SCPDURL>
+<controlURL>URL for control</controlURL>
+<eventSubURL>URL for eventing</eventSubURL>
+</service>
+<service>
+<serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
+<serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId>
+<SCPDURL>URL to service description</SCPDURL>
+<controlURL>URL for control</controlURL>
+<eventSubURL>URL for eventing</eventSubURL>
+</service>
+</serviceList>
+<presentationURL>URL for presentation</presentationURL>
+</device>
+</root>
