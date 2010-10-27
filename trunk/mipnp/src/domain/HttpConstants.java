@@ -23,12 +23,12 @@ import java.util.Map;
 /**
  * Created on Oct 24, 2010, 10:54:07 AM
  * 
- * See RFC 2616: http://www.ietf.org/rfc/rfc2616.txt
+ * See RFC 2616: http://tools.ietf.org/html/rfc2616.html
  * 
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public class Http {
+public interface HttpConstants {
 
     public static final char CR = '\r';
     public static final char LF = '\n';
@@ -38,9 +38,9 @@ public class Http {
     /*
      * Version
      */
-    public static final int VERSION_MAJOR = 1;
-    public static final int VERSION_MINOR = 1;
-    public static final String VERSION = "HTTP/" + VERSION_MAJOR + "." + VERSION_MINOR;
+    public static final int HTTP_VERSION_MAJOR = 1;
+    public static final int HTTP_VERSION_MINOR = 1;
+    public static final String HTTP_VERSION = "HTTP/" + HTTP_VERSION_MAJOR + "." + HTTP_VERSION_MINOR;
 
     /*
      * TODO: Request methods:
@@ -57,7 +57,7 @@ public class Http {
     /*
      * Response status codes
      */
-    public static final Map<Integer, String> STATUS = new HashMap<Integer, String>() {
+    public static final Map<Integer, String> HTTP_STATUS = new HashMap<Integer, String>() {
         {
             put(100, "Continue");
             put(101, "Switching Protocols");

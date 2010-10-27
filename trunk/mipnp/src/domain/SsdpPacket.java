@@ -15,30 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/*
- * SsdpPacket.java
- * Created on Oct 20, 2010, 3:53:17 PM
- */
 package domain;
 
 /**
- *
+ * Created on Oct 20, 2010, 3:53:17 PM
+ * 
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public class SsdpPacket implements IPacket {
+public class SsdpPacket implements IPacket, HttpConstants {
 
     public static final int TYPE_NOTIFY = 0;
-    public static final int TYPE_M_SREACH = 1;
+    public static final int TYPE_M_SEARCH = 1;
     public static final int TYPE_STATUS_OK = 2;
 
     private static final String[] START_LINES = {
-        "NOTIFY * " + Http.VERSION + Http.CRLF,
-        "M-SEARCH * " + Http.VERSION + Http.CRLF,
-        Http.VERSION + " 200 " + Http.STATUS.get(200) + Http.CRLF
+        "NOTIFY * " + HTTP_VERSION + CRLF,
+        "M-SEARCH * " + HTTP_VERSION + CRLF,
+        HTTP_VERSION + " 200 " + HTTP_STATUS.get(200) + CRLF
     };
 
-    private static final String HEADER = "HOST: 239.255.255.250:1900" + Http.CRLF;
+    private static final String HEADER = "HOST: 239.255.255.250:1900" + CRLF;
 
     /*
      * SSDP format:
