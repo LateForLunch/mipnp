@@ -27,7 +27,7 @@ package domain;
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class PacketFactory {
-
+    
     public static IPacket[] createRootDeviceDiscMess(Device rootDevice) {
         IPacket[] packets = new IPacket[3];
         // p. 27 - Table 1-1
