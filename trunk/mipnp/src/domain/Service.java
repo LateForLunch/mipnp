@@ -22,10 +22,62 @@
  */
 package domain;
 
-/**
- *
- * @author Jeroen De Wilde
- */
+import java.net.URL;
+
 public class Service {
+
+    private String serviceType;
+    private String serviceId;
+    private URL scpdURL;
+    private URL controlURL;
+    private URL eventSubURL;
+
+    public Service(String serviceId, String serviceType){
+        this.serviceId=serviceId;this.serviceType=serviceType;
+    }
+
+    /**
+     * @return the scpdURL
+     */
+    public URL getScpdURL() {
+        return scpdURL;
+    }
+
+    /**
+     * @param scpdURL the scpdURL to set
+     */
+    public void setScpdURL(URL scpdURL) {
+        this.scpdURL = scpdURL;
+    }
+
+    /**
+     * @return the controlURL
+     */
+    public URL getControlURL() {
+        return controlURL;
+    }
+
+    /**
+     * @param controlURL the controlURL to set
+     */
+    public void setControlURL(URL controlURL) {
+        this.controlURL = controlURL;
+    }
+
+    /**
+     * @return the eventSubURL
+     */
+    public URL getEventSubURL() {
+        return eventSubURL;
+    }
+
+    /**
+     * @param eventSubURL the eventSubURL to set
+     */
+    public void setEventSubURL(URL eventSubURL) {
+        this.eventSubURL = eventSubURL;
+    }
+
+
 
 }

@@ -37,6 +37,7 @@ public class SsdpPacket implements IPacket, HttpConstants {
 
     private static final String HEADER = "HOST: 239.255.255.250:1900" + CRLF;
 
+
     /*
      * SSDP format:
      * Start line
