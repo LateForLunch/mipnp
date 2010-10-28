@@ -20,22 +20,281 @@
  * Device.java
  * Created on Oct 23, 2010, 3:36:01 PM
  */
+
 package domain;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
- * @author Jeroen De Wilde, Jochem Van denbussche <jvandenbussche@gmail.com>
+ * @author nicholaihel
+ */
+
+/*
+ * <?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+	<specVersion>
+		<major>1</major>
+		<minor>0</minor>
+	</specVersion>
+	<URLBase>URLBase</URLBase>
+	<device>
+		<deviceType> urn:schemas-upnp-org:device:MediaServer:1</deviceType>
+		<friendlyName>MiPnP v0.1</friendlyName>
+		<manufacturer>MiPnP devs</manufacturer>
+		<manufacturerURL>https://code.google.com/p/mipnp/</manufacturerURL>
+		<modelDescription>MiPnP: Minimal UPnP MediaServer</modelDescription>
+		<modelName>Modelname: MiPnP xxx</modelName>
+		<modelNumber>01</modelNumber>
+		<modelURL>https://code.google.com/p/mipnp/</modelURL>
+		<serialNumber>serialNumber</serialNumber>
+		<UDN>uuid:UUID</UDN>
+		<UPC>Universal Product Code</UPC>
+		<serviceList>
+			<service>
+				<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1 </serviceType>
+				<serviceId>urn:upnp-org:serviceId:ContentDirectory </serviceId>
+				<SCPDURL>URL to service description</SCPDURL>
+				<controlURL>URL for control</controlURL>
+				<eventSubURL>URL for eventing</eventSubURL>
+			</service>
+			<service>
+				<serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
+				<serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId>
+				<SCPDURL>URL to service description</SCPDURL>
+				<controlURL>URL for control</controlURL>
+				<eventSubURL>URL for eventing</eventSubURL>
+			</service>
+			</serviceList>
+		<deviceList> Description of embedded devices added by UPnP vendor (if any) go here </deviceList>
+		<presentationURL>URL for presentation</presentationURL>
+	</device>
+</root>
+
  */
 public class Device {
+    private String urlBase;
 
-    private List<Device> embeddedDevices;
+    private String deviceType;
+    private String friendlyName;
+    private String manufacturer;
+    private URL manufacturerURL;
+    private String modelDescription;
+    private String modelName;
+    private int modelNumber; //check if int
+    private URL modelURL;
+    private String serialNumber; //check if string/int/..
+    private UUID udn;
+    private String upc;
+
+    private URL presentationURL;
+
     private List<Service> services;
+    private List<Device> embeddedDevices;
 
-    public Device() {
-        this.embeddedDevices = new ArrayList<Device>();
-        this.services = new ArrayList<Service>();
+    public Device(){
+        services = new ArrayList<Service>();
+        embeddedDevices = new ArrayList<Device>();
     }
+
+    public void addService(Service s){
+        if(!services.contains(s))
+            getServices().add(s);
+    }
+
+    /**
+     * @return the urlBase
+     */
+    public String getUrlBase() {
+        return urlBase;
+    }
+
+    /**
+     * @param urlBase the urlBase to set
+     */
+    public void setUrlBase(String urlBase) {
+        this.urlBase = urlBase;
+    }
+
+    /**
+     * @return the deviceType
+     */
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    /**
+     * @param deviceType the deviceType to set
+     */
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    /**
+     * @return the friendlyName
+     */
+    public String getFriendlyName() {
+        return friendlyName;
+    }
+
+    /**
+     * @param friendlyName the friendlyName to set
+     */
+    public void setFriendlyName(String friendlyName) {
+        this.friendlyName = friendlyName;
+    }
+
+    /**
+     * @return the manufacturer
+     */
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    /**
+     * @param manufacturer the manufacturer to set
+     */
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    /**
+     * @return the manufacturerURL
+     */
+    public URL getManufacturerURL() {
+        return manufacturerURL;
+    }
+
+    /**
+     * @param manufacturerURL the manufacturerURL to set
+     */
+    public void setManufacturerURL(URL manufacturerURL) {
+        this.manufacturerURL = manufacturerURL;
+    }
+
+    /**
+     * @return the modelDescription
+     */
+    public String getModelDescription() {
+        return modelDescription;
+    }
+
+    /**
+     * @param modelDescription the modelDescription to set
+     */
+    public void setModelDescription(String modelDescription) {
+        this.modelDescription = modelDescription;
+    }
+
+    /**
+     * @return the modelName
+     */
+    public String getModelName() {
+        return modelName;
+    }
+
+    /**
+     * @param modelName the modelName to set
+     */
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    /**
+     * @return the modelNumber
+     */
+    public int getModelNumber() {
+        return modelNumber;
+    }
+
+    /**
+     * @param modelNumber the modelNumber to set
+     */
+    public void setModelNumber(int modelNumber) {
+        this.modelNumber = modelNumber;
+    }
+
+    /**
+     * @return the modelURL
+     */
+    public URL getModelURL() {
+        return modelURL;
+    }
+
+    /**
+     * @param modelURL the modelURL to set
+     */
+    public void setModelURL(URL modelURL) {
+        this.modelURL = modelURL;
+    }
+
+    /**
+     * @return the serialNumber
+     */
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    /**
+     * @return the udn
+     */
+    public UUID getUdn() {
+        return udn;
+    }
+
+    /**
+     * @param udn the udn to set
+     */
+    
+    public void setUdn(UUID udn) {
+        this.udn = udn;
+    }
+
+    /**
+     * @return the upc
+     */
+    public String getUpc() {
+        return upc;
+    }
+
+    /**
+     * @param upc the upc to set
+     */
+    public void setUpc(String upc) {
+        this.upc = upc;
+    }
+
+    /**
+     * @return the presentationURL
+     */
+    public URL getPresentationURL() {
+        return presentationURL;
+    }
+
+    /**
+     * @param presentationURL the presentationURL to set
+     */
+    public void setPresentationURL(URL presentationURL) {
+        this.presentationURL = presentationURL;
+    }
+
+    /**
+     * @return the serviceList
+     */
+    public List<Service> getServices() {
+        return services;
+    }
+
+    /**
+     * @param serialNumber the serialNumber to set
+     */
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+
 }
+
