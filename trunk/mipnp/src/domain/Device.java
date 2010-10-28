@@ -76,7 +76,7 @@ import java.util.UUID;
 
  */
 public class Device {
-    private String urlBase;
+    private URL urlBase;
 
     private String deviceType;
     private String friendlyName;
@@ -87,13 +87,14 @@ public class Device {
     private int modelNumber; //check if int
     private URL modelURL;
     private String serialNumber; //check if string/int/..
-    private UUID udn;
+    private String udn; //TODO: udn gewoon als string genomen, want wordt meegeven door XML
+                        //UUID heeft geen constructor (om deze bv uit string over te nemen)
     private String upc;
 
     private URL presentationURL;
 
     private List<Service> services;
-    private List<Device> embeddedDevices;
+    private List<Device> embeddedDevices; //TODO: NOG GEEN GETTERS EN SETTERS VOORZIEN
 
     public Device(){
         services = new ArrayList<Service>();
@@ -108,14 +109,14 @@ public class Device {
     /**
      * @return the urlBase
      */
-    public String getUrlBase() {
+    public URL getUrlBase() {
         return urlBase;
     }
 
     /**
      * @param urlBase the urlBase to set
      */
-    public void setUrlBase(String urlBase) {
+    public void setUrlBase(URL urlBase) {
         this.urlBase = urlBase;
     }
 
@@ -241,7 +242,7 @@ public class Device {
     /**
      * @return the udn
      */
-    public UUID getUdn() {
+    public String getUdn() {
         return udn;
     }
 
@@ -249,7 +250,7 @@ public class Device {
      * @param udn the udn to set
      */
     
-    public void setUdn(UUID udn) {
+    public void setUdn(String udn) {
         this.udn = udn;
     }
 

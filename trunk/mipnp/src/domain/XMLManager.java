@@ -68,10 +68,12 @@ public class XMLManager {
                      System.out.println(i.next());
                   }
 
-                  System.out.println("KEYS: ");
+                  System.out.println("KEY/VALUES: ");
                   Iterator keyIterator = handler.m.keySet().iterator();
                   while (keyIterator.hasNext()){
-                  System.out.println(keyIterator.next());
+                      Object o = keyIterator.next();
+                  System.out.println("KEY: "+o);
+                  System.out.println("VAL: "+handler.m.get(o)+"\n");
                   }
 
 
