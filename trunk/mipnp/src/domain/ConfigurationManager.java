@@ -22,6 +22,8 @@
  */
 package domain;
 
+import com.sun.org.apache.xerces.internal.parsers.XMLParser;
+import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -195,6 +197,64 @@ public class ConfigurationManager {
 
         public Map getHashMap() {
             return xmlMap;
+        }
+    }
+
+    // Jochem Van denbussche
+    private class CustomHandler2 extends DefaultHandler {
+
+        /*
+         * TODO:
+         * - add support for embedded devices
+         * - add all elements and attributes
+         */
+        private CharArrayWriter buffer;
+        private Device rootDev;
+        private Service currentServ;
+
+        public CustomHandler2() {
+            this.buffer = new CharArrayWriter();
+            this.rootDev = new Device();
+        }
+
+        @Override
+        public void startElement(
+                String uri, String localName,
+                String qName, Attributes attributes)
+                throws SAXException {
+
+            buffer.reset();
+
+            if (localName.equalsIgnoreCase("service")) {
+                currentServ = new Service(null, null);
+                rootDev.addService(currentServ);
+            }
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName)
+                throws SAXException {
+
+            if (localName.equalsIgnoreCase("deviceType")) {
+                rootDev.setDeviceType(buffer.toString());
+            } else if (localName.equalsIgnoreCase("friendlyName")) {
+                rootDev.setFriendlyName(buffer.toString());
+            } else if (localName.equalsIgnoreCase("serviceType")) {
+//                currentServ.setServiceType(buffer.toString());
+            } else if (localName.equalsIgnoreCase("serviceId")) {
+//                currentServ.setServiceId(buffer.toString());
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length)
+                throws SAXException {
+
+            buffer.write(ch, start, length);
+        }
+
+        public Device getRootDevice() {
+            return rootDev;
         }
     }
 }
