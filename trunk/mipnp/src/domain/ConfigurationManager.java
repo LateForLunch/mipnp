@@ -17,17 +17,10 @@
  */
 
 /*
- * Service.java
- * Created on Oct 23, 2010, 3:37:50 PM
- */
-
-package domain;
-
-/**
+ * ConfigurationManager.java
  * Created on Oct 20, 2010, 3:53:17 PM
- *
- * @author Jeroen De Wilde
  */
+package domain;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +43,7 @@ public class ConfigurationManager {
 
     private SAXParserFactory saxParserFactory;
 
-    public /*static*/ Device createDeviceFromXML(String xmlFilePath){
+    public /*static*/ Device createDeviceFromXML(String xmlFilePath) {
         try {
             //fetch HashMap generated from XML document
             HashMap<String, String> map = this.parseXMLToHashMap(xmlFilePath);
@@ -69,9 +62,9 @@ public class ConfigurationManager {
 
             //create Device + add services
             Device rootDevice = new Device();
-                //add 2 services
-                rootDevice.addService(service1);
-                rootDevice.addService(service2);
+            //add 2 services
+            rootDevice.addService(service1);
+            rootDevice.addService(service2);
             //set attributes
             rootDevice.setDeviceType(map.get("deviceType"));
             rootDevice.setFriendlyName(map.get("friendlyName"));
@@ -101,8 +94,8 @@ public class ConfigurationManager {
         return null;
     }
 
-    private HashMap<String,String> parseXMLToHashMap(String xmlFilePath){
-        try{
+    private HashMap<String, String> parseXMLToHashMap(String xmlFilePath) {
+        try {
             //create File from XMLFilePath
             File xmlDoc = new File(xmlFilePath);
 
@@ -116,12 +109,11 @@ public class ConfigurationManager {
 
             SAXParser parser = saxParserFactory.newSAXParser();
             CustomSAXHandler handler = new CustomSAXHandler();
-            parser.parse(xmlDoc, handler );
+            parser.parse(xmlDoc, handler);
 
-            if(!handler.xmlMap.isEmpty() /* && ... */)
+            if (!handler.xmlMap.isEmpty() /* && ... */) {
                 return handler.xmlMap;
-            else
-               ; // throw new Exception
+            } else; // throw new Exception
         } catch (IOException ex) {
             System.out.println("Error occured by parsing");
             ex.printStackTrace();
@@ -130,78 +122,79 @@ public class ConfigurationManager {
             System.out.println("Error occured by creating/configuring SAXParser");
             ex.printStackTrace();
             System.exit(1);
-        }catch(SAXException ex){
+        } catch (SAXException ex) {
             System.out.println("Error occured by parsing in CustomSAXHandler");
             ex.printStackTrace();
             System.exit(1);
         }
-        
+
         return null; //TODO: zou niet mogen maar netbeans zaagt erop.
     }
 
-static class CustomSAXHandler extends DefaultHandler{
+    static class CustomSAXHandler extends DefaultHandler {
 
-    private HashMap<String,String> xmlMap;
-    private int count = 0;
-    private String key;
+        private HashMap<String, String> xmlMap;
+        private int count = 0;
+        private String key;
 
-    public CustomSAXHandler() {
-        xmlMap = new HashMap<String,String>();
-    }
-
-        @Override
-    public void startDocument() throws SAXException {
-        //System.out.println("XML parsing started");
-    }
+        public CustomSAXHandler() {
+            xmlMap = new HashMap<String, String>();
+        }
 
         @Override
-    public void endDocument() throws SAXException {
-        //System.out.println("XML parsing finished");
-    }
+        public void startDocument() throws SAXException {
+            //System.out.println("XML parsing started");
+        }
 
         @Override
-    public void startElement(String uri, String localName, String qName,
-            Attributes attrs) throws SAXException {
-        //System.out.println("XML tag started");
-        if (qName.toLowerCase().equals("service"))
-            count++;
+        public void endDocument() throws SAXException {
+            //System.out.println("XML parsing finished");
+        }
 
-        if (qName.equals("serviceType") ||
-            qName.equals("serviceId") ||
-            qName.equals("SCPDURL") ||
-            qName.equals("controlURL") ||
-            qName.equals("eventSubURL")) {
-            
-            String temp = String.copyValueOf(qName.toCharArray());
-
-            StringBuilder stb = new StringBuilder(temp).append(count);
-
-            key = stb.toString();
+        @Override
+        public void startElement(String uri, String localName, String qName,
+                Attributes attrs) throws SAXException {
+            //System.out.println("XML tag started");
+            if (qName.toLowerCase().equals("service")) {
+                count++;
             }
-        else {
-            key=qName;
+
+            if (qName.equals("serviceType")
+                    || qName.equals("serviceId")
+                    || qName.equals("SCPDURL")
+                    || qName.equals("controlURL")
+                    || qName.equals("eventSubURL")) {
+
+                String temp = String.copyValueOf(qName.toCharArray());
+
+                StringBuilder stb = new StringBuilder(temp).append(count);
+
+                key = stb.toString();
+            } else {
+                key = qName;
             }
-    }
+        }
 
         @Override
-    public void endElement(String uri, String localName, String qName)
-        throws SAXException {
-        //System.out.println("XML tag finished");
-    }
+        public void endElement(String uri, String localName, String qName)
+                throws SAXException {
+            //System.out.println("XML tag finished");
+        }
 
         @Override
-   public void characters(char[] ch, int start, int length) {
-       //System.out.println("Inside XML tag");
-       String xmlData = new String(ch).substring(start, start+length);
-       int xmlDataHash = xmlData.hashCode();
+        public void characters(char[] ch, int start, int length) {
+            //System.out.println("Inside XML tag");
+            String xmlData = new String(ch).substring(start, start + length);
+            int xmlDataHash = xmlData.hashCode();
 
-       //check if hashcode equals 10 (=empty or white space) if so, discard.
-       if(xmlDataHash != 10)
-           xmlMap.put(key, new String(ch).substring(start, start+length));
-   }
+            //check if hashcode equals 10 (=empty or white space) if so, discard.
+            if (xmlDataHash != 10) {
+                xmlMap.put(key, new String(ch).substring(start, start + length));
+            }
+        }
 
-   public Map getHashMap(){
-       return xmlMap;
-   }
-}
+        public Map getHashMap() {
+            return xmlMap;
+        }
+    }
 }

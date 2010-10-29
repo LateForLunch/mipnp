@@ -77,7 +77,4 @@ public class Service {
     public void setEventSubURL(URL eventSubURL) {
         this.eventSubURL = eventSubURL;
     }
-
-
-
 }
