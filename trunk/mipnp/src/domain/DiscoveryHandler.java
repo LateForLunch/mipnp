@@ -46,7 +46,6 @@ public class DiscoveryHandler {
      *
      * @param rootDevice the root Device.
      * @throws UnknownHostException if no IP address for the host could be found.
-     * @throws IOException if an I/O exception occurs while creating the MulticastSocket.
      */
     public DiscoveryHandler(Device rootDevice)
             throws UnknownHostException {
