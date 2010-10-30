@@ -40,7 +40,8 @@ public interface HttpConstants {
      */
     public static final int HTTP_VERSION_MAJOR = 1;
     public static final int HTTP_VERSION_MINOR = 1;
-    public static final String HTTP_VERSION = "HTTP/" + HTTP_VERSION_MAJOR + "." + HTTP_VERSION_MINOR;
+    public static final String HTTP_VERSION =
+            "HTTP/" + HTTP_VERSION_MAJOR + "." + HTTP_VERSION_MINOR;
 
     /*
      * TODO: Request methods:
@@ -59,9 +60,11 @@ public interface HttpConstants {
      */
     public static final Map<Integer, String> HTTP_STATUS = new HashMap<Integer, String>() {
         {
+            // Informational
             put(100, "Continue");
             put(101, "Switching Protocols");
 
+            // Successful
             put(200, "OK");
             put(201, "Created");
             put(202, "Accepted");
@@ -70,6 +73,7 @@ public interface HttpConstants {
             put(205, "Reset Content");
             put(206, "Partial Content");
 
+            // Redirection
             put(300, "Multiple Choices");
             put(301, "Moved Permanently");
             put(302, "Found");
@@ -78,6 +82,7 @@ public interface HttpConstants {
             put(305, "Use Proxy");
             put(307, "Temporary Redirect");
 
+            // Client Error
             put(400, "Bad Request");
             put(401, "Unauthorized");
             put(402, "Payment Required");
@@ -97,6 +102,7 @@ public interface HttpConstants {
             put(416, "Requested range not satisfiable");
             put(417, "Expectation Failed");
 
+            // Server Error
             put(500, "Internal Server Error");
             put(501, "Not Implemented");
             put(502, "Bad Gateway");
