@@ -22,7 +22,6 @@
  */
 package domain;
 
-import com.sun.org.apache.xerces.internal.parsers.XMLParser;
 import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +33,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -205,16 +206,25 @@ public class ConfigurationManager {
 
         /*
          * TODO:
-         * - add support for embedded devices
+         * - test code
          * - add all elements and attributes
          */
+        private XMLReader xmlReader;
         private CharArrayWriter buffer;
+        private DeviceHandler deviceHandler;
+        private ServiceHandler serviceHandler;
         private Device rootDev;
-        private Service currentServ;
+        private Device currentDev;
+        private boolean inDevList;
 
-        public CustomHandler2() {
+        public CustomHandler2(XMLReader xmlReader) {
+            this.xmlReader = xmlReader;
             this.buffer = new CharArrayWriter();
+            this.deviceHandler = new DeviceHandler();
+            this.serviceHandler = new ServiceHandler();
             this.rootDev = new Device();
+            this.currentDev = rootDev;
+            this.inDevList = false;
         }
 
         @Override
@@ -225,9 +235,20 @@ public class ConfigurationManager {
 
             buffer.reset();
 
-            if (localName.equalsIgnoreCase("service")) {
-                currentServ = new Service(null, null);
-                rootDev.addService(currentServ);
+            if (localName.equalsIgnoreCase("device")) {
+                Device dev = rootDev;
+                if (inDevList) {
+                    dev = new Device();
+//                    rootDev.addEmbeddedDevice(dev); // TODO
+                    currentDev = dev;
+                }
+                deviceHandler.handleDevice(dev, xmlReader, this);
+            } else if (localName.equalsIgnoreCase("service")) {
+                Service newServ = new Service(null, null); // TODO: create constructor
+                currentDev.addService(newServ);
+                serviceHandler.handleService(newServ, xmlReader, this);
+            } else if (localName.equalsIgnoreCase("deviceList")) {
+                this.inDevList = true;
             }
         }
 
@@ -235,14 +256,8 @@ public class ConfigurationManager {
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
 
-            if (localName.equalsIgnoreCase("deviceType")) {
-                rootDev.setDeviceType(buffer.toString());
-            } else if (localName.equalsIgnoreCase("friendlyName")) {
-                rootDev.setFriendlyName(buffer.toString());
-            } else if (localName.equalsIgnoreCase("serviceType")) {
-//                currentServ.setServiceType(buffer.toString());
-            } else if (localName.equalsIgnoreCase("serviceId")) {
-//                currentServ.setServiceId(buffer.toString());
+            if (localName.equalsIgnoreCase("deviceList")) {
+                this.inDevList = false;
             }
         }
 
@@ -255,6 +270,110 @@ public class ConfigurationManager {
 
         public Device getRootDevice() {
             return rootDev;
+        }
+    }
+
+    private class DeviceHandler extends DefaultHandler {
+
+        private CharArrayWriter buffer;
+        private XMLReader xmlReader;
+        private ContentHandler parent;
+        private Device currentDev;
+
+        public DeviceHandler() {
+            this.buffer = new CharArrayWriter();
+        }
+
+        public void handleDevice(
+                Device newDev, XMLReader xmlReader, ContentHandler parent) {
+
+            this.currentDev = newDev;
+            this.xmlReader = xmlReader;
+            this.parent = parent;
+            xmlReader.setContentHandler(this);
+        }
+
+        @Override
+        public void startElement(
+                String uri, String localName,
+                String qName, Attributes attributes)
+                throws SAXException {
+
+            buffer.reset();
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName)
+                throws SAXException {
+
+            if (localName.equalsIgnoreCase("deviceType")) {
+                currentDev.setDeviceType(buffer.toString());
+            } else if (localName.equalsIgnoreCase("friendlyName")) {
+                currentDev.setFriendlyName(buffer.toString());
+            }
+            // ...
+            else if (localName.equalsIgnoreCase("device")) {
+                xmlReader.setContentHandler(parent);
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length)
+                throws SAXException {
+
+            buffer.write(ch, start, length);
+        }
+    }
+
+    private class ServiceHandler extends DefaultHandler {
+
+        private CharArrayWriter buffer;
+        private XMLReader xmlReader;
+        private ContentHandler parent;
+        private Service currentServ;
+
+        public ServiceHandler() {
+            this.buffer = new CharArrayWriter();
+        }
+
+        public void handleService(
+                Service newServ, XMLReader xmlReader, ContentHandler parent) {
+
+            this.currentServ = newServ;
+            this.xmlReader = xmlReader;
+            this.parent = parent;
+            xmlReader.setContentHandler(this);
+        }
+
+        @Override
+        public void startElement(
+                String uri, String localName,
+                String qName, Attributes attributes)
+                throws SAXException {
+
+            buffer.reset();
+        }
+
+        @Override
+        public void endElement(String uri, String localName, String qName)
+                throws SAXException {
+
+            if (localName.equalsIgnoreCase("serviceType")) {
+//                currentServ.setServiceType(buffer.toString()); // TODO
+            } else if (localName.equalsIgnoreCase("serviceId")) {
+//                currentServ.setServiceId(buffer.toString()); // TODO
+            }
+            // ...
+            else if (localName.equalsIgnoreCase("service")) {
+                xmlReader.setContentHandler(parent);
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length)
+                throws SAXException {
+
+            buffer.write(ch, start, length);
         }
     }
 }
