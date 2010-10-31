@@ -17,8 +17,8 @@
  */
 
 /*
- * PacketFactory.java
- * Created on Oct 20, 2010, 4:45:56 PM
+ * HttpPacket.java
+ * Created on Oct 31, 2010, 10:15:05 AM
  */
 package domain;
 
@@ -26,23 +26,10 @@ package domain;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class PacketFactory {
-    
-    public static IPacket[] createRootDeviceDiscMess(Device rootDevice) {
-        IPacket[] packets = new IPacket[3];
-        // p. 27 - Table 1-1
-        return packets;
-    }
+public class HttpPacket implements /*IPacket, */HttpConstants {
 
-    public static IPacket[] createEmbeddedDeviceDiscMess(Device device) {
-        IPacket[] packets = new IPacket[2];
-        // p. 27 - Table 1-2
-        return packets;
-    }
+    private String startLine;
 
-    public static IPacket createServiceDiscMess(Service service) {
-        IPacket packet = null;
-        // p. 27 - Table 1-3
-        return packet;
+    public HttpPacket() {
     }
 }

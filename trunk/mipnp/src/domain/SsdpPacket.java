@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jochem Van denbussche
+ * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ package domain;
  */
 public class SsdpPacket implements IPacket, HttpConstants {
 
-    public static final int TYPE_NOTIFY = 0;
-    public static final int TYPE_M_SEARCH = 1;
+    public static final int METHOD_NOTIFY = 0;
+    public static final int METHOD_M_SEARCH = 1;
     public static final int TYPE_STATUS_OK = 2;
 
     private static final String[] START_LINES = {
@@ -35,8 +35,12 @@ public class SsdpPacket implements IPacket, HttpConstants {
         HTTP_VERSION + " 200 " + HTTP_STATUS.get(200) + CRLF
     };
 
-    private static final String HEADER = "HOST: 239.255.255.250:1900" + CRLF;
-
+    private static final String HEADER_HOST =
+            "HOST: 239.255.255.250:1900" + CRLF;
+    private static final String HEADER_CACHE_CONTROL =
+            "CACHE-CONTROL: max-age = %s" + CRLF;
+    private static final String HEADER_LOCATION =
+            "LOCATION: %s" + CRLF;
 
     /*
      * SSDP format:
@@ -70,7 +74,7 @@ public class SsdpPacket implements IPacket, HttpConstants {
 
     public SsdpPacket(int type) {
         this.startLine = START_LINES[type];
-        this.header = HEADER;
+        this.header = HEADER_HOST;
     }
 
     public String getRawData() {
