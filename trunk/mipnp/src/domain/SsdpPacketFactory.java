@@ -31,18 +31,38 @@ public class SsdpPacketFactory {
     public static IPacket[] createRootDeviceDiscMess(Device rootDevice) {
         IPacket[] packets = new IPacket[3];
         // p. 27 - Table 1-1
+        packets[0] = new SsdpPacket(0);
+        packets[0].setRawData(
+                "HOST: 239.255.255.250:1900" + SsdpPacket.CRLF //zit eigenlijk in SsdpPacket
+                + "LOCATION: " + rootDevice.getUrlBase() + SsdpPacket.CRLF //checken welke URL
+                + "NT: " + "upnp:rootdevice" + SsdpPacket.CRLF
+                + "NTS: " + "ssdp:alive" + SsdpPacket.CRLF
+                + "SERVER: " + System.getProperty("os.name")+"/"+System.getProperty("os.version")
+                + " UPnP/1.0 "
+                + rootDevice.getModelName() + "/" + rootDevice.getSerialNumber()
+                /* kan ineen */+ SsdpPacket.CRLF
+                + "USN: " + "uuid:"+rootDevice.getUdn() + SsdpPacket.CRLF
+                );
+        //packets[1]... NT: uuid:device-UUID, USN: uuid:device-UUID (for root device UUID)
+
+        //packets[2]... NT: urn:schemas-upnp-org:device:deviceType:v or urn:domain-name:device:deviceType:v , USN:
+        //              USN: uuid:device-UUID::urn:schemas-upnp-org:device:deviceType:v (of root device) or uuid:device-UUID::urn:domain-name:device:deviceType:v
         return packets;
     }
 
     public static IPacket[] createEmbeddedDeviceDiscMess(Device device) {
         IPacket[] packets = new IPacket[2];
         // p. 27 - Table 1-2
+        //hebben we momenteel (nog) niet
         return packets;
     }
 
     public static IPacket createServiceDiscMess(Service service) {
         IPacket packet = null;
         // p. 27 - Table 1-3
+        //new SsdpPacket(0).setRawData();
+        //NT: urn:schemas-upnp-org:service:serviceType:v or urn:domain-name:service:serviceType:v
+        //USN: uuid:device-UUID::urn:schemas-upnp-org:service:serviceType:v or uuid:device-UUID::urn:domain-name:service:serviceType:v
         return packet;
     }
 }

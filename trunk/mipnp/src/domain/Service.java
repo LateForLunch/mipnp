@@ -23,14 +23,20 @@
 package domain;
 
 import java.net.URL;
+import java.util.List;
 
 public class Service {
 
     private String serviceType;
     private String serviceId;
+
+    //all URLS:
     private URL scpdURL;
     private URL controlURL;
     private URL eventSubURL;
+
+    private List<Action> actions;
+    //private List<StateVariable> serviceStateTable;
 
     public Service(String serviceId, String serviceType){
         this.serviceId=serviceId;this.serviceType=serviceType;
