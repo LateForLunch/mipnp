@@ -33,7 +33,7 @@ public class SsdpPacketFactory {
         // p. 27 - Table 1-1
         packets[0] = new SsdpPacket(0);
         packets[0].setRawData(
-                "HOST: 239.255.255.250:1900" + SsdpPacket.CRLF //zit eigenlijk in SsdpPacket
+                "CACHE-CONTROL: max-age = 4" +  SsdpPacket.CRLF
                 + "LOCATION: " + rootDevice.getUrlBase() + SsdpPacket.CRLF //checken welke URL
                 + "NT: " + "upnp:rootdevice" + SsdpPacket.CRLF
                 + "NTS: " + "ssdp:alive" + SsdpPacket.CRLF
