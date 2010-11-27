@@ -39,7 +39,7 @@ public class HttpServer implements Runnable, HttpConstants {
 
     private static final int PORT = 8080;
     private static final String SAMPLE_DATA =
-            "<html><body>Java HttpServer works!</body></html>";
+            "<html><body>Java HttpServer works!µ</body></html>";
 
     private ServerSocket serverSocket;
 
@@ -53,8 +53,8 @@ public class HttpServer implements Runnable, HttpConstants {
             try {
                 socket = serverSocket.accept();
 
-                Scanner input = new Scanner(socket.getInputStream());
-                Formatter output = new Formatter(socket.getOutputStream());
+                Scanner input = new Scanner(socket.getInputStream(), "US-ASCII");
+                Formatter output = new Formatter(socket.getOutputStream(), "US-ASCII");
 
                 String firstLine = input.nextLine();
                 if (!firstLine.startsWith("GET")) {
