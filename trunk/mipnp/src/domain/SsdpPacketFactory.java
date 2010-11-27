@@ -54,7 +54,8 @@ public class SsdpPacketFactory {
         IPacket[] packets = new IPacket[2];
         // p. 27 - Table 1-2
         //hebben we momenteel (nog) niet
-        return packets;
+        //return packets;
+        throw new UnsupportedOperationException();
     }
 
     public static IPacket createServiceDiscMess(Service service) {
