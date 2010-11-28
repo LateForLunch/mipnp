@@ -23,12 +23,14 @@
 package testTools;
 
 import domain.HttpConstants;
+import domain.Packet;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.Scanner;
 
 /**
@@ -40,6 +42,8 @@ public class HttpServer implements Runnable, HttpConstants {
     private static final int PORT = 8080;
     private static final String SAMPLE_DATA =
             "<html><body>Java HttpServer works!µ</body></html>";
+    private static final Charset UTF8 = Charset.forName("utf-8");
+    private static final Charset ASCII = Charset.forName("US-ASCII");
 
     private ServerSocket serverSocket;
 
@@ -54,20 +58,28 @@ public class HttpServer implements Runnable, HttpConstants {
                 socket = serverSocket.accept();
 
                 Scanner input = new Scanner(socket.getInputStream(), "US-ASCII");
-                Formatter output = new Formatter(socket.getOutputStream(), "US-ASCII");
+//                Formatter output = new Formatter(socket.getOutputStream(), "US-ASCII");
+                Packet packet = new Packet();
 
                 String firstLine = input.nextLine();
                 if (!firstLine.startsWith("GET")) {
-                    send501(output);
+                    send501(packet);
                 } else {
-                    send200(output);
-                    output.format("Date: ", new Date());
-                    output.format("Content-Type: text/html");
-                    output.format("Content-Length: %s",
-                            SAMPLE_DATA.getBytes().length+CRLF+CRLF);
-                    output.format(SAMPLE_DATA);
-                    output.flush();
+                    send200(packet);
+//                    output.format("Date: ", new Date());
+//                    output.format("Content-Type: text/html");
+//                    output.format("Content-Length: %s",
+//                            SAMPLE_DATA.getBytes().length+CRLF+CRLF);
+//                    output.format(SAMPLE_DATA);
+//                    output.flush();
+                    packet.write("Date: " + new Date(), ASCII);
+                    packet.write("Content-Type: text/html; charset=utf-8", ASCII);
+                    ByteBuffer bb = UTF8.encode(SAMPLE_DATA);
+                    packet.write("Content-Length: " + bb.array().length + CRLF + CRLF, ASCII);
+                    packet.write(bb.array());
                 }
+                packet.flush();
+                packet.writeTo(socket.getOutputStream());
             } catch (SocketException ex) { // ServerSocket closed
                 return;
             } catch (IOException ex) {
@@ -82,16 +94,18 @@ public class HttpServer implements Runnable, HttpConstants {
         }
     }
 
-    private void send501(Formatter output) {
-        output.format("%s %s %s %s",
-                HTTP_VERSION, "501", HTTP_STATUS.get(501), CRLF);
-        output.flush();
+    private void send501(Packet packet) throws IOException {
+//        output.format("%s %s %s %s",
+//                HTTP_VERSION, "501", HTTP_STATUS.get(501), CRLF);
+//        output.flush();
+        packet.write(HTTP_VERSION + " 501 " + HTTP_STATUS.get(501) + CRLF);
     }
 
-    private void send200(Formatter output) {
-        output.format("%s %s %s %s",
-                HTTP_VERSION, "200", HTTP_STATUS.get(200), CRLF);
-        output.flush();
+    private void send200(Packet packet) throws IOException {
+//        output.format("%s %s %s %s",
+//                HTTP_VERSION, "200", HTTP_STATUS.get(200), CRLF);
+//        output.flush();
+        packet.write(HTTP_VERSION + " 200 " + HTTP_STATUS.get(200) + CRLF, ASCII);
     }
 
     public void stop() {
