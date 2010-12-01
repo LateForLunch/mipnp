@@ -22,7 +22,7 @@
  */
 package testTools;
 
-import domain.HttpConstants;
+import domain.http.HttpConstants;
 import domain.Packet;
 import java.io.IOException;
 import java.net.ServerSocket;

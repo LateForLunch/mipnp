@@ -20,7 +20,12 @@
  * SsdpPacketFactory.java
  * Created on Oct 20, 2010, 4:45:56 PM
  */
-package domain;
+package domain.ssdp;
+
+import domain.Device;
+import domain.IPacket;
+import domain.Service;
+import domain.ssdp.SsdpPacket;
 
 /**
  *

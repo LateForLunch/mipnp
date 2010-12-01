@@ -15,7 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package domain;
+package domain.ssdp;
+
+import domain.http.HttpConstants;
+import domain.IPacket;
 
 /**
  * Created on Oct 20, 2010, 3:53:17 PM

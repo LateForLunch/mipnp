@@ -20,13 +20,15 @@
  * HttpPacket.java
  * Created on Oct 31, 2010, 10:15:05 AM
  */
-package domain;
+package domain.http;
+
+import java.util.List;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class HttpPacket implements /*IPacket, */HttpConstants {
+public class HttpPacket implements HttpConstants {
 
     private String startLine;
 

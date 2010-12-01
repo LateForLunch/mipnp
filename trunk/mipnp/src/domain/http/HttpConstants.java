@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package domain;
+package domain.http;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,22 +38,15 @@ public interface HttpConstants {
     /*
      * Version
      */
-    public static final int HTTP_VERSION_MAJOR = 1;
-    public static final int HTTP_VERSION_MINOR = 1;
-    public static final String HTTP_VERSION =
-            "HTTP/" + HTTP_VERSION_MAJOR + "." + HTTP_VERSION_MINOR;
+    public static final String HTTP_VERSION_1_0 = "HTTP/1.0";
+    public static final String HTTP_VERSION_1_1 = "HTTP/1.1";
+    public static final String HTTP_VERSION = HTTP_VERSION_1_1;
 
     /*
-     * TODO: Request methods:
-     * OPTIONS
-     * GET
-     * HEAD
-     * POST
-     * PUT
-     * DELETE
-     * TRACE
-     * CONNECT
+     * Methods
      */
+    public static final String GET = "GET";
+    public static final String HEAD = "HEAD";
 
     /*
      * Response status codes
