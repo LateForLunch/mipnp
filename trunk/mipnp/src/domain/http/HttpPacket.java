@@ -50,12 +50,24 @@ public class HttpPacket implements HttpConstants {
         this.version = version;
     }
 
+    public String setHeader(String str) {
+        if (str == null) {
+            throw new NullPointerException("Can't parse null");
+        }
+        int index = str.indexOf(':');
+        if (index < 0) {
+            throw new IllegalArgumentException("Can't parse String: " + str);
+        }
+        return setHeader(
+                str.substring(0, index).trim(),
+                str.substring(index + 1).trim());
+    }
+
     /**
      *
      * @param fieldName
      * @param fieldValue
-     * @return the previous value associated with fieldname,
-     * or null if there was no mapping for fieldname
+     * @return the previous field-value, or null if there was no field-value
      */
     public String setHeader(String fieldName, String fieldValue) {
         return headers.put(fieldName, fieldValue);
@@ -64,8 +76,8 @@ public class HttpPacket implements HttpConstants {
     /**
      *
      * @param fieldName
-     * @return the value to which the specified fieldname is mapped,
-     * or null if this map contains no mapping for the fieldname
+     * @return the field-value to which the specified fieldname is mapped,
+     * or null if there is no mapping for the fieldname
      */
     public String getHttpHeader(String fieldName) {
         return headers.get(fieldName);
