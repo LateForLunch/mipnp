@@ -22,7 +22,8 @@
  */
 package domain.http;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -30,8 +31,79 @@ import java.util.List;
  */
 public class HttpPacket implements HttpConstants {
 
+    private String version;
     private String startLine;
+    private Map<String /* fieldname */, String /* fieldvalue */> headers;
+    private byte[] data;
 
     public HttpPacket() {
+        setVersion(HTTP_VERSION);
+        this.headers = new HashMap<String, String>();
+        setData(null);
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     *
+     * @param fieldName
+     * @param fieldValue
+     * @return the previous value associated with fieldname,
+     * or null if there was no mapping for fieldname
+     */
+    public String setHeader(String fieldName, String fieldValue) {
+        return headers.put(fieldName, fieldValue);
+    }
+
+    /**
+     *
+     * @param fieldName
+     * @return the value to which the specified fieldname is mapped,
+     * or null if this map contains no mapping for the fieldname
+     */
+    public String getHttpHeader(String fieldName) {
+        return headers.get(fieldName);
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+        if (data != null) {
+            setContentLength(data.length);
+        } else {
+            removeContentLength();
+        }
+    }
+
+    /**
+     *
+     * @return the content length of the data or -1 if there is no valid value for Content-Length
+     */
+    public int getContentLength() {
+        String val = getHttpHeader(CONTENT_LENGTH);
+        int ret = -1;
+        try {
+            ret = Integer.parseInt(val);
+        } catch (NumberFormatException ex) {
+            // Ignore
+        }
+        return ret;
+    }
+
+    public void setContentLength(int length) {
+        setHeader(CONTENT_LENGTH, String.valueOf(length));
+    }
+
+    private void removeContentLength() {
+        headers.remove(CONTENT_LENGTH);
     }
 }
