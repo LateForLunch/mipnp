@@ -22,6 +22,12 @@
  */
 package cli;
 
+import cli.menu.CliMenu;
+import domain.tools.NetworkInterfaceTools;
+import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
@@ -31,9 +37,15 @@ public class MainController {
     private MainCli cli;
     private ExitListener exitListener;
 
-    public MainController() {
+    public MainController(String[] args) {
+        Settings.parseArguments(args);
+        Settings.checkSettings();
         this.cli = new MainCli();
-        this.exitListener = new ExitListener();
+        this.exitListener = new ExitListener(this);
         new Thread(exitListener).start();
+    }
+
+    public void exit(int status) {
+        System.exit(status);
     }
 }

@@ -30,9 +30,11 @@ import java.util.Scanner;
  */
 public class ExitListener implements Runnable {
 
+    private MainController mainController;
     private Scanner input;
 
-    public ExitListener() {
+    public ExitListener(MainController mainController) {
+        this.mainController = mainController;
         this.input = new Scanner(System.in);
     }
 
@@ -41,7 +43,7 @@ System.out.println("Press 'q' to exit."); // TEST
         while (true) {
             String str = input.nextLine();
             if (str.charAt(0) == 'q') {
-                System.exit(0);
+                mainController.exit(0);
             }
         }
     }
