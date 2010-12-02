@@ -28,4 +28,9 @@ package domain.http;
  */
 public class HttpRequest extends HttpPacket {
 
+    private String method;
+    private String requestUri;
+
+    public HttpRequest() {
+    }
 }
