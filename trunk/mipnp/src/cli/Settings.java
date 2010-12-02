@@ -26,8 +26,6 @@ import cli.menu.CliMenu;
 import domain.tools.NetworkInterfaceTools;
 import java.net.SocketException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -54,6 +52,9 @@ public class Settings {
     }
 
     public static void checkSettings() {
+        /*
+         * Interface
+         */
         if (Settings.getProperty(Settings.INTERFACE) == null) {
             try {
                 String[] networkInerfaces = NetworkInterfaceTools.list();

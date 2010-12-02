@@ -30,6 +30,8 @@ import java.util.Map;
  */
 public interface HttpConstants {
 
+    public static final int DEFAULT_PORT = 80;
+
     public static final char CR = '\r';
     public static final char LF = '\n';
     public static final char HT = '\t';
