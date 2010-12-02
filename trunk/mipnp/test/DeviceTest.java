@@ -5,7 +5,7 @@
 
 import domain.Service;
 import junit.framework.Assert;
-import domain.ConfigurationManager;
+import domain.xml.ConfigurationManager;
 import domain.Device;
 import org.junit.After;
 import org.junit.AfterClass;
