@@ -296,6 +296,10 @@ public class Device {
         this.serialNumber = serialNumber;
     }
 
+    public void addEmbeddedDevice(Device d){
+        embeddedDevices.add(d);
+    }
+
 
 }
 

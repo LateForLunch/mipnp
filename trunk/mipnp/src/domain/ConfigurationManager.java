@@ -24,12 +24,8 @@ package domain;
 
 import java.io.CharArrayWriter;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
@@ -46,58 +42,58 @@ public class ConfigurationManager {
 
     private SAXParserFactory saxParserFactory;
 
-    public /*static*/ Device createDeviceFromXML(String xmlFilePath) {
-        try {
-            //fetch HashMap generated from XML document
-            HashMap<String, String> map = this.parseXMLToHashMap(xmlFilePath);
+//    public /*static*/ Device createDeviceFromXML(String xmlFilePath) {
+//        try {
+//            //fetch HashMap generated from XML document
+//            HashMap<String, String> map = this.parseXMLToHashMap(xmlFilePath);
+//
+//            //create Service 1 (ContentDirectory)
+//            Service service1 = new Service(map.get("serviceId1"), map.get("serviceType1"));
+//            service1.setScpdURL(new URL(map.get("SCPDURL1")));
+//            service1.setEventSubURL(new URL(map.get("eventSubURL1")));
+//            service1.setControlURL(new URL(map.get("controlURL1")));
+//
+//            //create Service 2 (ConnectionManager)
+//            Service service2 = new Service(map.get("serviceId2"), map.get("serviceType2"));
+//            service2.setScpdURL(new URL(map.get("SCPDURL2")));
+//            service2.setEventSubURL(new URL(map.get("eventSubURL2")));
+//            service2.setControlURL(new URL(map.get("controlURL2")));
+//
+//            //create Device + add services
+//            Device rootDevice = new Device();
+//            //add 2 services
+//            rootDevice.addService(service1);
+//            rootDevice.addService(service2);
+//            //set attributes
+//            rootDevice.setDeviceType(map.get("deviceType"));
+//            rootDevice.setFriendlyName(map.get("friendlyName"));
+//            rootDevice.setManufacturer(map.get("manufacturer"));
+//            rootDevice.setManufacturerURL(new URL(map.get("manufacturerURL")));
+//            rootDevice.setModelDescription(map.get("modelDescription"));
+//            rootDevice.setModelName(map.get("modelName"));
+//            rootDevice.setModelNumber(Integer.parseInt(map.get("modelNumber")));
+//            rootDevice.setModelURL(new URL(map.get("modelURL")));
+//            rootDevice.setPresentationURL(new URL(map.get("presentationURL")));
+//            rootDevice.setSerialNumber(map.get("serialNumber"));
+//            rootDevice.setUdn(map.get("UDN"));
+//            rootDevice.setUpc(map.get("UPC"));
+//            rootDevice.setUrlBase(new URL(map.get("URLBase")));
+//
+//            return rootDevice;
+//
+//        } catch (MalformedURLException ex) {
+//            System.out.println("Error by creating URL from input string");
+//            ex.printStackTrace();
+//            System.exit(1);
+//        } catch (NumberFormatException ex) {
+//            System.out.println("Error by parsing String to Integer");
+//            ex.printStackTrace();
+//            System.exit(1);
+//        }
+//        return null;
+//    }
 
-            //create Service 1 (ContentDirectory)
-            Service service1 = new Service(map.get("serviceId1"), map.get("serviceType1"));
-            service1.setScpdURL(new URL(map.get("SCPDURL1")));
-            service1.setEventSubURL(new URL(map.get("eventSubURL1")));
-            service1.setControlURL(new URL(map.get("controlURL1")));
-
-            //create Service 2 (ConnectionManager)
-            Service service2 = new Service(map.get("serviceId2"), map.get("serviceType2"));
-            service2.setScpdURL(new URL(map.get("SCPDURL2")));
-            service2.setEventSubURL(new URL(map.get("eventSubURL2")));
-            service2.setControlURL(new URL(map.get("controlURL2")));
-
-            //create Device + add services
-            Device rootDevice = new Device();
-            //add 2 services
-            rootDevice.addService(service1);
-            rootDevice.addService(service2);
-            //set attributes
-            rootDevice.setDeviceType(map.get("deviceType"));
-            rootDevice.setFriendlyName(map.get("friendlyName"));
-            rootDevice.setManufacturer(map.get("manufacturer"));
-            rootDevice.setManufacturerURL(new URL(map.get("manufacturerURL")));
-            rootDevice.setModelDescription(map.get("modelDescription"));
-            rootDevice.setModelName(map.get("modelName"));
-            rootDevice.setModelNumber(Integer.parseInt(map.get("modelNumber")));
-            rootDevice.setModelURL(new URL(map.get("modelURL")));
-            rootDevice.setPresentationURL(new URL(map.get("presentationURL")));
-            rootDevice.setSerialNumber(map.get("serialNumber"));
-            rootDevice.setUdn(map.get("UDN"));
-            rootDevice.setUpc(map.get("UPC"));
-            rootDevice.setUrlBase(new URL(map.get("URLBase")));
-
-            return rootDevice;
-
-        } catch (MalformedURLException ex) {
-            System.out.println("Error by creating URL from input string");
-            ex.printStackTrace();
-            System.exit(1);
-        } catch (NumberFormatException ex) {
-            System.out.println("Error by parsing String to Integer");
-            ex.printStackTrace();
-            System.exit(1);
-        }
-        return null;
-    }
-
-    private HashMap<String, String> parseXMLToHashMap(String xmlFilePath) {
+     public /*static*/ Device createDeviceFromXML(String xmlFilePath) {
         try {
             //create File from XMLFilePath
             File xmlDoc = new File(xmlFilePath);
@@ -111,95 +107,124 @@ public class ConfigurationManager {
             saxParserFactory.setNamespaceAware(false); //TODO: opzoeken
 
             SAXParser parser = saxParserFactory.newSAXParser();
-            CustomSAXHandler handler = new CustomSAXHandler();
+            XMLReader r = parser.getXMLReader();
+            CustomHandler2 handler = new CustomHandler2(r);
+            //r.setContentHandler(handler);
+            //r.setErrorHandler(new MyErrorHandler());
+            //r.parse("src/resources/mipnpXML_1.xml");
             parser.parse(xmlDoc, handler);
-
-            if (!handler.xmlMap.isEmpty() /* && ... */) {
-                return handler.xmlMap;
-            } else; // throw new Exception
-        } catch (IOException ex) {
-            System.out.println("Error occured by parsing");
-            ex.printStackTrace();
-            System.exit(1);
-        } catch (ParserConfigurationException ex) {
-            System.out.println("Error occured by creating/configuring SAXParser");
-            ex.printStackTrace();
-            System.exit(1);
-        } catch (SAXException ex) {
-            System.out.println("Error occured by parsing in CustomSAXHandler");
-            ex.printStackTrace();
-            System.exit(1);
+            return handler.getRootDevice();
+            
+        }catch(Exception e){
+            System.out.println("Fout bij createDeviceFromXML");
+            e.printStackTrace();;
         }
-
-        return null; //TODO: zou niet mogen maar netbeans zaagt erop.
+        return null;
     }
 
-    static class CustomSAXHandler extends DefaultHandler {
+//    private HashMap<String, String> parseXMLToHashMap(String xmlFilePath) {
+//        try {
+//            //create File from XMLFilePath
+//            File xmlDoc = new File(xmlFilePath);
+//
+//            //create SAXParserFactory
+//            saxParserFactory = SAXParserFactory.newInstance();
+//
+//            //Parsing from XML document using SAX
+//            //TODO: opzoeken eventuele validatie
+//            saxParserFactory.setValidating(true); //TODO: opzoeken
+//            saxParserFactory.setNamespaceAware(false); //TODO: opzoeken
+//
+//            SAXParser parser = saxParserFactory.newSAXParser();
+//            CustomSAXHandler handler = new CustomSAXHandler();
+//            parser.parse(xmlDoc, handler);
+//
+//            if (!handler.xmlMap.isEmpty() /* && ... */) {
+//                return handler.xmlMap;
+//            } else; // throw new Exception
+//        } catch (IOException ex) {
+//            System.out.println("Error occured by parsing");
+//            ex.printStackTrace();
+//            System.exit(1);
+//        } catch (ParserConfigurationException ex) {
+//            System.out.println("Error occured by creating/configuring SAXParser");
+//            ex.printStackTrace();
+//            System.exit(1);
+//        } catch (SAXException ex) {
+//            System.out.println("Error occured by parsing in CustomSAXHandler");
+//            ex.printStackTrace();
+//            System.exit(1);
+//        }
+//
+//        return null;
+//    }
 
-        private HashMap<String, String> xmlMap;
-        private int count = 0;
-        private String key;
-
-        public CustomSAXHandler() {
-            xmlMap = new HashMap<String, String>();
-        }
-
-        @Override
-        public void startDocument() throws SAXException {
-            //System.out.println("XML parsing started");
-        }
-
-        @Override
-        public void endDocument() throws SAXException {
-            //System.out.println("XML parsing finished");
-        }
-
-        @Override
-        public void startElement(String uri, String localName, String qName,
-                Attributes attrs) throws SAXException {
-            //System.out.println("XML tag started");
-            if (qName.toLowerCase().equals("service")) {
-                count++;
-            }
-
-            if (qName.equals("serviceType")
-                    || qName.equals("serviceId")
-                    || qName.equals("SCPDURL")
-                    || qName.equals("controlURL")
-                    || qName.equals("eventSubURL")) {
-
-                String temp = String.copyValueOf(qName.toCharArray());
-
-                StringBuilder stb = new StringBuilder(temp).append(count);
-
-                key = stb.toString();
-            } else {
-                key = qName;
-            }
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String qName)
-                throws SAXException {
-            //System.out.println("XML tag finished");
-        }
-
-        @Override
-        public void characters(char[] ch, int start, int length) {
-            //System.out.println("Inside XML tag");
-            String xmlData = new String(ch).substring(start, start + length);
-            int xmlDataHash = xmlData.hashCode();
-
-            //check if hashcode equals 10 (=empty or white space) if so, discard.
-            if (xmlDataHash != 10) {
-                xmlMap.put(key, new String(ch).substring(start, start + length));
-            }
-        }
-
-        public Map getHashMap() {
-            return xmlMap;
-        }
-    }
+//    static class CustomSAXHandler extends DefaultHandler {
+//
+//        private HashMap<String, String> xmlMap;
+//        private int count = 0;
+//        private String key;
+//
+//        public CustomSAXHandler() {
+//            xmlMap = new HashMap<String, String>();
+//        }
+//
+//        @Override
+//        public void startDocument() throws SAXException {
+//            //System.out.println("XML parsing started");
+//        }
+//
+//        @Override
+//        public void endDocument() throws SAXException {
+//            //System.out.println("XML parsing finished");
+//        }
+//
+//        @Override
+//        public void startElement(String uri, String localName, String qName,
+//                Attributes attrs) throws SAXException {
+//            //System.out.println("XML tag started");
+//            if (qName.toLowerCase().equals("service")) {
+//                count++;
+//            }
+//
+//            if (qName.equals("serviceType")
+//                    || qName.equals("serviceId")
+//                    || qName.equals("SCPDURL")
+//                    || qName.equals("controlURL")
+//                    || qName.equals("eventSubURL")) {
+//
+//                String temp = String.copyValueOf(qName.toCharArray());
+//
+//                StringBuilder stb = new StringBuilder(temp).append(count);
+//
+//                key = stb.toString();
+//            } else {
+//                key = qName;
+//            }
+//        }
+//
+//        @Override
+//        public void endElement(String uri, String localName, String qName)
+//                throws SAXException {
+//            //System.out.println("XML tag finished");
+//        }
+//
+//        @Override
+//        public void characters(char[] ch, int start, int length) {
+//            //System.out.println("Inside XML tag");
+//            String xmlData = new String(ch).substring(start, start + length);
+//            int xmlDataHash = xmlData.hashCode();
+//
+//            //check if hashcode equals 10 (=empty or white space) if so, discard.
+//            if (xmlDataHash != 10) {
+//                xmlMap.put(key, new String(ch).substring(start, start + length));
+//            }
+//        }
+//
+//        public Map getHashMap() {
+//            return xmlMap;
+//        }
+//    }
 
     // Jochem Van denbussche
     private class CustomHandler2 extends DefaultHandler {
@@ -221,10 +246,11 @@ public class ConfigurationManager {
             this.xmlReader = xmlReader;
             this.buffer = new CharArrayWriter();
             this.deviceHandler = new DeviceHandler();
-            this.serviceHandler = new ServiceHandler();
+           // this.serviceHandler = new ServiceHandler();
             this.rootDev = new Device();
             this.currentDev = rootDev;
             this.inDevList = false;
+             //System.out.println("in customhandler -  constructor");
         }
 
         @Override
@@ -234,21 +260,18 @@ public class ConfigurationManager {
                 throws SAXException {
 
             buffer.reset();
+            //System.out.println("in customhandler - start element: "+qName);
 
-            if (localName.equalsIgnoreCase("device")) {
+            if (qName.equalsIgnoreCase("device")) {
                 Device dev = rootDev;
-                if (inDevList) {
+                if (inDevList) { //????
                     dev = new Device();
-//                    rootDev.addEmbeddedDevice(dev); // TODO
+                    rootDev.addEmbeddedDevice(dev);
                     currentDev = dev;
                 }
                 deviceHandler.handleDevice(dev, xmlReader, this);
-            } else if (localName.equalsIgnoreCase("service")) {
-                Service newServ = new Service(null, null); // TODO: create constructor
-                currentDev.addService(newServ);
-                serviceHandler.handleService(newServ, xmlReader, this);
-            } else if (localName.equalsIgnoreCase("deviceList")) {
-                this.inDevList = true;
+                } else if (qName.equalsIgnoreCase("deviceList")) {
+                    this.inDevList = true;
             }
         }
 
@@ -279,6 +302,7 @@ public class ConfigurationManager {
         private XMLReader xmlReader;
         private ContentHandler parent;
         private Device currentDev;
+        private ServiceHandler serviceHandler;
 
         public DeviceHandler() {
             this.buffer = new CharArrayWriter();
@@ -291,6 +315,7 @@ public class ConfigurationManager {
             this.xmlReader = xmlReader;
             this.parent = parent;
             xmlReader.setContentHandler(this);
+            serviceHandler = new ServiceHandler();
         }
 
         @Override
@@ -298,6 +323,13 @@ public class ConfigurationManager {
                 String uri, String localName,
                 String qName, Attributes attributes)
                 throws SAXException {
+            
+            if (qName.equalsIgnoreCase("service")) {
+                //System.out.println("service ontdekt");
+                Service newServ = new Service();
+                currentDev.addService(newServ);
+                serviceHandler.handleService(newServ, xmlReader, this);
+            }
 
             buffer.reset();
         }
@@ -305,15 +337,41 @@ public class ConfigurationManager {
         @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
-
-            if (localName.equalsIgnoreCase("deviceType")) {
+                //System.out.println("in devicehandler - end element: "+qName);
+        try{
+            if (qName.equalsIgnoreCase("deviceType")) {
                 currentDev.setDeviceType(buffer.toString());
-            } else if (localName.equalsIgnoreCase("friendlyName")) {
+            } else if (qName.equalsIgnoreCase("friendlyName")) {
                 currentDev.setFriendlyName(buffer.toString());
-            }
-            // ...
-            else if (localName.equalsIgnoreCase("device")) {
+            } else if (qName.equalsIgnoreCase("manufacturer")) {
+                currentDev.setManufacturer(buffer.toString());
+            } else if (qName.equalsIgnoreCase("manufacturerURL")) {
+                currentDev.setManufacturerURL(new URL(buffer.toString()));
+            } else if(qName.equalsIgnoreCase("modelDescription")) {
+                currentDev.setModelDescription(buffer.toString());
+            } else if(qName.equalsIgnoreCase("modelName")) {
+                currentDev.setModelName(buffer.toString());
+            } else if(qName.equalsIgnoreCase("modelNumber")) {
+                currentDev.setModelNumber(Integer.parseInt(buffer.toString()));
+            } else if(qName.equalsIgnoreCase("modelURL")) {
+                currentDev.setModelURL(new URL(buffer.toString()));
+            } else if(qName.equalsIgnoreCase("serialNumber")) {
+                currentDev.setSerialNumber(buffer.toString());
+            } else if(qName.equalsIgnoreCase("UDN")) {
+                currentDev.setUdn(buffer.toString());
+            } else if(qName.equalsIgnoreCase("UPC")) {
+                currentDev.setUpc(buffer.toString());
+            } else if(qName.equalsIgnoreCase("presentationURL")) {
+                currentDev.setPresentationURL(new URL(buffer.toString()));
+            } else if(qName.equalsIgnoreCase("urlBase")) {
+                currentDev.setUrlBase(new URL(buffer.toString()));
+            } else if (qName.equalsIgnoreCase("device")) {
                 xmlReader.setContentHandler(parent);
+            }
+
+            } catch (MalformedURLException ex) {
+                    System.out.println("malformed URL");
+                    ex.printStackTrace();
             }
         }
 
@@ -322,6 +380,7 @@ public class ConfigurationManager {
                 throws SAXException {
 
             buffer.write(ch, start, length);
+
         }
     }
 
@@ -343,6 +402,7 @@ public class ConfigurationManager {
             this.xmlReader = xmlReader;
             this.parent = parent;
             xmlReader.setContentHandler(this);
+            
         }
 
         @Override
@@ -357,15 +417,25 @@ public class ConfigurationManager {
         @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
+            try {
 
-            if (localName.equalsIgnoreCase("serviceType")) {
-//                currentServ.setServiceType(buffer.toString()); // TODO
-            } else if (localName.equalsIgnoreCase("serviceId")) {
-//                currentServ.setServiceId(buffer.toString()); // TODO
-            }
-            // ...
-            else if (localName.equalsIgnoreCase("service")) {
+            if (qName.equalsIgnoreCase("serviceType")) {
+                currentServ.setServiceType(buffer.toString()); 
+            } else if (qName.equalsIgnoreCase("serviceId")) {
+                currentServ.setServiceId(buffer.toString()); 
+            } else if (qName.equalsIgnoreCase("SCPDURL")) {
+                    currentServ.setScpdURL(new URL(buffer.toString())); 
+            } else if (qName.equalsIgnoreCase("controlURL")) {
+                    currentServ.setControlURL(new URL(buffer.toString())); 
+            } else if (qName.equalsIgnoreCase("eventSubURL")) {
+                    currentServ.setEventSubURL(new URL(buffer.toString()));
+            } else if (qName.equalsIgnoreCase("service")) {
                 xmlReader.setContentHandler(parent);
+            }
+            
+            } catch (MalformedURLException ex) {
+                   System.out.println("malformed URL");
+                   ex.printStackTrace();
             }
         }
 
@@ -376,4 +446,5 @@ public class ConfigurationManager {
             buffer.write(ch, start, length);
         }
     }
+   
 }

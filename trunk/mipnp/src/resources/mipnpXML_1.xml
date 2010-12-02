@@ -4,9 +4,9 @@
 <major>1</major>
 <minor>0</minor>
 </specVersion>
-<URLBase>URLBase wop wop wop</URLBase>
+<URLBase>http://www.URLbase.com</URLBase>
 <device>
-<deviceType> urn:schemas-upnp-org:device:MediaServer:1</deviceType>
+<deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType>
 <friendlyName>MiPnP v0.1</friendlyName>
 <manufacturer>MiPnP devs</manufacturer>
 <manufacturerURL>https://code.google.com/p/mipnp/</manufacturerURL>
@@ -19,20 +19,20 @@
 <UPC>Universal Product Code</UPC>
 <serviceList>
 <service>
-<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1 </serviceType>
-<serviceId>urn:upnp-org:serviceId:ContentDirectory </serviceId>
-<SCPDURL>URL to service description CD</SCPDURL>
-<controlURL>URL for control CD</controlURL>
-<eventSubURL>URL for eventing CD</eventSubURL>
+<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType>
+<serviceId>urn:upnp-org:serviceId:ContentDirectory</serviceId>
+<SCPDURL>http://www.CDdescription.com</SCPDURL>
+<controlURL>http://www.CDcontrol.com</controlURL>
+<eventSubURL>http://www.CDeventing.com</eventSubURL>
 </service>
 <service>
 <serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
 <serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId>
-<SCPDURL>URL to service description CM</SCPDURL>
-<controlURL>URL for control CM</controlURL>
-<eventSubURL>URL for eventing CM</eventSubURL>
+<SCPDURL>http://www.CMdescription.com</SCPDURL>
+<controlURL>http://www.CMcontrol.com</controlURL>
+<eventSubURL>http://www.CMeventing.com</eventSubURL>
 </service>
 </serviceList>
-<presentationURL>URL for presentation</presentationURL>
+<presentationURL>http://www.presentationurl.com</presentationURL>
 </device>
 </root>

@@ -38,6 +38,8 @@ public class Service {
     private List<Action> actions;
     //private List<StateVariable> serviceStateTable;
 
+    public Service(){}
+    
     public Service(String serviceId, String serviceType){
         this.serviceId=serviceId;this.serviceType=serviceType;
     }
@@ -82,5 +84,33 @@ public class Service {
      */
     public void setEventSubURL(URL eventSubURL) {
         this.eventSubURL = eventSubURL;
+    }
+
+    /**
+     * @return the serviceType
+     */
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    /**
+     * @param serviceType the serviceType to set
+     */
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    /**
+     * @return the serviceId
+     */
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    /**
+     * @param serviceId the serviceId to set
+     */
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 }
