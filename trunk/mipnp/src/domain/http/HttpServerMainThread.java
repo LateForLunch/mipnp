@@ -17,38 +17,32 @@
  */
 
 /*
- * HttpServer.java
- * Created on Dec 2, 2010, 12:57:12 PM
+ * HttpServerMainThread.java
+ * Created on Dec 2, 2010, 1:08:53 PM
  */
 package domain.http;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class HttpServer implements HttpConstants {
+class HttpServerMainThread implements Runnable {
+
+    private static final int DEFAULT_POOL_SIZE = 5;
 
     private ServerSocket serverSocket;
-    private Thread serverThread;
+    private ExecutorService pool;
 
-    public HttpServer() throws IOException {
-        this(DEFAULT_PORT, 0, null);
+    public HttpServerMainThread(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
+        this.pool = Executors.newFixedThreadPool(DEFAULT_POOL_SIZE);
     }
 
-    public HttpServer(int port, int backlog,  InetAddress bindAddr) throws IOException {
-        this.serverSocket = new ServerSocket(port, backlog, bindAddr);
-    }
-
-    public void start() {
-        this.serverThread = new Thread(new HttpServerMainThread(serverSocket));
-        serverThread.start();
-    }
-
-    public void stop() {
-        // TODO
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

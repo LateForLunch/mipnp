@@ -17,38 +17,26 @@
  */
 
 /*
- * HttpServer.java
- * Created on Dec 2, 2010, 12:57:12 PM
+ * HttpWorkerThread.java
+ * Created on Dec 2, 2010, 1:12:15 PM
  */
 package domain.http;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class HttpServer implements HttpConstants {
+class HttpWorkerThread implements Runnable {
 
-    private ServerSocket serverSocket;
-    private Thread serverThread;
+    private Socket socket;
 
-    public HttpServer() throws IOException {
-        this(DEFAULT_PORT, 0, null);
+    public HttpWorkerThread(Socket socket) {
+        this.socket = socket;
     }
 
-    public HttpServer(int port, int backlog,  InetAddress bindAddr) throws IOException {
-        this.serverSocket = new ServerSocket(port, backlog, bindAddr);
-    }
-
-    public void start() {
-        this.serverThread = new Thread(new HttpServerMainThread(serverSocket));
-        serverThread.start();
-    }
-
-    public void stop() {
-        // TODO
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
