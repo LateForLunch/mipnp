@@ -25,6 +25,8 @@ package domain.http;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -38,6 +40,7 @@ public class HttpServer implements HttpConstants {
     private ServerSocket serverSocket;
     private HttpServerMainThread server;
     private Thread serverThread;
+    private List<HttpRequestHandler> handlers;
 
     public HttpServer() {
         this(HTTP_DEFAULT_PORT, 0, null);
@@ -47,11 +50,12 @@ public class HttpServer implements HttpConstants {
         setPort(port);
         setBacklog(backlog);
         setBindAddr(bindAddr);
+        this.handlers = new ArrayList<HttpRequestHandler>();
     }
 
     public void start() throws IOException {
         this.serverSocket = new ServerSocket(port, backlog, bindAddr);
-        this.server = new HttpServerMainThread(serverSocket);
+        this.server = new HttpServerMainThread(this, serverSocket);
         this.serverThread = new Thread(server);
         serverThread.setName("HtppServerMain");
         serverThread.start();
@@ -61,6 +65,20 @@ public class HttpServer implements HttpConstants {
         server.stop();
         this.serverThread = null;
         this.server = null;
+    }
+
+    public void addRequestHandler(HttpRequestHandler handler) {
+        handlers.add(handler);
+    }
+
+    public void removeRequestHandler(HttpRequestHandler handler) {
+        handlers.remove(handler);
+    }
+
+    protected void notifyHandlers(HttpRequest request) {
+        for (HttpRequestHandler handler : handlers) {
+            handler.handleRequest(request);
+        }
     }
 
     public int getPort() {

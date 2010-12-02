@@ -40,10 +40,12 @@ class HttpServerMainThread implements Runnable {
     private static final int DEFAULT_POOL_SIZE = 5;
     private static final int DEFAULT_SOCKET_TIMEOUT = 5000; // 5 seconds
 
+    private HttpServer server;
     private ServerSocket serverSocket;
     private ExecutorService pool;
 
-    public HttpServerMainThread(ServerSocket serverSocket) {
+    public HttpServerMainThread(HttpServer server, ServerSocket serverSocket) {
+        this.server = server;
         this.serverSocket = serverSocket;
         this.pool = Executors.newFixedThreadPool(DEFAULT_POOL_SIZE);
     }
@@ -53,7 +55,7 @@ class HttpServerMainThread implements Runnable {
             try {
                 Socket socket = serverSocket.accept();
                 socket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT);
-                pool.execute(new HttpWorkerThread(socket));
+                pool.execute(new HttpWorkerThread(server, socket));
                 Thread.yield();
             } catch (SocketException ex) {
                 // ServerSocket closed

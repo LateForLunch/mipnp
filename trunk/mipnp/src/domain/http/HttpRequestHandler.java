@@ -17,28 +17,16 @@
  */
 
 /*
- * HttpWorkerThread.java
- * Created on Dec 2, 2010, 1:12:15 PM
+ * HttpRequestHandler.java
+ * Created on Dec 2, 2010, 9:03:00 PM
  */
 package domain.http;
-
-import java.net.Socket;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class HttpWorkerThread implements Runnable {
+public interface HttpRequestHandler {
 
-    private HttpServer server;
-    private Socket socket;
-
-    public HttpWorkerThread(HttpServer server, Socket socket) {
-        this.server = server;
-        this.socket = socket;
-    }
-
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    void handleRequest(HttpRequest request);
 }
