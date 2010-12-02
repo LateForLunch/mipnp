@@ -22,9 +22,14 @@
  */
 package domain.http;
 
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -33,6 +38,7 @@ import java.util.concurrent.Executors;
 class HttpServerMainThread implements Runnable {
 
     private static final int DEFAULT_POOL_SIZE = 5;
+    private static final int DEFAULT_SOCKET_TIMEOUT = 5000; // 5 seconds
 
     private ServerSocket serverSocket;
     private ExecutorService pool;
@@ -43,6 +49,43 @@ class HttpServerMainThread implements Runnable {
     }
 
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        while (!Thread.interrupted()) {
+            try {
+                Socket socket = serverSocket.accept();
+                socket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT);
+                pool.execute(new HttpWorkerThread(socket));
+                Thread.yield();
+            } catch (SocketException ex) {
+                // ServerSocket closed
+                return;
+            } catch (RejectedExecutionException ex) {
+                // Pool closed
+                return;
+            } catch (IOException ex) {
+                // I/O error during accept(), try again
+            }
+        }
+    }
+
+    public void stop() {
+        try {
+            serverSocket.close();
+        } catch (IOException ex) {
+            // ignore
+        }
+        pool.shutdown();
+        try {
+            pool.awaitTermination(DEFAULT_SOCKET_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ex) {
+            System.err.println("Forcing HttpServer Threads to shutdown."); // TEST
+            pool.shutdownNow();
+            try {
+                pool.awaitTermination(DEFAULT_SOCKET_TIMEOUT, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ex1) {
+                // Nothing we can do
+            }
+        }
+        this.serverSocket = null;
+        this.pool = null;
     }
 }

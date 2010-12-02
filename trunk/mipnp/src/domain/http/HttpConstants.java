@@ -17,6 +17,7 @@
  */
 package domain.http;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,9 @@ import java.util.Map;
  */
 public interface HttpConstants {
 
-    public static final int DEFAULT_PORT = 80;
+    public static final int HTTP_DEFAULT_PORT = 80;
+    public static final Charset HTTP_DEFAULT_CHARSET =
+            Charset.forName("US-ASCII");
 
     public static final char CR = '\r';
     public static final char LF = '\n';

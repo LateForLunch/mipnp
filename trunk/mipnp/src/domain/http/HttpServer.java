@@ -32,23 +32,58 @@ import java.net.ServerSocket;
  */
 public class HttpServer implements HttpConstants {
 
+    private int port;
+    private int backlog;
+    private InetAddress bindAddr;
     private ServerSocket serverSocket;
+    private HttpServerMainThread server;
     private Thread serverThread;
 
-    public HttpServer() throws IOException {
-        this(DEFAULT_PORT, 0, null);
+    public HttpServer() {
+        this(HTTP_DEFAULT_PORT, 0, null);
     }
 
-    public HttpServer(int port, int backlog,  InetAddress bindAddr) throws IOException {
+    public HttpServer(int port, int backlog,  InetAddress bindAddr) {
+        setPort(port);
+        setBacklog(backlog);
+        setBindAddr(bindAddr);
+    }
+
+    public void start() throws IOException {
         this.serverSocket = new ServerSocket(port, backlog, bindAddr);
-    }
-
-    public void start() {
-        this.serverThread = new Thread(new HttpServerMainThread(serverSocket));
+        this.server = new HttpServerMainThread(serverSocket);
+        this.serverThread = new Thread(server);
+        serverThread.setName("HtppServerMain");
         serverThread.start();
     }
 
     public void stop() {
-        // TODO
+        server.stop();
+        this.serverThread = null;
+        this.server = null;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public int getBacklog() {
+        return backlog;
+    }
+
+    public void setBacklog(int backlog) {
+        this.backlog = backlog;
+    }
+
+    public InetAddress getBindAddr() {
+        return bindAddr;
+    }
+
+    public void setBindAddr(InetAddress bindAddr) {
+        this.bindAddr = bindAddr;
     }
 }
