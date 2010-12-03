@@ -22,9 +22,15 @@
  */
 package domain.http;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 
 /**
  *
@@ -33,19 +39,37 @@ import java.io.Reader;
 public class HttpInputReader extends Reader {
 
     private InputStream in;
+    private BufferedInputStream bis;
+    private ByteArrayOutputStream baos;
+    private Charset cs;
+    private CharsetDecoder csd;
 
-    public HttpInputReader(InputStream in) {
+    public HttpInputReader(InputStream in, Charset cs) {
+        super(in);
         this.in = in;
+        this.bis = new BufferedInputStream(in);
+        this.baos = new ByteArrayOutputStream();
+        setCharset(cs);
     }
 
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        CharBuffer cb = CharBuffer.wrap(cbuf, off, len);
+        ByteBuffer bb = ByteBuffer.allocate(10);
+        return -1;
     }
 
     @Override
     public void close() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        in.close();
     }
 
+    public String getCharset() {
+        return cs.displayName();
+    }
+
+    public void setCharset(Charset cs) {
+        this.cs = cs;
+        this.csd = cs.newDecoder();
+    }
 }

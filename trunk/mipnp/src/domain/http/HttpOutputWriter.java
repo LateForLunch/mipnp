@@ -25,7 +25,9 @@ package domain.http;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 
 /**
  *
@@ -35,19 +37,24 @@ public class HttpOutputWriter extends Writer {
 
     private OutputStream out;
     private Charset cs;
+    private CharsetEncoder cse;
 
-    public HttpOutputWriter(OutputStream out) {
+    public HttpOutputWriter(OutputStream out, Charset cs) {
+        super(out);
         this.out = out;
+        setCharset(cs);
     }
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        CharBuffer cb = CharBuffer.wrap(cbuf, off, len);
+        byte[] buf = cse.encode(cb).array();
+        out.write(buf, 0, buf.length);
     }
 
     @Override
     public void flush() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        out.flush();
     }
 
     @Override
@@ -55,11 +62,12 @@ public class HttpOutputWriter extends Writer {
         out.close();
     }
 
-    public String getEncoding() {
+    public String getCharset() {
         return cs.displayName();
     }
 
     public void setCharset(Charset cs) {
         this.cs = cs;
+        this.cse = cs.newEncoder();
     }
 }
