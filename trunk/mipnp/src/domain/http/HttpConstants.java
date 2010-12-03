@@ -32,9 +32,13 @@ import java.util.Map;
 public interface HttpConstants {
 
     public static final int HTTP_DEFAULT_PORT = 80;
+    public static final String HTTP_DEFAULT_CHARSET_NAME = "US-ASCII";
     public static final Charset HTTP_DEFAULT_CHARSET =
-            Charset.forName("US-ASCII");
+            Charset.forName(HTTP_DEFAULT_CHARSET_NAME);
 
+    public static final byte[] CRb = "\r".getBytes(HTTP_DEFAULT_CHARSET);
+    public static final byte[] LFb = "\n".getBytes(HTTP_DEFAULT_CHARSET);
+    public static final byte[] CRLFb = "\r\n".getBytes(HTTP_DEFAULT_CHARSET);
     public static final char CR = '\r';
     public static final char LF = '\n';
     public static final char HT = '\t';

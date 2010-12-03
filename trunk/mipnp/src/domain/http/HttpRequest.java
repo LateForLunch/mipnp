@@ -22,6 +22,14 @@
  */
 package domain.http;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Scanner;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
@@ -33,4 +41,30 @@ public class HttpRequest extends HttpPacket {
 
     public HttpRequest() {
     }
+
+    public void parse(InputStream input) throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(input);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buf = new byte[1];
+        int read = bis.read(buf);
+
+        while (read > 0) {
+            if (Arrays.equals(buf, CRb)) {
+                break;
+            } else if (Arrays.equals(buf, LFb)) {
+                // TODO: line read
+            } else {
+                baos.write(buf);
+            }
+            read = bis.read(buf);
+        }
+    }
+
+//    public static void main(String[] args) {
+//        String testStr = "line\r\nline";
+//        Scanner scanner = new Scanner(testStr);
+//        System.out.println(Arrays.toString(scanner.nextLine().getBytes()));
+//        System.out.println(Arrays.toString(scanner.next().getBytes()));
+//        System.out.println(Arrays.toString(scanner.nextLine().getBytes()));
+//    }
 }
