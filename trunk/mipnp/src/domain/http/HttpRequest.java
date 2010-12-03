@@ -28,9 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Scanner;
 
 /**
  *
@@ -69,18 +67,38 @@ public class HttpRequest extends HttpPacket {
         byte[] b = new byte[b1.length + b2.length];
         System.arraycopy(b1, 0, b, 0, b1.length);
         System.arraycopy(b2, 0, b, b1.length, b2.length);
-        byte[] buf = new byte[b.length];
         System.out.println(Arrays.toString(b));
         System.out.println(new String(b));
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
+        BufferedInputStream bis = new BufferedInputStream(bais);
 
-        Scanner scanner = new Scanner(bais, HTTP_DEFAULT_CHARSET_NAME);
-        System.out.println(scanner.nextLine()); // "line1"
-        System.out.println(scanner.nextLine()); // "line2"
-        System.out.println(scanner.nextLine()); // ""
-        System.out.println(bais.available()); // 0 ? -> is not right
-        byte[] read = new byte[bais.available()];
-        bais.read(read);
-        System.out.println(new String(read, Charset.forName("UTF-8")));
+        String line = readLine(bis);
+        while (!line.trim().isEmpty()) {
+            System.out.println(line);
+            line = readLine(bis);
+        }
+        // The remaining bytes in the BufferedInputStream is the content
+        byte[] content = new byte[bis.available()];
+        bis.read(content);
+        System.out.println(Arrays.toString(content));
+    }
+
+    private static String readLine(BufferedInputStream bis) throws IOException {
+        boolean cr = false;
+        byte[] buf = new byte[1];
+        ByteArrayOutputStream line = new ByteArrayOutputStream();
+
+        int read = bis.read(buf);
+        while (read > 0) {
+            if (cr && Arrays.equals(buf, LFb)) { // CRLF found
+                break;
+            } else if (Arrays.equals(buf, CRb)) {
+                cr = true;
+            } else {
+                line.write(buf);
+            }
+            read = bis.read(buf);
+        }
+        return line.toString();
     }
 }
