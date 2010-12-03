@@ -34,12 +34,12 @@ public class HttpPacket implements HttpConstants {
     private String version;
     private String startLine;
     private Map<String /* fieldname */, String /* fieldvalue */> headers;
-    private byte[] data;
+    private byte[] content;
 
     public HttpPacket() {
         setVersion(HTTP_VERSION);
         this.headers = new HashMap<String, String>();
-        setData(null);
+        setContent(null);
     }
 
     public String getVersion() {
@@ -79,20 +79,35 @@ public class HttpPacket implements HttpConstants {
      * @return the field-value to which the specified fieldname is mapped,
      * or null if there is no mapping for the fieldname
      */
-    public String getHttpHeader(String fieldName) {
+    public String getHeader(String fieldName) {
         return headers.get(fieldName);
     }
 
-    public byte[] getData() {
-        return data;
+    /**
+     * 
+     * @param fieldName
+     * @return the previous field-value, or null if there was no mapping for the fieldname
+     */
+    public String removeHeader(String fieldName) {
+        return headers.remove(fieldName);
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
-        if (data != null) {
-            setContentLength(data.length);
-        } else {
-            removeContentLength();
+    public byte[] getContent() {
+        return content;
+    }
+
+    public void setContent(byte[] content) {
+        setContent(content, true);
+    }
+
+    public void setContent(byte[] content, boolean updateContentLength) {
+        this.content = content;
+        if (updateContentLength) {
+            if (content != null) {
+                setContentLength(content.length);
+            } else {
+                setContentLength(0);
+            }
         }
     }
 
@@ -101,21 +116,21 @@ public class HttpPacket implements HttpConstants {
      * @return the content length of the data or -1 if there is no valid value for Content-Length
      */
     public int getContentLength() {
-        String val = getHttpHeader(CONTENT_LENGTH);
-        int ret = -1;
+        String val = getHeader(CONTENT_LENGTH);
+        int contentLength = -1;
         try {
-            ret = Integer.parseInt(val);
+            contentLength = Integer.parseInt(val);
         } catch (NumberFormatException ex) {
             // Ignore
         }
-        return ret;
+        return contentLength;
     }
 
     public void setContentLength(int length) {
-        setHeader(CONTENT_LENGTH, String.valueOf(length));
-    }
+        if (length > 0) {
+            setHeader(CONTENT_LENGTH, String.valueOf(length));
+        } else {
 
-    private void removeContentLength() {
-        headers.remove(CONTENT_LENGTH);
+        }
     }
 }

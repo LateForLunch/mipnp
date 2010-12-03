@@ -23,10 +23,14 @@
 package domain.http;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  *
@@ -41,7 +45,7 @@ public class HttpRequest extends HttpPacket {
     }
 
     public void parse(InputStream input) throws IOException {
-        BufferedInputStream bis = new BufferedInputStream(input);
+        /*BufferedInputStream bis = new BufferedInputStream(input);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[1];
         int read = bis.read(buf);
@@ -55,14 +59,28 @@ public class HttpRequest extends HttpPacket {
                 baos.write(buf);
             }
             read = bis.read(buf);
-        }
+        }*/
     }
 
-//    public static void main(String[] args) {
-//        String testStr = "line\r\nline";
-//        Scanner scanner = new Scanner(testStr);
-//        System.out.println(Arrays.toString(scanner.nextLine().getBytes()));
-//        System.out.println(Arrays.toString(scanner.next().getBytes()));
-//        System.out.println(Arrays.toString(scanner.nextLine().getBytes()));
-//    }
+    public static void main(String[] args) throws UnsupportedEncodingException, IOException {
+        String testStr1 = "line1\r\nline2\r\n\r\n";
+        byte[] b1 = testStr1.getBytes(HTTP_DEFAULT_CHARSET);
+        byte[] b2 = "µ".getBytes("UTF-8");
+        byte[] b = new byte[b1.length + b2.length];
+        System.arraycopy(b1, 0, b, 0, b1.length);
+        System.arraycopy(b2, 0, b, b1.length, b2.length);
+        byte[] buf = new byte[b.length];
+        System.out.println(Arrays.toString(b));
+        System.out.println(new String(b));
+        ByteArrayInputStream bais = new ByteArrayInputStream(b);
+
+        Scanner scanner = new Scanner(bais, HTTP_DEFAULT_CHARSET_NAME);
+        System.out.println(scanner.nextLine()); // "line1"
+        System.out.println(scanner.nextLine()); // "line2"
+        System.out.println(scanner.nextLine()); // ""
+        System.out.println(bais.available()); // 0 ? -> is not right
+        byte[] read = new byte[bais.available()];
+        bais.read(read);
+        System.out.println(new String(read, Charset.forName("UTF-8")));
+    }
 }
