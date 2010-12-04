@@ -17,7 +17,7 @@
  */
 package domain.ssdp;
 
-import domain.http.HttpConstants;
+import domain.http.HttpPacket;
 
 /**
  * Created on Oct 20, 2010, 3:53:17 PM
@@ -25,24 +25,17 @@ import domain.http.HttpConstants;
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public class SsdpPacket implements HttpConstants {
+public abstract class SsdpPacket extends HttpPacket implements SsdpConstants {
 
-    public static final int METHOD_NOTIFY = 0;
-    public static final int METHOD_M_SEARCH = 1;
-    public static final int TYPE_STATUS_OK = 2;
+    public SsdpPacket() {
+    }
 
-    private static final String[] START_LINES = {
-        "NOTIFY * " + HTTP_VERSION + CRLF,
-        "M-SEARCH * " + HTTP_VERSION + CRLF,
-        HTTP_VERSION + " 200 " + HTTP_STATUS.get(200) + CRLF
-    };
-
-    private static final String HEADER_HOST =
-            "HOST: 239.255.255.250:1900" + CRLF;
-    private static final String HEADER_CACHE_CONTROL =
-            "CACHE-CONTROL: max-age = %s" + CRLF;
-    private static final String HEADER_LOCATION =
-            "LOCATION: %s" + CRLF;
+//    private static final String HEADER_HOST =
+//            "HOST: 239.255.255.250:1900" + CRLF;
+//    private static final String HEADER_CACHE_CONTROL =
+//            "CACHE-CONTROL: max-age = %s" + CRLF;
+//    private static final String HEADER_LOCATION =
+//            "LOCATION: %s" + CRLF;
 
     /*
      * SSDP format:
@@ -70,24 +63,4 @@ public class SsdpPacket implements HttpConstants {
      * SEARCHPORT.UPNP.ORG: 'number identifies port on which device responds to unicast M-SEARCH'
      * 'Blank line'
      */
-    private String startLine;
-    private String header;
-    private String rawData;
-
-    public SsdpPacket(int type) {
-        this.startLine = START_LINES[type];
-        this.header = HEADER_HOST;
-    }
-
-    public String getRawData() {
-        return rawData;
-    }
-
-    public void setRawData(String rawData) {
-        this.rawData = rawData;
-    }
-
-    public String getData() {
-        return startLine + header + getRawData();
-    }
 }

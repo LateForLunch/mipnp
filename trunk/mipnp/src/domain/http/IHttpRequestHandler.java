@@ -17,25 +17,16 @@
  */
 
 /*
- * SsdpConstants.java
- * Created on Dec 4, 2010, 4:15:14 PM
+ * IHttpRequestHandler.java
+ * Created on Dec 2, 2010, 9:03:00 PM
  */
-package domain.ssdp;
-
-import domain.http.HttpConstants;
+package domain.http;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface SsdpConstants extends HttpConstants {
+public interface IHttpRequestHandler {
 
-    public static final String SSDP_DEFAULT_ADDRESS = "239.255.255.250";
-    public static final int SSDP_DEFAULT_PORT = 1900;
-
-    /*
-     * Methods
-     */
-    public static final String NOTIFY = "NOTIFY";
-    public static final String M_SEARCH = "M-SEARCH";
+    void handleHttpRequest(HttpRequest request);
 }

@@ -42,7 +42,7 @@ public class HttpServer implements HttpConstants {
     private ServerSocket serverSocket;
     private HttpServerMainThread server;
     private Thread serverThread;
-    private List<HttpRequestHandler> handlers;
+    private List<IHttpRequestHandler> handlers;
 
     public HttpServer() {
         this(HTTP_DEFAULT_PORT, 0, null);
@@ -52,7 +52,7 @@ public class HttpServer implements HttpConstants {
         setPort(port);
         setBacklog(backlog);
         setBindAddr(bindAddr);
-        this.handlers = new ArrayList<HttpRequestHandler>();
+        this.handlers = new ArrayList<IHttpRequestHandler>();
     }
 
     public void start() throws IOException {
@@ -70,17 +70,17 @@ public class HttpServer implements HttpConstants {
         this.serverSocket = null;
     }
 
-    public void addRequestHandler(HttpRequestHandler handler) {
+    public void addRequestHandler(IHttpRequestHandler handler) {
         handlers.add(handler);
     }
 
-    public void removeRequestHandler(HttpRequestHandler handler) {
+    public void removeRequestHandler(IHttpRequestHandler handler) {
         handlers.remove(handler);
     }
 
     protected void notifyHandlers(HttpRequest request) {
-        for (HttpRequestHandler handler : handlers) {
-            handler.handleRequest(request);
+        for (IHttpRequestHandler handler : handlers) {
+            handler.handleHttpRequest(request);
         }
     }
 
@@ -116,9 +116,9 @@ public class HttpServer implements HttpConstants {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating HTTP server...");
         HttpServer httpServer = new HttpServer(8080, 0, null);
-        HttpRequestHandler handler = new HttpRequestHandler() {
+        IHttpRequestHandler handler = new IHttpRequestHandler() {
 
-            public void handleRequest(HttpRequest request) {
+            public void handleHttpRequest(HttpRequest request) {
                 System.out.println(request.getMethod() + " " + request.getRequestUri());
                 // TODO: check requestUri
                 HttpResponse response = new HttpResponse(request);

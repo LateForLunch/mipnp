@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jochem Van denbussche
+ * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,25 +17,22 @@
  */
 
 /*
- * SsdpConstants.java
- * Created on Dec 4, 2010, 4:15:14 PM
+ * SsdpResponse.java
+ * Created on Dec 4, 2010, 4:43:05 PM
  */
 package domain.ssdp;
-
-import domain.http.HttpConstants;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public interface SsdpConstants extends HttpConstants {
-
-    public static final String SSDP_DEFAULT_ADDRESS = "239.255.255.250";
-    public static final int SSDP_DEFAULT_PORT = 1900;
+public class SsdpResponse {
 
     /*
-     * Methods
+     * HTTP/1.1 200 OK\r\n
      */
-    public static final String NOTIFY = "NOTIFY";
-    public static final String M_SEARCH = "M-SEARCH";
+
+    public SsdpResponse() {
+    }
 }

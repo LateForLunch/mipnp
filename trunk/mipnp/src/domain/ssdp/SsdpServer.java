@@ -38,6 +38,12 @@ public class SsdpServer implements SsdpConstants {
     private MulticastSocket multicastSocket;
 
     public SsdpServer() {
+        this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT);
+    }
+
+    public SsdpServer(String groupAddress, int port) {
+        setGroupAddress(groupAddress);
+        setPort(port);
     }
 
     public void start() throws IOException {
@@ -51,5 +57,28 @@ public class SsdpServer implements SsdpConstants {
         multicastSocket.close();
         this.multicastSocket = null;
         this.group = null;
+    }
+
+    public String getGroupAddress() {
+        return groupAddress;
+    }
+
+    public void setGroupAddress(String groupAddress) {
+        this.groupAddress = groupAddress;
+    }
+
+    public int getPort() {
+        if (multicastSocket != null) {
+            return multicastSocket.getLocalPort();
+        }
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void sendRequest(SsdpRequest request) {
+        // TODO
     }
 }

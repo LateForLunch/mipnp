@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jochem Van denbussche
+ * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,16 +17,24 @@
  */
 
 /*
- * HttpRequestHandler.java
- * Created on Dec 2, 2010, 9:03:00 PM
+ * SsdpRequest.java
+ * Created on Dec 4, 2010, 4:41:18 PM
  */
-package domain.http;
+package domain.ssdp;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public interface HttpRequestHandler {
+public class SsdpRequest extends SsdpPacket {
 
-    void handleRequest(HttpRequest request);
+    /*
+     * NOTIFY * HTTP/1.1\r\n
+     * or
+     * M-SEARCH * HTTP/1.1\r\n
+     */
+
+    public SsdpRequest() {
+    }
 }
