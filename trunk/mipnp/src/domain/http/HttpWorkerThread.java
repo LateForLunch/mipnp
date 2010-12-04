@@ -42,7 +42,9 @@ class HttpWorkerThread implements Runnable {
     public void run() {
         try {
             HttpRequest request = new HttpRequest();
-            request.parse(socket.getInputStream());
+            request.setInputStream(socket.getInputStream());
+            request.setOutputStream(socket.getOutputStream());
+            request.parse();
             server.notifyHandlers(request);
         } catch (Exception ex) {
             ex.printStackTrace(); // TODO

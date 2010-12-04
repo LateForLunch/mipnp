@@ -114,7 +114,14 @@ public class HttpServer implements HttpConstants {
         HttpRequestHandler handler = new HttpRequestHandler() {
 
             public void handleRequest(HttpRequest request) {
-                System.out.println(request.getMethod() + request.getRequestUri());
+                System.out.println(request.getMethod() + " " + request.getRequestUri());
+                HttpResponse response = new HttpResponse(request);
+                response.setStatusCode(200);
+                try {
+                    response.writeToOutputStream();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         };
         httpServer.addRequestHandler(handler);

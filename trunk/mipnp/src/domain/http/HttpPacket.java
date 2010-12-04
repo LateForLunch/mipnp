@@ -23,6 +23,8 @@
 package domain.http;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,11 +38,19 @@ public abstract class HttpPacket implements HttpConstants {
 //    private String startLine;
     private Map<String /* fieldname */, String /* fieldvalue */> headers;
     private byte[] content;
+    private InputStream in;
+    private OutputStream out;
 
     public HttpPacket() {
+        this(null, null);
+    }
+
+    public HttpPacket(InputStream in, OutputStream out) {
         setVersion(HTTP_VERSION);
         this.headers = new HashMap<String, String>();
         setContent(null);
+        setInputStream(in);
+        setOutputStream(out);
     }
 
     public String getVersion() {
@@ -146,5 +156,21 @@ public abstract class HttpPacket implements HttpConstants {
         his.read(con);
         setContent(con, false);
         return true;
+    }
+
+    public InputStream getInputStream() {
+        return in;
+    }
+
+    public void setInputStream(InputStream in) {
+        this.in = in;
+    }
+
+    public OutputStream getOutputStream() {
+        return out;
+    }
+
+    public void setOutputStream(OutputStream out) {
+        this.out = out;
     }
 }

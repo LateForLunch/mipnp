@@ -24,7 +24,6 @@ package domain.http;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  *
@@ -36,10 +35,12 @@ public class HttpRequest extends HttpPacket {
     private String requestUri;
 
     public HttpRequest() {
+        super();
     }
 
-    public boolean parse(InputStream in) throws IOException {
-        HttpInputStream his = new HttpInputStream(new BufferedInputStream(in));
+    public boolean parse() throws IOException {
+        HttpInputStream his = new HttpInputStream(
+                new BufferedInputStream(getInputStream()));
         String firstLine = his.readLine();
         String[] split = firstLine.split(" ");
         if (split.length != 3) {

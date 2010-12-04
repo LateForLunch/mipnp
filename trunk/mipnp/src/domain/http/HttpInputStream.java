@@ -55,7 +55,6 @@ public class HttpInputStream extends FilterInputStream implements HttpConstants 
             }
             read = read(buf);
         }
-        String test = new String(line.toByteArray(), HTTP_DEFAULT_CHARSET);
-        return test;
+        return new String(line.toByteArray(), HTTP_DEFAULT_CHARSET);
     }
 }
