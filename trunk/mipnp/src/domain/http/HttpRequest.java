@@ -24,6 +24,8 @@ package domain.http;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  *
@@ -32,13 +34,13 @@ import java.io.IOException;
 public class HttpRequest extends HttpPacket {
 
     private String method;
-    private String requestUri;
+    private URI requestUri;
 
     public HttpRequest() {
         super();
     }
 
-    public boolean parse() throws IOException {
+    public boolean parse() throws IOException, URISyntaxException {
         HttpInputStream his = new HttpInputStream(
                 new BufferedInputStream(getInputStream()));
         String firstLine = his.readLine();
@@ -46,11 +48,24 @@ public class HttpRequest extends HttpPacket {
         if (split.length != 3) {
             return false;
         }
+        boolean parse = super.parse(his);
         setMethod(split[0]);
-        setRequestUri(split[1]);
         setVersion(split[2]);
-
-        return super.parse(his);
+        URI req;
+        String hostHeader = getHeader(HOST);
+        if (hostHeader != null) {
+            if (!hostHeader.startsWith("http://")) {
+                hostHeader = "http://".concat(hostHeader);
+            }
+            req = new URI(hostHeader).resolve(split[1]);
+        } else {
+            if (!split[1].startsWith("http://")) {
+                split[1] = "http://".concat(split[1]);
+            }
+            req = new URI(split[1]);
+        }
+        setRequestUri(req);
+        return parse;
     }
 
     public boolean isMethod(String method) {
@@ -77,11 +92,11 @@ public class HttpRequest extends HttpPacket {
         this.method = method;
     }
 
-    public String getRequestUri() {
+    public URI getRequestUri() {
         return requestUri;
     }
 
-    public void setRequestUri(String requestUri) {
+    public void setRequestUri(URI requestUri) {
         this.requestUri = requestUri;
     }
 }

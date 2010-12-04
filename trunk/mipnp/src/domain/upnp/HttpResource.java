@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
+ * Copyright (C) 2010  Jochem Van denbussche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,35 +17,32 @@
  */
 
 /*
- * SsdpRequest.java
- * Created on Dec 4, 2010, 4:41:18 PM
+ * Resource.java
+ * Created on Dec 4, 2010, 10:12:22 PM
  */
-package domain.ssdp;
-
-import domain.http.HttpRequest;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
+package domain.upnp;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
- * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public class SsdpRequest extends HttpRequest {
+public class HttpResource {
 
-    /*
-     * NOTIFY * HTTP/1.1\r\n
-     * or
-     * M-SEARCH * HTTP/1.1\r\n
-     */
+    private byte[] data;
+    private String contentType;
+    private String charset;
 
-    public SsdpRequest() {
+    public HttpResource(byte[] data, String contentType, String charset) {
+        this.data = data;
+        this.contentType = contentType;
+        this.charset = charset;
     }
 
-    public void parse(byte[] data) throws IOException, URISyntaxException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        setInputStream(bais);
-        parse();
+    public String getHttpContentTypeHeader() {
+        return "Content-Type: " + contentType + "; charset=" + charset;
+    }
+
+    public byte[] getAsByteArray() {
+        return data;
     }
 }

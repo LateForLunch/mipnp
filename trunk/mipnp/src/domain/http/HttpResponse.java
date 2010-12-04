@@ -74,7 +74,10 @@ public class HttpResponse extends HttpPacket {
             hos.writeLine(headers[i]);
         }
         hos.writeLine(); // Write empty line
-        hos.write(getContent());
+        byte[] content = getContent();
+        if (content != null) {
+            hos.write(getContent());
+        }
         hos.flush();
     }
 }

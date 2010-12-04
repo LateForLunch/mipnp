@@ -38,7 +38,6 @@ import java.util.Map;
 public abstract class HttpPacket implements HttpConstants {
 
     private String version;
-//    private String startLine;
     private Map<String /* fieldname */, String /* fieldvalue */> headers;
     private byte[] content;
     private InputStream in;
@@ -62,6 +61,13 @@ public abstract class HttpPacket implements HttpConstants {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public boolean isVersion(String version) {
+        if (version == null || !(version.equalsIgnoreCase(getVersion()))) {
+            return false;
+        }
+        return true;
     }
 
     public String setHeader(String str) {
