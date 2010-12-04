@@ -20,7 +20,7 @@
  * Service.java
  * Created on Oct 23, 2010, 3:37:50 PM
  */
-package domain;
+package domain.upnp;
 
 import java.net.URL;
 import java.util.List;

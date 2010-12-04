@@ -22,7 +22,7 @@
  */
 package cli;
 
-import domain.Device;
+import domain.upnp.Device;
 import domain.ssdp.DiscoveryHandler;
 import java.io.IOException;
 import java.net.UnknownHostException;

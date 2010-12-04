@@ -21,7 +21,7 @@
  * Created on Oct 23, 2010, 3:36:01 PM
  */
 
-package domain;
+package domain.upnp;
 
 import java.net.URL;
 import java.util.ArrayList;

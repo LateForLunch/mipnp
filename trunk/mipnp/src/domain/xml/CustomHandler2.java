@@ -5,7 +5,7 @@
 
 package domain.xml;
 
-import domain.Device;
+import domain.upnp.Device;
 import java.io.CharArrayWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

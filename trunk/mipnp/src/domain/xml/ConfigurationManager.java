@@ -22,8 +22,8 @@
  */
 package domain.xml;
 
-import domain.Device;
-import domain.Service;
+import domain.upnp.Device;
+import domain.upnp.Service;
 import java.io.File;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;

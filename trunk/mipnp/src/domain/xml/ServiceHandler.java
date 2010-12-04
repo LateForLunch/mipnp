@@ -5,7 +5,7 @@
 
 package domain.xml;
 
-import domain.Service;
+import domain.upnp.Service;
 import java.io.CharArrayWriter;
 import java.net.MalformedURLException;
 import java.net.URL;

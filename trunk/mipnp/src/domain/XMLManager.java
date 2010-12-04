@@ -4,6 +4,7 @@
  */
 package domain;
 
+import domain.upnp.Device;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

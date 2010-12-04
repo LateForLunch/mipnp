@@ -22,8 +22,8 @@
  */
 package domain.ssdp;
 
-import domain.Device;
-import domain.Service;
+import domain.upnp.Device;
+import domain.upnp.Service;
 import domain.ssdp.SsdpPacket;
 
 /**

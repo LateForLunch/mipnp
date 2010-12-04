@@ -22,7 +22,7 @@
  */
 package domain.ssdp;
 
-import domain.Device;
+import domain.upnp.Device;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;

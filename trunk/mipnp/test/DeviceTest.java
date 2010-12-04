@@ -3,10 +3,10 @@
  * and open the template in the editor.
  */
 
-import domain.Service;
+import domain.upnp.Service;
 import junit.framework.Assert;
 import domain.xml.ConfigurationManager;
-import domain.Device;
+import domain.upnp.Device;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
