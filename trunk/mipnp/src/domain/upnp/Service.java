@@ -23,6 +23,7 @@
 package domain.upnp;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
@@ -36,12 +37,14 @@ public class Service {
     private URL eventSubURL;
 
     private List<Action> actions;
-    //private List<StateVariable> serviceStateTable;
+    private List<StateVariable> serviceStateTable;
 
     public Service(){}
     
     public Service(String serviceId, String serviceType){
         this.serviceId=serviceId;this.serviceType=serviceType;
+        actions = new ArrayList<Action>();
+        //serviceStateTable = new ArrayList<StateVariable>();
     }
 
     /**
@@ -112,5 +115,33 @@ public class Service {
      */
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
+    }
+
+    /**
+     * @return the actions
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
+
+    /**
+     * @param actions the actions to set
+     */
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
+    }
+
+    /**
+     * @return the serviceStateTable
+     */
+    public List<StateVariable> getServiceStateTable() {
+        return serviceStateTable;
+    }
+
+    /**
+     * @param serviceStateTable the serviceStateTable to set
+     */
+    public void setServiceStateTable(List<StateVariable> serviceStateTable) {
+        this.serviceStateTable = serviceStateTable;
     }
 }

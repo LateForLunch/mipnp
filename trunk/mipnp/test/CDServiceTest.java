@@ -3,6 +3,8 @@
  * and open the template in the editor.
  */
 
+import org.junit.Assert;
+import domain.upnp.services.ContentDirectory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,11 +18,14 @@ import static org.junit.Assert.*;
  */
 public class CDServiceTest {
 
+    private static ContentDirectory cd ;
+
     public CDServiceTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+         cd = new ContentDirectory();
     }
 
     @AfterClass
@@ -38,7 +43,14 @@ public class CDServiceTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    // @Test
-    // public void hello() {}
+     @Test
+     public void testActionListSize() {
+        Assert.assertTrue(cd.getActions().size() == 6);
+     }
+
+     @Test
+     public void testServiceStateTableSize() {
+        Assert.assertTrue(cd.getServiceStateTable().size() == 12);
+     }
 
 }
