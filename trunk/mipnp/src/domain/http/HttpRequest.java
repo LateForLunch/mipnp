@@ -23,12 +23,8 @@
 package domain.http;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 
 /**
  *
@@ -42,63 +38,33 @@ public class HttpRequest extends HttpPacket {
     public HttpRequest() {
     }
 
-    public void parse(InputStream input) throws IOException {
-        /*BufferedInputStream bis = new BufferedInputStream(input);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buf = new byte[1];
-        int read = bis.read(buf);
+    public boolean parse(InputStream in) throws IOException {
+        HttpInputStream his = new HttpInputStream(new BufferedInputStream(in));
+        String firstLine = his.readLine();
+        String[] split = firstLine.split(" ");
+        if (split.length != 3) {
+            return false;
+        }
+        setMethod(split[0]);
+        setRequestUri(split[1]);
+        setVersion(split[2]);
 
-        while (read > 0) {
-            if (Arrays.equals(buf, CRb)) {
-                break;
-            } else if (Arrays.equals(buf, LFb)) {
-                // TODO: line read
-            } else {
-                baos.write(buf);
-            }
-            read = bis.read(buf);
-        }*/
+        return super.parse(his);
     }
 
-    public static void main(String[] args) throws UnsupportedEncodingException, IOException {
-        String testStr1 = "line1\r\nline2\r\n\r\n";
-        byte[] b1 = testStr1.getBytes(HTTP_DEFAULT_CHARSET);
-        byte[] b2 = "µ".getBytes("UTF-8");
-        byte[] b = new byte[b1.length + b2.length];
-        System.arraycopy(b1, 0, b, 0, b1.length);
-        System.arraycopy(b2, 0, b, b1.length, b2.length);
-        System.out.println(Arrays.toString(b));
-        System.out.println(new String(b));
-        ByteArrayInputStream bais = new ByteArrayInputStream(b);
-        BufferedInputStream bis = new BufferedInputStream(bais);
-
-        String line = readLine(bis);
-        while (!line.trim().isEmpty()) {
-            System.out.println(line);
-            line = readLine(bis);
-        }
-        // The remaining bytes in the BufferedInputStream is the content
-        byte[] content = new byte[bis.available()];
-        bis.read(content);
-        System.out.println(Arrays.toString(content));
+    public String getMethod() {
+        return method;
     }
 
-    private static String readLine(BufferedInputStream bis) throws IOException {
-        boolean cr = false;
-        byte[] buf = new byte[1];
-        ByteArrayOutputStream line = new ByteArrayOutputStream();
+    public void setMethod(String method) {
+        this.method = method;
+    }
 
-        int read = bis.read(buf);
-        while (read > 0) {
-            if (cr && Arrays.equals(buf, LFb)) { // CRLF found
-                break;
-            } else if (Arrays.equals(buf, CRb)) {
-                cr = true;
-            } else {
-                line.write(buf);
-            }
-            read = bis.read(buf);
-        }
-        return line.toString();
+    public String getRequestUri() {
+        return requestUri;
+    }
+
+    public void setRequestUri(String requestUri) {
+        this.requestUri = requestUri;
     }
 }

@@ -22,6 +22,7 @@
  */
 package domain.http;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,10 +30,10 @@ import java.util.Map;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class HttpPacket implements HttpConstants {
+public abstract class HttpPacket implements HttpConstants {
 
     private String version;
-    private String startLine;
+//    private String startLine;
     private Map<String /* fieldname */, String /* fieldvalue */> headers;
     private byte[] content;
 
@@ -40,6 +41,19 @@ public class HttpPacket implements HttpConstants {
         setVersion(HTTP_VERSION);
         this.headers = new HashMap<String, String>();
         setContent(null);
+    }
+
+    protected boolean parse(HttpInputStream his) throws IOException {
+        String line = his.readLine();
+        while (!line.trim().isEmpty()) {
+            setHeader(line);
+            line = his.readLine();
+        }
+        // The remaining bytes in the InputStream is the content
+        byte[] con = new byte[his.available()];
+        his.read(con);
+        setContent(con, false);
+        return true;
     }
 
     public String getVersion() {
