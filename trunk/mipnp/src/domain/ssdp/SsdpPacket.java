@@ -18,7 +18,6 @@
 package domain.ssdp;
 
 import domain.http.HttpConstants;
-import domain.IPacket;
 
 /**
  * Created on Oct 20, 2010, 3:53:17 PM
@@ -26,7 +25,7 @@ import domain.IPacket;
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public class SsdpPacket implements IPacket, HttpConstants {
+public class SsdpPacket implements HttpConstants {
 
     public static final int METHOD_NOTIFY = 0;
     public static final int METHOD_M_SEARCH = 1;

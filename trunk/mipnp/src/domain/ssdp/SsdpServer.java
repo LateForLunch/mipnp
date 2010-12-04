@@ -17,18 +17,39 @@
  */
 
 /*
- * IPacket.java
- * Created on Oct 20, 2010, 3:52:09 PM
+ * SsdpServer.java
+ * Created on Dec 4, 2010, 4:18:13 PM
  */
-package domain;
+package domain.ssdp;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface IPacket {
+public class SsdpServer implements SsdpConstants {
 
-    String getRawData();
-    void setRawData(String rawData);
-    String getData();
+    private String groupAddress;
+    private InetAddress group;
+    private int port;
+    private MulticastSocket multicastSocket;
+
+    public SsdpServer() {
+    }
+
+    public void start() throws IOException {
+        this.group = InetAddress.getByName(groupAddress);
+        this.multicastSocket = new MulticastSocket(port);
+        multicastSocket.joinGroup(group);
+    }
+
+    public void stop() throws IOException {
+        multicastSocket.leaveGroup(group);
+        multicastSocket.close();
+        this.multicastSocket = null;
+        this.group = null;
+    }
 }

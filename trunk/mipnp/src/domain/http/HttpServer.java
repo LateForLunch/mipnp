@@ -67,6 +67,7 @@ public class HttpServer implements HttpConstants {
         server.stop();
         this.serverThread = null;
         this.server = null;
+        this.serverSocket = null;
     }
 
     public void addRequestHandler(HttpRequestHandler handler) {
@@ -84,6 +85,9 @@ public class HttpServer implements HttpConstants {
     }
 
     public int getPort() {
+        if (serverSocket != null) {
+            return serverSocket.getLocalPort();
+        }
         return port;
     }
 
@@ -119,7 +123,7 @@ public class HttpServer implements HttpConstants {
                 // TODO: check requestUri
                 HttpResponse response = new HttpResponse(request);
                 response.setStatusCode(200);
-                String res = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +
+                String res = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n" +
                         "<html><body>Java HttpServer works!µ</body></html>";
                 try {
                     response.setContent(res.getBytes("utf-8"));

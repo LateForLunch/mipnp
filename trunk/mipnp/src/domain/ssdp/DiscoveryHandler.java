@@ -20,8 +20,10 @@
  * DiscoveryHandler.java
  * Created on Oct 23, 2010, 3:41:04 PM
  */
-package domain;
+package domain.ssdp;
 
+import domain.Device;
+import domain.ssdp.SearchResponseThread;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;

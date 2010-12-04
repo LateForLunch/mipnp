@@ -23,7 +23,7 @@
 package cli;
 
 import domain.Device;
-import domain.DiscoveryHandler;
+import domain.ssdp.DiscoveryHandler;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
