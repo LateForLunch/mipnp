@@ -43,19 +43,6 @@ public abstract class HttpPacket implements HttpConstants {
         setContent(null);
     }
 
-    protected boolean parse(HttpInputStream his) throws IOException {
-        String line = his.readLine();
-        while (!line.trim().isEmpty()) {
-            setHeader(line);
-            line = his.readLine();
-        }
-        // The remaining bytes in the InputStream is the content
-        byte[] con = new byte[his.available()];
-        his.read(con);
-        setContent(con, false);
-        return true;
-    }
-
     public String getVersion() {
         return version;
     }
@@ -146,5 +133,18 @@ public abstract class HttpPacket implements HttpConstants {
         } else {
 
         }
+    }
+
+    protected boolean parse(HttpInputStream his) throws IOException {
+        String line = his.readLine();
+        while (!line.trim().isEmpty()) {
+            setHeader(line);
+            line = his.readLine();
+        }
+        // The remaining bytes in the InputStream is the content
+        byte[] con = new byte[his.available()];
+        his.read(con);
+        setContent(con, false);
+        return true;
     }
 }

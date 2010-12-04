@@ -38,22 +38,24 @@ public class HttpInputStream extends FilterInputStream implements HttpConstants 
     }
 
     public String readLine() throws IOException {
-        boolean cr = false;
         byte[] buf = new byte[1];
         ByteArrayOutputStream line = new ByteArrayOutputStream();
 
         int read = read(buf);
+        if (buf[0] == LFb || buf[0] == CRb) {
+            read = read(buf);
+        }
         while (read > 0) {
-            if (cr && buf[0] == LFb) { // CRLF found
+            if (buf[0] == LFb) {
                 break;
             } else if (buf[0] == CRb) {
-                cr = true;
+                break;
             } else {
                 line.write(buf);
-                cr = false;
             }
             read = read(buf);
         }
-        return new String(line.toByteArray(), HTTP_DEFAULT_CHARSET);
+        String test = new String(line.toByteArray(), HTTP_DEFAULT_CHARSET);
+        return test;
     }
 }

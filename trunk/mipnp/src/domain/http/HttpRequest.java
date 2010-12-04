@@ -52,6 +52,22 @@ public class HttpRequest extends HttpPacket {
         return super.parse(his);
     }
 
+    public boolean isMethod(String method) {
+        if (method != null && method.equalsIgnoreCase(getMethod())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isGet() {
+        return isMethod(GET);
+    }
+
+    public boolean isHead() {
+        return isMethod(HEAD);
+    }
+
     public String getMethod() {
         return method;
     }

@@ -22,6 +22,7 @@
  */
 package domain.http;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -39,6 +40,20 @@ class HttpWorkerThread implements Runnable {
     }
 
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            HttpRequest request = new HttpRequest();
+            request.parse(socket.getInputStream());
+            server.notifyHandlers(request);
+        } catch (Exception ex) {
+            ex.printStackTrace(); // TODO
+        } finally {
+            try {
+                if (socket != null) {
+                    socket.close();
+                }
+            } catch (IOException ex) {
+                // ignore
+            }
+        }
     }
 }

@@ -27,6 +27,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -103,5 +104,31 @@ public class HttpServer implements HttpConstants {
 
     public void setBindAddr(InetAddress bindAddr) {
         this.bindAddr = bindAddr;
+    }
+
+    // TEST
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Press 'q' to stop.\nCreating HTTP server...");
+        HttpServer httpServer = new HttpServer(8080, 0, null);
+        HttpRequestHandler handler = new HttpRequestHandler() {
+
+            public void handleRequest(HttpRequest request) {
+                System.out.println(request.getMethod() + request.getRequestUri());
+            }
+        };
+        httpServer.addRequestHandler(handler);
+        try {
+            httpServer.start();
+        } catch (IOException ex) {
+            System.out.println("FAILED");
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("OK");
+        while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
+            System.out.println("Unknown command.\nPress 'q' to stop.\n");
+        }
+        httpServer.stop();
     }
 }
