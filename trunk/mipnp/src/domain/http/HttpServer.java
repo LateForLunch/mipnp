@@ -23,6 +23,7 @@
 package domain.http;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -115,8 +116,17 @@ public class HttpServer implements HttpConstants {
 
             public void handleRequest(HttpRequest request) {
                 System.out.println(request.getMethod() + " " + request.getRequestUri());
+                // TODO: check requestUri
                 HttpResponse response = new HttpResponse(request);
                 response.setStatusCode(200);
+                String res = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +
+                        "<html><body>Java HttpServer works!µ</body></html>";
+                try {
+                    response.setContent(res.getBytes("utf-8"));
+                    response.setHeader("Content-Type: text/html; charset=utf-8");
+                } catch (UnsupportedEncodingException ex) {
+                    ex.printStackTrace();
+                }
                 try {
                     response.writeToOutputStream();
                 } catch (IOException ex) {

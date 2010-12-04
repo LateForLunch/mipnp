@@ -25,7 +25,10 @@ package domain.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -92,6 +95,18 @@ public abstract class HttpPacket implements HttpConstants {
      */
     public String getHeader(String fieldName) {
         return headers.get(fieldName);
+    }
+
+    public String[] getHeaders() {
+        List<String> result = new ArrayList<String>(headers.size());
+        Iterator<Map.Entry<String, String>> it = headers.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> entry = it.next();
+            result.add(entry.getKey() + ":" + entry.getValue());
+        }
+        String[] ret = new String[result.size()];
+        result.toArray(ret);
+        return ret;
     }
 
     /**

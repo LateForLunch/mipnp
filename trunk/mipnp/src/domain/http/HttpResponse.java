@@ -69,8 +69,11 @@ public class HttpResponse extends HttpPacket {
         String statusLine = getVersion() + " " +
                 getStatusCode() + " " + getReasonPhrase();
         hos.writeLine(statusLine);
-        // TODO: write headers
-        hos.writeLine();
+        String[] headers = getHeaders();
+        for (int i = 0; i < headers.length; i++) {
+            hos.writeLine(headers[i]);
+        }
+        hos.writeLine(); // Write empty line
         hos.write(getContent());
         hos.flush();
     }
