@@ -32,6 +32,10 @@ public interface SsdpConstants extends HttpConstants {
 
     public static final String SSDP_DEFAULT_ADDRESS = "239.255.255.250";
     public static final int SSDP_DEFAULT_PORT = 1900;
+    public static final int SSDP_DEFAULT_TTL = 2;
+
+    // TODO: check if this is right
+    public static final int SSDP_DEFAULT_BUF_SIZE = 1024;
 
     /*
      * Methods

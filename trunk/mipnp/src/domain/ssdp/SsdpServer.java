@@ -25,6 +25,11 @@ package domain.ssdp;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,6 +41,9 @@ public class SsdpServer implements SsdpConstants {
     private InetAddress group;
     private int port;
     private MulticastSocket multicastSocket;
+    private SsdpServerMainThread serverMain;
+    private Thread serverThread;
+    private List<ISsdpRequestHandler> handlers;
 
     public SsdpServer() {
         this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT);
@@ -44,12 +52,17 @@ public class SsdpServer implements SsdpConstants {
     public SsdpServer(String groupAddress, int port) {
         setGroupAddress(groupAddress);
         setPort(port);
+        this.handlers = new ArrayList<ISsdpRequestHandler>();
     }
 
     public void start() throws IOException {
         this.group = InetAddress.getByName(groupAddress);
         this.multicastSocket = new MulticastSocket(port);
         multicastSocket.joinGroup(group);
+        this.serverMain = new SsdpServerMainThread(this, multicastSocket);
+        this.serverThread = new Thread(serverMain);
+        serverThread.setName("SsdpServerMain");
+        serverThread.start();
     }
 
     public void stop() throws IOException {
@@ -57,6 +70,22 @@ public class SsdpServer implements SsdpConstants {
         multicastSocket.close();
         this.multicastSocket = null;
         this.group = null;
+        this.serverThread = null;
+        this.serverMain = null;
+    }
+
+    public void addRequestHandler(ISsdpRequestHandler handler) {
+        handlers.add(handler);
+    }
+
+    public void removeRequestHandler(ISsdpRequestHandler handler) {
+        handlers.remove(handler);
+    }
+
+    protected void notifyHandlers(SsdpRequest request) {
+        for (ISsdpRequestHandler handler : handlers) {
+            handler.handleSsdpRequest(request);
+        }
     }
 
     public String getGroupAddress() {
@@ -78,7 +107,33 @@ public class SsdpServer implements SsdpConstants {
         this.port = port;
     }
 
-    public void sendRequest(SsdpRequest request) {
-        // TODO
+    // TEST
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Press 'q' to stop.\nCreating SSDP server...");
+        SsdpServer server = new SsdpServer();
+        ISsdpRequestHandler handler = new ISsdpRequestHandler() {
+
+            public void handleSsdpRequest(SsdpRequest request) {
+                System.out.println(request.getMethod() + " " + request.getRequestUri());
+            }
+        };
+        server.addRequestHandler(handler);
+        try {
+            server.start();
+        } catch (IOException ex) {
+            System.out.println("FAILED");
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("OK");
+        while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
+            System.out.println("Unknown command.\nPress 'q' to stop.\n");
+        }
+        try {
+            server.stop();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

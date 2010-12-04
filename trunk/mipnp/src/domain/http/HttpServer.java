@@ -40,7 +40,7 @@ public class HttpServer implements HttpConstants {
     private int backlog;
     private InetAddress bindAddr;
     private ServerSocket serverSocket;
-    private HttpServerMainThread server;
+    private HttpServerMainThread serverMain;
     private Thread serverThread;
     private List<IHttpRequestHandler> handlers;
 
@@ -57,16 +57,16 @@ public class HttpServer implements HttpConstants {
 
     public void start() throws IOException {
         this.serverSocket = new ServerSocket(port, backlog, bindAddr);
-        this.server = new HttpServerMainThread(this, serverSocket);
-        this.serverThread = new Thread(server);
+        this.serverMain = new HttpServerMainThread(this, serverSocket);
+        this.serverThread = new Thread(serverMain);
         serverThread.setName("HtppServerMain");
         serverThread.start();
     }
 
     public void stop() {
-        server.stop();
+        serverMain.stop();
         this.serverThread = null;
-        this.server = null;
+        this.serverMain = null;
         this.serverSocket = null;
     }
 

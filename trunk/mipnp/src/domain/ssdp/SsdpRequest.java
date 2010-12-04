@@ -22,12 +22,16 @@
  */
 package domain.ssdp;
 
+import domain.http.HttpRequest;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public class SsdpRequest extends SsdpPacket {
+public class SsdpRequest extends HttpRequest {
 
     /*
      * NOTIFY * HTTP/1.1\r\n
@@ -36,5 +40,11 @@ public class SsdpRequest extends SsdpPacket {
      */
 
     public SsdpRequest() {
+    }
+
+    public void parse(byte[] data) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        setInputStream(bais);
+        parse();
     }
 }
