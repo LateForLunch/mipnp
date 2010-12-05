@@ -3,6 +3,7 @@
  * and open the template in the editor.
  */
 
+import domain.upnp.Service;
 import org.junit.Assert;
 import domain.upnp.services.ContentDirectory;
 import org.junit.After;
@@ -18,14 +19,17 @@ import static org.junit.Assert.*;
  */
 public class CDServiceTest {
 
-    private static ContentDirectory cd ;
+    //private static ContentDirectory cd ;
+    private static Service cd;
 
     public CDServiceTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-         cd = new ContentDirectory();
+         //cd = new ContentDirectory();
+        cd = new Service();
+        ContentDirectory.initializeContentDirectory(cd);
     }
 
     @AfterClass
