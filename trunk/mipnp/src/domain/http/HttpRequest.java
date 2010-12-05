@@ -40,7 +40,7 @@ public class HttpRequest extends HttpPacket {
         super();
     }
 
-    public boolean parse() throws IOException, URISyntaxException {
+    public boolean parse() throws IOException {
         HttpInputStream his = new HttpInputStream(
                 new BufferedInputStream(getInputStream()));
         String firstLine = his.readLine();
@@ -51,18 +51,16 @@ public class HttpRequest extends HttpPacket {
         boolean parse = super.parse(his);
         setMethod(split[0]);
         setVersion(split[2]);
-        URI req;
-        String hostHeader = getHeader(HOST);
-        if (hostHeader != null) {
-            if (!hostHeader.startsWith("http://")) {
+        URI req = null;
+        try {
+            req = URI.create(split[1]);
+            String hostHeader = getHeader(HOST);
+            if (hostHeader != null) {
                 hostHeader = "http://".concat(hostHeader);
+                req = URI.create(hostHeader).resolve(split[1]);
             }
-            req = new URI(hostHeader).resolve(split[1]);
-        } else {
-            if (!split[1].startsWith("http://")) {
-                split[1] = "http://".concat(split[1]);
-            }
-            req = new URI(split[1]);
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace(); // TODO: the response MUST be a 400 (Bad Request) error message.
         }
         setRequestUri(req);
         return parse;
