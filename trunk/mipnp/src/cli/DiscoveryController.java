@@ -23,9 +23,7 @@
 package cli;
 
 import domain.upnp.Device;
-import domain.ssdp.DiscoveryHandler;
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 /**
  *
@@ -33,24 +31,16 @@ import java.net.UnknownHostException;
  */
 public class DiscoveryController {
 
-    private DiscoveryHandler discoveryHandler;
     private DiscoveryCli discoveryCli;
 
     public DiscoveryController(Device rootDevice) {
-        try {
-            this.discoveryHandler = new DiscoveryHandler(rootDevice);
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace(); // TODO
-        }
         this.discoveryCli = new DiscoveryCli();
     }
 
     public void startDiscovery() throws IOException {
         discoveryCli.printStartMessage(System.out);
-        discoveryHandler.start();
     }
 
     public void stopDiscovery() throws IOException {
-        discoveryHandler.stop();
     }
 }

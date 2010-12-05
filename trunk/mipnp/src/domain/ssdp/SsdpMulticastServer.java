@@ -17,7 +17,7 @@
  */
 
 /*
- * SsdpServer.java
+ * SsdpMulticastServer.java
  * Created on Dec 4, 2010, 4:18:13 PM
  */
 package domain.ssdp;
@@ -28,29 +28,27 @@ import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class SsdpServer implements SsdpConstants {
+public class SsdpMulticastServer implements SsdpConstants {
 
     private String groupAddress;
     private InetAddress group;
     private int port;
     private MulticastSocket multicastSocket;
     private int ttl;
-    private SsdpServerMainThread serverMain;
+    private SsdpMulticastServerMainThread serverMain;
     private Thread serverThread;
     private List<ISsdpRequestHandler> handlers;
 
-    public SsdpServer() {
+    public SsdpMulticastServer() {
         this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT, SSDP_DEFAULT_TTL);
     }
 
-    public SsdpServer(String groupAddress, int port, int ttl) {
+    public SsdpMulticastServer(String groupAddress, int port, int ttl) {
         setGroupAddress(groupAddress);
         setPort(port);
         this.handlers = new ArrayList<ISsdpRequestHandler>();
@@ -61,7 +59,7 @@ public class SsdpServer implements SsdpConstants {
         this.multicastSocket = new MulticastSocket(port);
         multicastSocket.setTimeToLive(ttl);
         multicastSocket.joinGroup(group);
-        this.serverMain = new SsdpServerMainThread(this, multicastSocket);
+        this.serverMain = new SsdpMulticastServerMainThread(this, multicastSocket);
         this.serverThread = new Thread(serverMain);
         serverThread.setName("SsdpServerMain");
         serverThread.start();
@@ -135,7 +133,7 @@ public class SsdpServer implements SsdpConstants {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating SSDP server...");
-        SsdpServer server = new SsdpServer();
+        SsdpMulticastServer server = new SsdpMulticastServer();
         ISsdpRequestHandler handler = new ISsdpRequestHandler() {
 
             public void handleSsdpRequest(SsdpRequest request) {

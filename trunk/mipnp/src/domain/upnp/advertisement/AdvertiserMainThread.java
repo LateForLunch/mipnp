@@ -17,37 +17,21 @@
  */
 
 /*
- * SearchResponseThread.java
- * Created on Oct 23, 2010, 4:10:44 PM
+ * AdvertiserMainThread.java
+ * Created on Dec 5, 2010, 11:31:20 AM
  */
-package domain.ssdp;
-
-import domain.upnp.Device;
-import java.net.MulticastSocket;
+package domain.upnp.advertisement;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class SearchResponseThread implements Runnable {
+class AdvertiserMainThread implements Runnable {
 
-    private Device rootDevice;
-    private MulticastSocket socket;
-
-    public SearchResponseThread(Device rootDevice, MulticastSocket socket) {
-        setRootDevice(rootDevice);
-        setSocket(socket);
+    public AdvertiserMainThread() {
     }
 
     public void run() {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    private void setRootDevice(Device rootDevice) {
-        this.rootDevice = rootDevice;
-    }
-
-    private void setSocket(MulticastSocket socket) {
-        this.socket = socket;
     }
 }

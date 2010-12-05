@@ -17,43 +17,23 @@
  */
 
 /*
- * DiscoveryAliveThread.java
- * Created on Oct 23, 2010, 3:53:38 PM
+ * Advertiser.java
+ * Created on Dec 5, 2010, 11:29:37 AM
  */
-package domain.ssdp;
-
-import domain.upnp.Device;
-import java.net.MulticastSocket;
+package domain.upnp.advertisement;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class DiscoveryAliveThread implements Runnable {
+public class Advertiser {
 
-    private Device rootDevice;
-    private MulticastSocket socket;
-
-    public DiscoveryAliveThread(Device rootDevice, MulticastSocket socket) {
-        setRootDevice(rootDevice);
-        setSocket(socket);
+    public Advertiser() {
     }
 
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void start() {
     }
 
-    private void sendAlive() {
-    }
-
-    private void sendByebye() {
-    }
-
-    private void setRootDevice(Device rootDevice) {
-        this.rootDevice = rootDevice;
-    }
-
-    private void setSocket(MulticastSocket socket) {
-        this.socket = socket;
+    public void stop() {
     }
 }

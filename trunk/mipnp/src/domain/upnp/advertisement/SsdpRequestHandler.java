@@ -20,11 +20,11 @@
  * SsdpRequestHandler.java
  * Created on Dec 5, 2010, 10:55:40 AM
  */
-package domain.upnp;
+package domain.upnp.advertisement;
 
 import domain.ssdp.ISsdpRequestHandler;
 import domain.ssdp.SsdpRequest;
-import domain.ssdp.SsdpServer;
+import domain.ssdp.SsdpMulticastServer;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -38,14 +38,17 @@ public class SsdpRequestHandler implements ISsdpRequestHandler {
     }
 
     public void handleSsdpRequest(SsdpRequest request) {
-        System.out.println(request.getMethod());
+        if (!request.isMsearch()) {
+            return;
+        }
+        // TODO: ask advertiser to do his job
     }
 
     // TEST
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating SSDP server...");
-        SsdpServer ssdpServer = new SsdpServer();
+        SsdpMulticastServer ssdpServer = new SsdpMulticastServer();
         SsdpRequestHandler handler = new SsdpRequestHandler();
         ssdpServer.addRequestHandler(handler);
         try {

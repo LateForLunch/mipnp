@@ -25,13 +25,14 @@ package domain.ssdp;
 import domain.http.HttpRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public class SsdpRequest extends HttpRequest {
+public class SsdpRequest extends HttpRequest implements SsdpConstants {
 
     /*
      * NOTIFY * HTTP/1.1\r\n
@@ -46,5 +47,13 @@ public class SsdpRequest extends HttpRequest {
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         setInputStream(bais);
         parse();
+    }
+
+    public boolean isNotify() {
+        return isMethod(NOTIFY);
+    }
+
+    public boolean isMsearch() {
+        return isMethod(M_SEARCH);
     }
 }

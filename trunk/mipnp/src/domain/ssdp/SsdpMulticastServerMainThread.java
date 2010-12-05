@@ -17,7 +17,7 @@
  */
 
 /*
- * SsdpServerMainThread.java
+ * SsdpMulticastServerMainThread.java
  * Created on Dec 4, 2010, 4:51:10 PM
  */
 package domain.ssdp;
@@ -31,12 +31,12 @@ import java.net.SocketException;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class SsdpServerMainThread implements Runnable, SsdpConstants {
+class SsdpMulticastServerMainThread implements Runnable, SsdpConstants {
 
-    private SsdpServer server;
+    private SsdpMulticastServer server;
     private MulticastSocket multicastSocket;
 
-    public SsdpServerMainThread(SsdpServer server, MulticastSocket multicastSocket) {
+    public SsdpMulticastServerMainThread(SsdpMulticastServer server, MulticastSocket multicastSocket) {
         this.server = server;
         this.multicastSocket = multicastSocket;
     }
