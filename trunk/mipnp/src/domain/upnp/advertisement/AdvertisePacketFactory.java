@@ -24,7 +24,9 @@ package domain.upnp.advertisement;
 
 import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
+import domain.tools.ServerTools;
 import domain.upnp.Device;
+import domain.upnp.Service;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -36,23 +38,55 @@ import java.util.List;
  */
 public class AdvertisePacketFactory implements SsdpConstants {
 
-    public static SsdpRequest[] createAdvertiseSet(Device rootDevice) {
+    private static final int MAX_CONFIG_ID = 16777215;
+    private static int configId = 0;
+
+    public static SsdpRequest[] createMulticastAdvertiseSet(
+            Device rootDevice, int maxAge) {
+
         List<SsdpRequest> list = new ArrayList<SsdpRequest>();
-        SsdpRequest request = createAdvertiseBase();
-        request.setHeader(HOST, SSDP_DEFAULT_ADDRESS + ":" + SSDP_DEFAULT_PORT);
-        request.setHeader("CACHE-CONTROL", "max-age=1800"); // TODO: don't hardcode 1800 here
-        request.setHeader("LOCATION", "URL for UPnP description for root device"); // TODO
-        request.setHeader("NT", "notification type"); // TODO
-        request.setHeader("NTS", "ssdp:alive");
-        request.setHeader("SERVER", "OS/version UPnP/1.1 product/version"); // TODO
-        request.setHeader("USN", "composite identifier for the advertisement"); // TODO
-        request.setHeader("BOOTID.UPNP.ORG", "number increased each time device sends an initial announce or an update message"); // TODO
-        request.setHeader("CONFIGID.UPNP.ORG", "number used for caching description information");
-        request.setHeader("SEARCHPORT.UPNP.ORG", "number identifies port on which device responds to unicast M-SEARCH"); // TODO
-        return null;
+        // Root device
+        list.add(createAdvertisePacket(rootDevice, maxAge,
+                "upnp:rootdevice", rootDevice.getUdn() + "::upnp:rootdevice"));
+        list.add(createAdvertisePacket(rootDevice, maxAge,
+                rootDevice.getUdn(), rootDevice.getUdn()));
+        list.add(createAdvertisePacket(rootDevice, maxAge, // TODO
+                "urn:schemas-upnp-org:device:deviceType:ver " +
+                "or urn:domain-name:device:deviceType:ver",
+                "uuid:device-UUID::urn:schemas-upnp-org:device:deviceType:ver " +
+                "or uuid:device-UUID::urn:domain-name:device:deviceType:ver"));
+        for (Service s : rootDevice.getServices()) {
+            list.add(createAdvertisePacket(rootDevice, maxAge, // TODO
+                    "urn:schemas-upnp-org:service:serviceType:ver " +
+                    "or urn:domain-name:service:serviceType:ver",
+                    "uuid:device-UUID::urn:schemas-upnp-org:service:serviceType:ver " +
+                    "or uuid:device-UUID::urn:domain-name:service:serviceType:ver"));
+        }
+
+        // Don't support embedded devices for now
+//        for (Device d : rootDevice.getEmbeddedDevices()) {
+//            list.add(createAdvertisePacket(rootDevice, maxAge,
+//                    d.getUdn(), d.getUdn()));
+//            list.add(createAdvertisePacket(rootDevice, maxAge, // TODO
+//                    "urn:schemas-upnp-org:device:deviceType:ver " +
+//                    "or urn:domain-name:device:deviceType:ver",
+//                    "uuid:device-UUID::urn:schemas-upnp-org:device:deviceType:ver " +
+//                    "or uuid:device-UUID::urn:domain-name:device:deviceType:ver"));
+//        }
+
+        // Prevent caching of configuration (for now)
+        configId++;
+        if (configId > MAX_CONFIG_ID) {
+            configId = 0;
+        }
+        SsdpRequest[] ret = new SsdpRequest[list.size()];
+        list.toArray(ret);
+        return ret;
     }
 
-    private static SsdpRequest createAdvertiseBase() {
+    private static SsdpRequest createAdvertisePacket(
+            Device rootDevice, int maxAge, String nt, String usn) {
+
         SsdpRequest request = new SsdpRequest();
         request.setMethod(NOTIFY);
         try {
@@ -61,6 +95,18 @@ public class AdvertisePacketFactory implements SsdpConstants {
             ex.printStackTrace();
         }
         request.setVersion(HTTP_VERSION_1_1);
+        request.setHeader(HOST, SSDP_DEFAULT_ADDRESS + ":" + SSDP_DEFAULT_PORT);
+        request.setHeader("CACHE-CONTROL", "max-age=" + maxAge);
+        request.setHeader("LOCATION", rootDevice.getDescriptionUrl().toString());
+        request.setHeader("NT", nt);
+        request.setHeader("NTS", "ssdp:alive");
+        request.setHeader("SERVER",
+                ServerTools.getOsName() + "/" + ServerTools.getOsVersion() +
+                "UPnP/1.1 MiPnP/0.1"); // TODO: version (low priority)
+        request.setHeader("USN", usn);
+        request.setHeader("BOOTID.UPNP.ORG", "1"); // TODO (low priority)
+        request.setHeader("CONFIGID.UPNP.ORG", String.valueOf(configId)); // TODO (low priority)
+//        request.setHeader("SEARCHPORT.UPNP.ORG", "number identifies port on which device responds to unicast M-SEARCH"); // TODO (low priority)
         return request;
     }
 }

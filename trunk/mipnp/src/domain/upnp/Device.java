@@ -94,16 +94,20 @@ public class Device {
     private URL presentationURL;
 
     private List<Service> services;
-    private List<Device> embeddedDevices; //TODO: NOG GEEN GETTERS EN SETTERS VOORZIEN
+    //TODO (low priority) don't support embedded device for now
+//    private List<Device> embeddedDevices;
+
+    private URL descriptionUrl;
+    private UUID uuid;
 
     public Device(){
         services = new ArrayList<Service>();
-        embeddedDevices = new ArrayList<Device>();
+//        embeddedDevices = new ArrayList<Device>();
     }
 
     public void addService(Service s){
         if(!services.contains(s))
-            getServices().add(s);
+            services.add(s);
     }
 
     /**
@@ -296,10 +300,28 @@ public class Device {
         this.serialNumber = serialNumber;
     }
 
-    public void addEmbeddedDevice(Device d){
-        embeddedDevices.add(d);
+//    public void addEmbeddedDevice(Device d){
+//        embeddedDevices.add(d);
+//    }
+
+    public URL getDescriptionUrl() {
+        return descriptionUrl;
     }
 
+    public void setDescriptionUrl(URL descriptionUrl) {
+        this.descriptionUrl = descriptionUrl;
+    }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+//    public Iterable<Device> getEmbeddedDevices() {
+//        return embeddedDevices;
+//    }
 }
 

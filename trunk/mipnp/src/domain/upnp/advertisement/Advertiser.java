@@ -79,7 +79,9 @@ public class Advertiser implements SsdpConstants {
     }
 
     public synchronized void requestAlive() {
-        SsdpRequest[] list = AdvertisePacketFactory.createAdvertiseSet(rootDevice);
+        SsdpRequest[] list =
+                AdvertisePacketFactory.createMulticastAdvertiseSet(
+                rootDevice, SSDP_DEFAULT_MAX_AGE);
         for (int i = 0; i < list.length; i++) {
             // TODO: send list[i]
         }

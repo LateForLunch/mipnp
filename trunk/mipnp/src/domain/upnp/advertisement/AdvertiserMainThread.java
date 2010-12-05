@@ -22,15 +22,15 @@
  */
 package domain.upnp.advertisement;
 
+import domain.ssdp.SsdpConstants;
 import java.util.Random;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class AdvertiserMainThread implements Runnable {
+class AdvertiserMainThread implements Runnable, SsdpConstants {
 
-    private static final int DURATION = 1800;
     private static final int REPEAT = 3;
 
     private Advertiser advertiser;
@@ -45,7 +45,7 @@ class AdvertiserMainThread implements Runnable {
         try {
             Thread.sleep((long) (random.nextDouble() * 100));
             requestAlive(); // Initial alive
-            int w8 = DURATION * 250;
+            int w8 = SSDP_DEFAULT_MAX_AGE * 250;
             while (!Thread.interrupted()) {
                 Thread.sleep((long) ((random.nextDouble() * w8) + w8));
                 requestAlive();

@@ -55,7 +55,7 @@ public class CustomHandler2 extends DefaultHandler {
                 Device dev = rootDev;
                 if (inDevList) { //????
                     dev = new Device();
-                    rootDev.addEmbeddedDevice(dev);
+//                    rootDev.addEmbeddedDevice(dev); // TODO (low priority) add support for embedded devices
                     currentDev = dev;
                 }
                 deviceHandler.handleDevice(dev, xmlReader, this);
