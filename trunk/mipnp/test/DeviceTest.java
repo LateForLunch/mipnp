@@ -12,7 +12,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -101,7 +100,7 @@ public class DeviceTest {
          Assert.assertEquals("http://www.CDdescription.com", contentDirectory.getScpdURL().toString());
 
          //Test ConnectionManager
-         Service connectionManager = d.getServices().get(1);
+         //Service connectionManager = d.getServices().get(1);
      }
 
 }

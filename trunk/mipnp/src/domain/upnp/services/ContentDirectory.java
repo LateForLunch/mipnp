@@ -14,11 +14,11 @@ import java.util.List;
 
 /**
  *
- * @author nicholaihel
+ * @author Jeroen De Wilde
  */
-public class ContentDirectory extends Service {
+public class ContentDirectory /*extends Service*/ {
 
-    public ContentDirectory(){
+    public static Service initializeContentDirectory(Service service){
     //create actionlist
     List<Action> actions = new ArrayList<Action>();
 
@@ -101,7 +101,7 @@ public class ContentDirectory extends Service {
 
 
     //set actions to parent (service)
-    super.setActions(actions);
+    service.setActions(actions);
 
 
     //set service state table
@@ -120,7 +120,8 @@ public class ContentDirectory extends Service {
     serviceStateTable.add(s10);
     serviceStateTable.add(s11);
 
-    super.setServiceStateTable(serviceStateTable);
+    service.setServiceStateTable(serviceStateTable);
 
+    return service;
     }
 }

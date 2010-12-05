@@ -6,6 +6,8 @@
 package domain.xml;
 
 import domain.upnp.Service;
+import domain.upnp.services.ConnectionManager;
+import domain.upnp.services.ContentDirectory;
 import java.io.CharArrayWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,7 +59,17 @@ class ServiceHandler extends DefaultHandler {
             if (qName.equalsIgnoreCase("serviceType")) {
                 currentServ.setServiceType(buffer.toString());
             } else if (qName.equalsIgnoreCase("serviceId")) {
-                currentServ.setServiceId(buffer.toString());
+                //test door jeroen
+                String currentServiceId = buffer.toString();
+                if(currentServiceId.equalsIgnoreCase("urn:upnp-org:serviceId:ContentDirectory")){                   
+                    System.out.println("CD ontdekt");
+                    ContentDirectory.initializeContentDirectory(currentServ);
+                } else if(currentServiceId.equalsIgnoreCase("urn:upnp-org:serviceId:ConnectionManager")){
+                   //
+                } else {
+                    throw new IllegalArgumentException("not implemented!");
+                }
+                currentServ.setServiceId(currentServiceId);
             } else if (qName.equalsIgnoreCase("SCPDURL")) {
                     currentServ.setScpdURL(new URL(buffer.toString()));
             } else if (qName.equalsIgnoreCase("controlURL")) {

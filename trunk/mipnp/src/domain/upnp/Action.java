@@ -46,5 +46,8 @@ public class Action {
     public void addArgument(Argument argument){
      if(!arguments.contains(argument))
          arguments.add(argument);
+     else{
+         throw new IllegalArgumentException("Argument list already contains argument: "+argument.getName()+"!");
+     }
     }
 }

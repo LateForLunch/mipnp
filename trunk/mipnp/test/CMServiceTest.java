@@ -3,6 +3,8 @@
  * and open the template in the editor.
  */
 
+import org.junit.Assert;
+import domain.upnp.services.ConnectionManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,13 +17,14 @@ import static org.junit.Assert.*;
  * @author nicholaihel
  */
 public class CMServiceTest {
+    private static ConnectionManager cm;
 
     public CMServiceTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        
+        cm = new ConnectionManager();
     }
 
     @AfterClass
@@ -39,7 +42,14 @@ public class CMServiceTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    // @Test
-    // public void hello() {}
+     @Test
+     public void testServiceStateTableSize() {
+     Assert.assertTrue(cm.getServiceStateTable().size() == 10);
+     }
+
+      @Test
+     public void testActionListSize() {
+     Assert.assertTrue(cm.getActions().size() == 3);
+     }
 
 }
