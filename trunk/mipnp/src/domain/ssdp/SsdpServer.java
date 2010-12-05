@@ -28,6 +28,8 @@ import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -39,15 +41,16 @@ public class SsdpServer implements SsdpConstants {
     private InetAddress group;
     private int port;
     private MulticastSocket multicastSocket;
+    private int ttl;
     private SsdpServerMainThread serverMain;
     private Thread serverThread;
     private List<ISsdpRequestHandler> handlers;
 
     public SsdpServer() {
-        this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT);
+        this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT, SSDP_DEFAULT_TTL);
     }
 
-    public SsdpServer(String groupAddress, int port) {
+    public SsdpServer(String groupAddress, int port, int ttl) {
         setGroupAddress(groupAddress);
         setPort(port);
         this.handlers = new ArrayList<ISsdpRequestHandler>();
@@ -56,6 +59,7 @@ public class SsdpServer implements SsdpConstants {
     public void start() throws IOException {
         this.group = InetAddress.getByName(groupAddress);
         this.multicastSocket = new MulticastSocket(port);
+        multicastSocket.setTimeToLive(ttl);
         multicastSocket.joinGroup(group);
         this.serverMain = new SsdpServerMainThread(this, multicastSocket);
         this.serverThread = new Thread(serverMain);
@@ -63,8 +67,12 @@ public class SsdpServer implements SsdpConstants {
         serverThread.start();
     }
 
-    public void stop() throws IOException {
-        multicastSocket.leaveGroup(group);
+    public void stop() {
+        try {
+            multicastSocket.leaveGroup(group);
+        } catch (IOException ex) {
+            ex.printStackTrace(); // TODO
+        }
         multicastSocket.close();
         this.multicastSocket = null;
         this.group = null;
@@ -105,6 +113,24 @@ public class SsdpServer implements SsdpConstants {
         this.port = port;
     }
 
+    public int getTimeToLive() {
+        if (multicastSocket != null) {
+            try {
+                return multicastSocket.getTimeToLive();
+            } catch (IOException ex) {
+                return ttl;
+            }
+        }
+        return ttl;
+    }
+
+    public void setTimeToLive(int ttl) throws IOException {
+        if (multicastSocket != null) {
+            multicastSocket.setTimeToLive(ttl);
+        }
+        this.ttl = ttl;
+    }
+
     // TEST
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -128,10 +154,6 @@ public class SsdpServer implements SsdpConstants {
         while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
             System.out.println("Unknown command.\nPress 'q' to stop.\n");
         }
-        try {
-            server.stop();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        server.stop();
     }
 }

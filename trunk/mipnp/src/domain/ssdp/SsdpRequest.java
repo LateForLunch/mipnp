@@ -25,7 +25,6 @@ package domain.ssdp;
 import domain.http.HttpRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  *
@@ -43,7 +42,7 @@ public class SsdpRequest extends HttpRequest {
     public SsdpRequest() {
     }
 
-    public void parse(byte[] data) throws IOException, URISyntaxException {
+    public void parse(byte[] data) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         setInputStream(bais);
         parse();
