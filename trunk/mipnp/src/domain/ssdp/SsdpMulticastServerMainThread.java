@@ -47,8 +47,8 @@ class SsdpMulticastServerMainThread implements Runnable, SsdpConstants {
                 byte[] buf = new byte[SSDP_DEFAULT_BUF_SIZE];
                 DatagramPacket dp = new DatagramPacket(buf, buf.length);
                 multicastSocket.receive(dp);
-                SsdpRequest request = new SsdpRequest();
-                request.parse(dp.getData());
+                SsdpRequest request = new SsdpRequest(dp);
+                request.parse();
                 server.notifyHandlers(request);
                 Thread.yield();
             } catch (SocketException ex) {

@@ -24,6 +24,7 @@ package domain.http;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  *
@@ -33,13 +34,14 @@ public class HttpResponse extends HttpPacket {
 
     private int statusCode;
     private String reasonPhrase;
+    private HttpRequest request;
 
     public HttpResponse() {
         super();
     }
 
     public HttpResponse(HttpRequest request) {
-        super(request.getInputStream(), request.getOutputStream());
+        setRequest(request);
     }
 
     public int getStatusCode() {
@@ -63,8 +65,12 @@ public class HttpResponse extends HttpPacket {
         this.reasonPhrase = reasonPhrase;
     }
 
-    public void writeToOutputStream() throws IOException {
-        BufferedOutputStream bos = new BufferedOutputStream(getOutputStream());
+    public void writeToRequest() throws IOException {
+        writeTo(getRequest().getOutputStream());
+    }
+
+    public void writeTo(OutputStream out) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(out);
         HttpOutputStream hos = new HttpOutputStream(bos);
         String statusLine = getVersion() + " " +
                 getStatusCode() + " " + getReasonPhrase();
@@ -79,5 +85,13 @@ public class HttpResponse extends HttpPacket {
             hos.write(getContent());
         }
         hos.flush();
+    }
+
+    public HttpRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(HttpRequest request) {
+        this.request = request;
     }
 }

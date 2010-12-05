@@ -132,7 +132,7 @@ public class HttpServer implements HttpConstants {
                     ex.printStackTrace();
                 }
                 try {
-                    response.writeToOutputStream();
+                    response.writeToRequest();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

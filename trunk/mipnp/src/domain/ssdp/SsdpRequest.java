@@ -24,7 +24,10 @@ package domain.ssdp;
 
 import domain.http.HttpRequest;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.DatagramPacket;
 
 /**
@@ -34,19 +37,15 @@ import java.net.DatagramPacket;
  */
 public class SsdpRequest extends HttpRequest implements SsdpConstants {
 
-    /*
-     * NOTIFY * HTTP/1.1\r\n
-     * or
-     * M-SEARCH * HTTP/1.1\r\n
-     */
+    private DatagramPacket datagramPacket;
+    private InputStream in;
 
     public SsdpRequest() {
+        super();
     }
 
-    public void parse(byte[] data) throws IOException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        setInputStream(bais);
-        parse();
+    public SsdpRequest(DatagramPacket datagramPacket) {
+        setDatagramPacket(datagramPacket);
     }
 
     public boolean isNotify() {
@@ -55,5 +54,24 @@ public class SsdpRequest extends HttpRequest implements SsdpConstants {
 
     public boolean isMsearch() {
         return isMethod(M_SEARCH);
+    }
+
+    public DatagramPacket getDatagramPacket() {
+        return datagramPacket;
+    }
+
+    public void setDatagramPacket(DatagramPacket datagramPacket) {
+        this.datagramPacket = datagramPacket;
+        this.in = new ByteArrayInputStream(datagramPacket.getData());
+    }
+
+    /**
+     * Little fix so that the parse method in HttpRequest would work
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return in;
     }
 }

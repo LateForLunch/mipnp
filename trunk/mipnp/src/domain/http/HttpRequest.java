@@ -24,6 +24,9 @@ package domain.http;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.net.URI;
 
 /**
@@ -34,9 +37,15 @@ public class HttpRequest extends HttpPacket {
 
     private String method;
     private URI requestUri;
+    private Socket socket;
 
     public HttpRequest() {
         super();
+    }
+
+    public HttpRequest(Socket socket) {
+        super();
+        setSocket(socket);
     }
 
     public boolean parse() throws IOException {
@@ -54,9 +63,11 @@ public class HttpRequest extends HttpPacket {
         try {
             req = URI.create(split[1]);
             String hostHeader = getHeader(HOST);
-            if (hostHeader != null) {
-                hostHeader = "http://".concat(hostHeader);
-                req = URI.create(hostHeader).resolve(split[1]);
+            if (!req.equals(URI.create("*")) && hostHeader != null) {
+                if (!hostHeader.startsWith("http://")) {
+                    hostHeader = "http://".concat(hostHeader);
+                }
+                req = URI.create(hostHeader).resolve(req);
             }
         } catch (IllegalArgumentException ex) {
             ex.printStackTrace(); // TODO: the response MUST be a 400 (Bad Request) error message.
@@ -95,5 +106,21 @@ public class HttpRequest extends HttpPacket {
 
     public void setRequestUri(URI requestUri) {
         this.requestUri = requestUri;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public InputStream getInputStream() throws IOException {
+        return socket.getInputStream();
+    }
+
+    public OutputStream getOutputStream() throws IOException {
+        return socket.getOutputStream();
     }
 }

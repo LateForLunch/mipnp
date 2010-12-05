@@ -75,7 +75,7 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
             }
         }
         try {
-            response.writeToOutputStream();
+            response.writeToRequest();
         } catch (IOException ex) {
             ex.printStackTrace(); // TODO
         }
