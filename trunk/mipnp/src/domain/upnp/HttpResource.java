@@ -45,4 +45,8 @@ public class HttpResource {
     public byte[] getAsByteArray() {
         return data;
     }
+
+    public int getLength() {
+        return data.length;
+    }
 }

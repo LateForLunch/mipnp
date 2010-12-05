@@ -52,16 +52,23 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
     }
 
     public void handleHttpRequest(HttpRequest request) {
+        if (request.isHandled()) {
+            return; // Job already done
+        }
         URI requestUri = request.getRequestUri();
-        System.out.println("HTTP Request: " + requestUri); // TEST
+        System.out.println("HTTP Request: " + request.getMethod() + " " + requestUri); // TEST
         HttpResponse response = null;
-        if (request.isGet()) {
+        if (request.isGet() || request.isHead()) {
             requestUri = URI.create(requestUri.getPath());
             HttpResource resource = resources.get(requestUri);
             if (resource != null) {
                 response = createResponse(request, 200);
                 response.setHeader(resource.getHttpContentTypeHeader());
-                response.setContent(resource.getAsByteArray());
+                if (request.isGet()) {
+                    response.setContent(resource.getAsByteArray());
+                } else {
+                    response.setContentLength(resource.getLength());
+                }
             } else {
                 response = createResponse(request, 404);
             }
