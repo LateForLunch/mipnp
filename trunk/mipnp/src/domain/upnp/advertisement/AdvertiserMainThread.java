@@ -22,16 +22,43 @@
  */
 package domain.upnp.advertisement;
 
+import java.util.Random;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 class AdvertiserMainThread implements Runnable {
 
-    public AdvertiserMainThread() {
+    private static final int DURATION = 1800;
+    private static final int REPEAT = 3;
+
+    private Advertiser advertiser;
+    private Random random;
+
+    public AdvertiserMainThread(Advertiser advertiser) {
+        this.advertiser = advertiser;
+        this.random = new Random();
     }
 
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            Thread.sleep((long) (random.nextDouble() * 100));
+            requestAlive(); // Initial alive
+            int w8 = DURATION * 250;
+            while (!Thread.interrupted()) {
+                Thread.sleep((long) ((random.nextDouble() * w8) + w8));
+                requestAlive();
+            }
+        } catch (InterruptedException ex) {
+            return;
+        }
+    }
+
+    private void requestAlive() throws InterruptedException {
+        for (int i = 1; i <= REPEAT; i++) {
+            advertiser.requestAlive();
+            Thread.sleep((long) (random.nextDouble() * 300));
+        }
     }
 }

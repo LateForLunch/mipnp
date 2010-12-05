@@ -22,18 +22,96 @@
  */
 package domain.upnp.advertisement;
 
+import domain.ssdp.SsdpConstants;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class Advertiser {
+public class Advertiser implements SsdpConstants {
+
+    private String groupAddress;
+    private InetAddress group;
+    private int port;
+    private MulticastSocket multicastSocket;
+    private int ttl;
+    private AdvertiserMainThread advertiserMain;
+    private Thread advertiserThread;
 
     public Advertiser() {
+        this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT, SSDP_DEFAULT_TTL);
     }
 
-    public void start() {
+    public Advertiser(String groupAddress, int port, int ttl) {
+        setGroupAddress(groupAddress);
+        setPort(port);
+    }
+
+    public void start() throws IOException {
+        this.group = InetAddress.getByName(groupAddress);
+        this.multicastSocket = new MulticastSocket(port);
+        multicastSocket.setTimeToLive(ttl);
+        multicastSocket.joinGroup(group);
+        this.advertiserMain = new AdvertiserMainThread(this);
+        this.advertiserThread = new Thread(advertiserMain);
+        advertiserThread.setName("AdvertiserMain");
+        advertiserThread.start();
     }
 
     public void stop() {
+        try {
+            multicastSocket.leaveGroup(group);
+        } catch (IOException ex) {
+            ex.printStackTrace(); // TODO
+        }
+        multicastSocket.close();
+        this.multicastSocket = null;
+        this.group = null;
+        this.advertiserThread = null;
+        this.advertiserMain = null;
+    }
+
+    public void requestAlive() {
+        // TODO
+    }
+
+    public String getGroupAddress() {
+        return groupAddress;
+    }
+
+    public void setGroupAddress(String groupAddress) {
+        this.groupAddress = groupAddress;
+    }
+
+    public int getPort() {
+        if (multicastSocket != null) {
+            return multicastSocket.getLocalPort();
+        }
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public int getTimeToLive() {
+        if (multicastSocket != null) {
+            try {
+                return multicastSocket.getTimeToLive();
+            } catch (IOException ex) {
+                return ttl;
+            }
+        }
+        return ttl;
+    }
+
+    public void setTimeToLive(int ttl) throws IOException {
+        if (multicastSocket != null) {
+            multicastSocket.setTimeToLive(ttl);
+        }
+        this.ttl = ttl;
     }
 }
