@@ -43,6 +43,7 @@ public class HttpServer implements HttpConstants {
     private HttpServerMainThread serverMain;
     private Thread serverThread;
     private List<IHttpRequestHandler> handlers;
+    private IHttpRequestHandler defaultHandler;
 
     public HttpServer() {
         this(HTTP_DEFAULT_PORT, 0, null);
@@ -53,6 +54,7 @@ public class HttpServer implements HttpConstants {
         setBacklog(backlog);
         setBindAddr(bindAddr);
         this.handlers = new ArrayList<IHttpRequestHandler>();
+        this.defaultHandler = new HttpDefaultRequestHandler();
     }
 
     public void start() throws IOException {
@@ -81,6 +83,9 @@ public class HttpServer implements HttpConstants {
     protected void notifyHandlers(HttpRequest request) {
         for (IHttpRequestHandler handler : handlers) {
             handler.handleHttpRequest(request);
+        }
+        if (!request.isHandled()) {
+            defaultHandler.handleHttpRequest(request);
         }
     }
 

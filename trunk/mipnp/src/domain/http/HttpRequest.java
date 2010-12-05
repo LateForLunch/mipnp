@@ -38,6 +38,7 @@ public class HttpRequest extends HttpPacket {
     private String method;
     private URI requestUri;
     private Socket socket;
+    private boolean handled;
 
     public HttpRequest() {
         super();
@@ -122,5 +123,13 @@ public class HttpRequest extends HttpPacket {
 
     public OutputStream getOutputStream() throws IOException {
         return socket.getOutputStream();
+    }
+
+    public boolean isHandled() {
+        return handled;
+    }
+
+    public void setHandled(boolean handled) {
+        this.handled = handled;
     }
 }
