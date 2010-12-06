@@ -37,19 +37,7 @@ public class ConfigurationManager {
 
     private SAXParserFactory saxParserFactory;
 
-     public /*static*/ Service addService(String serviceType){
-
-         try{
-             //TODO
-
-         }catch(Exception e){ //TODO
-            System.out.println("Fout bij addServicePropertiesFromXML");
-            e.printStackTrace();;
-        }
-        return null;
-     }
-
-     public /*static*/ Device createDeviceFromXML(String xmlFilePath) {
+     public Device createDeviceFromXML(String xmlFilePath) {
         try {
             //create File from XMLFilePath
             File xmlDoc = new File(xmlFilePath);
@@ -57,10 +45,9 @@ public class ConfigurationManager {
             //create SAXParserFactory
             saxParserFactory = SAXParserFactory.newInstance();
 
-            //Parsing from XML document using SAX
-            //TODO: opzoeken eventuele validatie
-            saxParserFactory.setValidating(true); //TODO: opzoeken
-            saxParserFactory.setNamespaceAware(false); //TODO: opzoeken
+            //Parsing from XML document using SAX            
+            saxParserFactory.setValidating(false); 
+            saxParserFactory.setNamespaceAware(false);
 
             SAXParser parser = saxParserFactory.newSAXParser();
             XMLReader r = parser.getXMLReader();
@@ -72,8 +59,8 @@ public class ConfigurationManager {
             return handler.getRootDevice();
             
         }catch(Exception e){
-            System.out.println("Fout bij createDeviceFromXML");
-            e.printStackTrace();;
+            System.out.println("Error at createDeviceFromXML");
+            e.printStackTrace();
         }
         return null;
     }

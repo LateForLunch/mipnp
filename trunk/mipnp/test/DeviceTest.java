@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  *
- * @author nicholaihel
+ * @author Jeroen De Wilde
  */
 public class DeviceTest {
     private static Device d;

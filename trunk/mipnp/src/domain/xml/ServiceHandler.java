@@ -6,8 +6,7 @@
 package domain.xml;
 
 import domain.upnp.Service;
-import domain.upnp.services.ConnectionManager;
-import domain.upnp.services.ContentDirectory;
+import domain.upnp.services.ServiceFactory;
 import java.io.CharArrayWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,7 +18,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  *
- * @author nicholaihel
+ * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 class ServiceHandler extends DefaultHandler {
 
@@ -55,19 +54,17 @@ class ServiceHandler extends DefaultHandler {
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
             try {
-
             if (qName.equalsIgnoreCase("serviceType")) {
                 currentServ.setServiceType(buffer.toString());
             } else if (qName.equalsIgnoreCase("serviceId")) {
-                //test door jeroen
                 String currentServiceId = buffer.toString();
+                //check which service is being parsed + initialize correct service
                 if(currentServiceId.equalsIgnoreCase("urn:upnp-org:serviceId:ContentDirectory")){                   
-                    System.out.println("CD ontdekt");
-                    ContentDirectory.initializeContentDirectory(currentServ);
+                    ServiceFactory.initializeService(currentServ,"contentdirectory");
                 } else if(currentServiceId.equalsIgnoreCase("urn:upnp-org:serviceId:ConnectionManager")){
-                   //
+                   ServiceFactory.initializeService(currentServ,"connectionmanager");
                 } else {
-                    throw new IllegalArgumentException("not implemented!");
+                    throw new IllegalArgumentException(currentServiceId+" not yet implemented!");
                 }
                 currentServ.setServiceId(currentServiceId);
             } else if (qName.equalsIgnoreCase("SCPDURL")) {

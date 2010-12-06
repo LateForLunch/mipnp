@@ -14,15 +14,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  *
- * @author nicholaihel
+ * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class CustomHandler2 extends DefaultHandler {
 
-        /*
-         * TODO:
-         * - test code
-         * - add all elements and attributes
-         */
         private XMLReader xmlReader;
         private CharArrayWriter buffer;
         private DeviceHandler deviceHandler;
@@ -35,11 +30,9 @@ public class CustomHandler2 extends DefaultHandler {
             this.xmlReader = xmlReader;
             this.buffer = new CharArrayWriter();
             this.deviceHandler = new DeviceHandler();
-           // this.serviceHandler = new ServiceHandler();
             this.rootDev = new Device();
             this.currentDev = rootDev;
             this.inDevList = false;
-             //System.out.println("in customhandler -  constructor");
         }
 
         @Override
@@ -49,11 +42,10 @@ public class CustomHandler2 extends DefaultHandler {
                 throws SAXException {
 
             buffer.reset();
-            //System.out.println("in customhandler - start element: "+qName);
 
             if (qName.equalsIgnoreCase("device")) {
                 Device dev = rootDev;
-                if (inDevList) { //????
+                if (inDevList) {
                     dev = new Device();
 //                    rootDev.addEmbeddedDevice(dev); // TODO (low priority) add support for embedded devices
                     currentDev = dev;

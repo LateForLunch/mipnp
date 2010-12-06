@@ -42,7 +42,8 @@ public class Service {
     public Service(){}
     
     public Service(String serviceId, String serviceType){
-        this.serviceId=serviceId;this.serviceType=serviceType;
+        this.serviceId=serviceId;
+        this.serviceType=serviceType;
         //actions = new ArrayList<Action>();
         //serviceStateTable = new ArrayList<StateVariable>();
     }

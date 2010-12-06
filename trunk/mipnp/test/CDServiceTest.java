@@ -3,23 +3,21 @@
  * and open the template in the editor.
  */
 
+import domain.upnp.services.ServiceFactory;
 import domain.upnp.Service;
 import org.junit.Assert;
-import domain.upnp.services.ContentDirectory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
- * @author nicholaihel
+ * @author Jeroen De Wilde
  */
 public class CDServiceTest {
 
-    //private static ContentDirectory cd ;
     private static Service cd;
 
     public CDServiceTest() {
@@ -27,9 +25,8 @@ public class CDServiceTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-         //cd = new ContentDirectory();
         cd = new Service();
-        ContentDirectory.initializeContentDirectory(cd);
+        ServiceFactory.initializeService(cd,"contentdirectory");
     }
 
     @AfterClass

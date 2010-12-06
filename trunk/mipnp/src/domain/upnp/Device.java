@@ -30,51 +30,9 @@ import java.util.UUID;
 
 /**
  *
- * @author nicholaihel
+ * @author Jeroen De Wilde
  */
 
-/*
- * <?xml version="1.0"?>
-<root xmlns="urn:schemas-upnp-org:device-1-0">
-	<specVersion>
-		<major>1</major>
-		<minor>0</minor>
-	</specVersion>
-	<URLBase>URLBase</URLBase>
-	<device>
-		<deviceType> urn:schemas-upnp-org:device:MediaServer:1</deviceType>
-		<friendlyName>MiPnP v0.1</friendlyName>
-		<manufacturer>MiPnP devs</manufacturer>
-		<manufacturerURL>https://code.google.com/p/mipnp/</manufacturerURL>
-		<modelDescription>MiPnP: Minimal UPnP MediaServer</modelDescription>
-		<modelName>Modelname: MiPnP xxx</modelName>
-		<modelNumber>01</modelNumber>
-		<modelURL>https://code.google.com/p/mipnp/</modelURL>
-		<serialNumber>serialNumber</serialNumber>
-		<UDN>uuid:UUID</UDN>
-		<UPC>Universal Product Code</UPC>
-		<serviceList>
-			<service>
-				<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1 </serviceType>
-				<serviceId>urn:upnp-org:serviceId:ContentDirectory </serviceId>
-				<SCPDURL>URL to service description</SCPDURL>
-				<controlURL>URL for control</controlURL>
-				<eventSubURL>URL for eventing</eventSubURL>
-			</service>
-			<service>
-				<serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
-				<serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId>
-				<SCPDURL>URL to service description</SCPDURL>
-				<controlURL>URL for control</controlURL>
-				<eventSubURL>URL for eventing</eventSubURL>
-			</service>
-			</serviceList>
-		<deviceList> Description of embedded devices added by UPnP vendor (if any) go here </deviceList>
-		<presentationURL>URL for presentation</presentationURL>
-	</device>
-</root>
-
- */
 public class Device {
     private URL urlBase;
 
@@ -84,11 +42,10 @@ public class Device {
     private URL manufacturerURL;
     private String modelDescription;
     private String modelName;
-    private int modelNumber; //check if int
+    private int modelNumber;
     private URL modelURL;
-    private String serialNumber; //check if string/int/..
-    private String udn; //TODO: udn gewoon als string genomen, want wordt meegeven door XML
-                        //UUID heeft geen constructor (om deze bv uit string over te nemen)
+    private String serialNumber;
+    private String udn;                         
     private String upc;
 
     private URL presentationURL;

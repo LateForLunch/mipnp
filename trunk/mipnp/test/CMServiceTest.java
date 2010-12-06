@@ -3,28 +3,29 @@
  * and open the template in the editor.
  */
 
+import domain.upnp.Service;
 import org.junit.Assert;
-import domain.upnp.services.ConnectionManager;
+import domain.upnp.services.ServiceFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
- * @author nicholaihel
+ * @author Jeroen De Wilde
  */
 public class CMServiceTest {
-    private static ConnectionManager cm;
+    private static Service cm;
 
     public CMServiceTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        cm = new ConnectionManager();
+        cm = new Service();
+        ServiceFactory.initializeService(cm,"connectionmanager");
     }
 
     @AfterClass

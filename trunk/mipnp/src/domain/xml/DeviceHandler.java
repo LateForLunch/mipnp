@@ -18,7 +18,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  *
- * @author nicholaihel
+ * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ *
  */
 class DeviceHandler extends DefaultHandler {
 
@@ -49,7 +50,6 @@ class DeviceHandler extends DefaultHandler {
                 throws SAXException {
 
             if (qName.equalsIgnoreCase("service")) {
-                //System.out.println("service ontdekt");
                 Service newServ = new Service();
                 currentDev.addService(newServ);
                 serviceHandler.handleService(newServ, xmlReader, this);
@@ -61,7 +61,6 @@ class DeviceHandler extends DefaultHandler {
         @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
-                //System.out.println("in devicehandler - end element: "+qName);
         try{
             if (qName.equalsIgnoreCase("deviceType")) {
                 currentDev.setDeviceType(buffer.toString());
