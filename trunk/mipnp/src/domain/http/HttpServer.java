@@ -49,7 +49,7 @@ public class HttpServer implements HttpConstants {
         this(HTTP_DEFAULT_PORT, 0, null);
     }
 
-    public HttpServer(int port, int backlog,  InetAddress bindAddr) {
+    public HttpServer(int port, int backlog, InetAddress bindAddr) {
         setPort(port);
         setBacklog(backlog);
         setBindAddr(bindAddr);
@@ -128,8 +128,8 @@ public class HttpServer implements HttpConstants {
                 // TODO: check requestUri
                 HttpResponse response = new HttpResponse(request);
                 response.setStatusCode(200);
-                String res = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n" +
-                        "<html><body>Java HttpServer works!µ</body></html>";
+                String res = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
+                        + "<html><body>Java HttpServer works!µ</body></html>";
                 try {
                     response.setContent(res.getBytes("utf-8"));
                     response.setHeader("Content-Type: text/html; charset=utf-8");

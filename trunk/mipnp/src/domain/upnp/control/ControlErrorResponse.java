@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jochem Van denbussche
+ * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * MainController.java
- * Created on Oct 17, 2010, 3:53:30 PM
- */
-package cli;
+package domain.upnp.control;
 
-/**
- *
- * @author Jochem Van denbussche <jvandenbussche@gmail.com>
- */
-public class MainController {
+public class ControlErrorResponse extends ControlMessage {
 
-    private MainCli cli;
-    private ExitListener exitListener;
-
-    public MainController(String[] args) {
-        Settings.parseArguments(args);
-        Settings.checkSettings();
-        this.cli = new MainCli();
-        this.exitListener = new ExitListener(this);
-        new Thread(exitListener).start();
+    public ControlErrorResponse() {
+        super();
     }
 
-    public void exit(int status) {
-        System.exit(status);
-    }
 }

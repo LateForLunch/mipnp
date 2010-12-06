@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jochem Van denbussche
+ * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,31 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package domain.soap;
 
-/*
- * MainController.java
- * Created on Oct 17, 2010, 3:53:30 PM
- */
-package cli;
+import domain.http.HttpRequest;
+import java.net.Socket;
 
 /**
  *
- * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ * @author tectux
  */
-public class MainController {
+public class SoapAction extends HttpRequest {
 
-    private MainCli cli;
-    private ExitListener exitListener;
-
-    public MainController(String[] args) {
-        Settings.parseArguments(args);
-        Settings.checkSettings();
-        this.cli = new MainCli();
-        this.exitListener = new ExitListener(this);
-        new Thread(exitListener).start();
+    public SoapAction() {
+        super();
     }
 
-    public void exit(int status) {
-        System.exit(status);
+    public SoapAction(Socket socket) {
+        super(socket);
     }
 }

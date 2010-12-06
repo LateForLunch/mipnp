@@ -57,11 +57,11 @@ public class Settings {
          */
         if (Settings.getProperty(Settings.INTERFACE) == null) {
             try {
-                String[] networkInerfaces = NetworkInterfaceTools.list();
+                String[] networkInterfaces = NetworkInterfaceTools.list();
                 int option = askUser(
                         "Please select the network interface to use",
-                        networkInerfaces, -1);
-                String ifaip = networkInerfaces[option - 1];
+                        networkInterfaces, -1);
+                String ifaip = networkInterfaces[option - 1];
                 int index = ifaip.indexOf('(');
                 String ifa = ifaip.substring(0, index).trim();
                 String ip = ifaip.substring(index + 1, ifaip.length() - 1);

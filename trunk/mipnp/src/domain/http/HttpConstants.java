@@ -33,8 +33,7 @@ public interface HttpConstants {
 
     public static final int HTTP_DEFAULT_PORT = 80;
     public static final String HTTP_DEFAULT_CHARSET_NAME = "US-ASCII";
-    public static final Charset HTTP_DEFAULT_CHARSET =
-            Charset.forName(HTTP_DEFAULT_CHARSET_NAME);
+    public static final Charset HTTP_DEFAULT_CHARSET = Charset.forName(HTTP_DEFAULT_CHARSET_NAME);
 
     public static final byte CRb = 10;
     public static final byte LFb = 13;
@@ -42,7 +41,7 @@ public interface HttpConstants {
     public static final char CR = '\r';
     public static final char LF = '\n';
     public static final char HT = '\t';
-    public static final String CRLF = ""+CR+LF;
+    public static final String CRLF = "" + CR + LF;
 
     /*
      * Version
@@ -69,6 +68,7 @@ public interface HttpConstants {
      * Response status codes
      */
     public static final Map<Integer, String> HTTP_STATUS = new HashMap<Integer, String>() {
+
         {
             // Informational
             put(100, "Continue");
