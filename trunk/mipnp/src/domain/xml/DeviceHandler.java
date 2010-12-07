@@ -32,7 +32,12 @@ class DeviceHandler extends DefaultHandler {
         public DeviceHandler() {
             this.buffer = new CharArrayWriter();
         }
-
+        /**
+         * handles the device with the correct handler
+         * @param newDev
+         * @param xmlReader
+         * @param parent
+         */
         public void handleDevice(
                 Device newDev, XMLReader xmlReader, ContentHandler parent) {
 
@@ -43,6 +48,14 @@ class DeviceHandler extends DefaultHandler {
             serviceHandler = new ServiceHandler();
         }
 
+        /**
+         * invoked when a start xml tag is parsed
+         * @param uri
+         * @param localName
+         * @param qName
+         * @param attributes
+         * @throws SAXException
+         */
         @Override
         public void startElement(
                 String uri, String localName,
@@ -58,6 +71,13 @@ class DeviceHandler extends DefaultHandler {
             buffer.reset();
         }
 
+        /**
+         * invoked when a closing xml tag is parsed
+         * @param uri
+         * @param localName
+         * @param qName
+         * @throws SAXException
+         */
         @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
@@ -98,6 +118,13 @@ class DeviceHandler extends DefaultHandler {
             }
         }
 
+        /**
+         * invoked when between start and end XML tags
+         * @param ch
+         * @param start
+         * @param length
+         * @throws SAXException
+         */
         @Override
         public void characters(char[] ch, int start, int length)
                 throws SAXException {

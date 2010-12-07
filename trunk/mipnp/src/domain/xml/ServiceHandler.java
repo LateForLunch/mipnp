@@ -31,6 +31,12 @@ class ServiceHandler extends DefaultHandler {
             this.buffer = new CharArrayWriter();
         }
 
+         /**
+          * handles the service with the correct handler
+          * @param newServ
+          * @param xmlReader
+          * @param parent
+          */
         public void handleService(
                 Service newServ, XMLReader xmlReader, ContentHandler parent) {
 
@@ -41,6 +47,14 @@ class ServiceHandler extends DefaultHandler {
 
         }
 
+        /**
+         * invoked when a start xml tag is parsed
+         * @param uri
+         * @param localName
+         * @param qName
+         * @param attributes
+         * @throws SAXException
+         */
         @Override
         public void startElement(
                 String uri, String localName,
@@ -50,6 +64,13 @@ class ServiceHandler extends DefaultHandler {
             buffer.reset();
         }
 
+        /**
+         * invoked when a closing xml tag is parsed
+         * @param uri
+         * @param localName
+         * @param qName
+         * @throws SAXException
+         */
         @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
@@ -82,7 +103,14 @@ class ServiceHandler extends DefaultHandler {
                    ex.printStackTrace();
             }
         }
-
+        
+        /**
+         * invoked when between start and end XML tags
+         * @param ch
+         * @param start
+         * @param length
+         * @throws SAXException
+         */
         @Override
         public void characters(char[] ch, int start, int length)
                 throws SAXException {

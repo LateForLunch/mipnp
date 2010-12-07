@@ -20,7 +20,6 @@
  * Device.java
  * Created on Oct 23, 2010, 3:36:01 PM
  */
-
 package domain.upnp;
 
 import java.net.URL;
@@ -32,10 +31,9 @@ import java.util.UUID;
  *
  * @author Jeroen De Wilde
  */
-
 public class Device {
+    
     private URL urlBase;
-
     private String deviceType;
     private String friendlyName;
     private String manufacturer;
@@ -45,26 +43,24 @@ public class Device {
     private int modelNumber;
     private URL modelURL;
     private String serialNumber;
-    private String udn;                         
+    private String udn;
     private String upc;
-
     private URL presentationURL;
-
     private List<Service> services;
     //TODO (low priority) don't support embedded device for now
 //    private List<Device> embeddedDevices;
-
     private URL descriptionUrl;
     private UUID uuid;
 
-    public Device(){
+    public Device() {
         services = new ArrayList<Service>();
 //        embeddedDevices = new ArrayList<Device>();
     }
 
-    public void addService(Service s){
-        if(!services.contains(s))
+    public void addService(Service s) {
+        if (!services.contains(s)) {
             services.add(s);
+        }
     }
 
     /**
@@ -210,7 +206,6 @@ public class Device {
     /**
      * @param udn the udn to set
      */
-    
     public void setUdn(String udn) {
         this.udn = udn;
     }
@@ -260,7 +255,7 @@ public class Device {
 //    public void addEmbeddedDevice(Device d){
 //        embeddedDevices.add(d);
 //    }
-
+    
     public URL getDescriptionUrl() {
         return descriptionUrl;
     }
@@ -276,9 +271,7 @@ public class Device {
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
-
 //    public Iterable<Device> getEmbeddedDevices() {
 //        return embeddedDevices;
 //    }
 }
-

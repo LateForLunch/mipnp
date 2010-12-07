@@ -35,6 +35,14 @@ public class CustomHandler2 extends DefaultHandler {
             this.inDevList = false;
         }
 
+        /**
+         * invoked when a start xml tag is parsed
+         * @param uri
+         * @param localName
+         * @param qName
+         * @param attributes
+         * @throws SAXException
+         */
         @Override
         public void startElement(
                 String uri, String localName,
@@ -56,6 +64,13 @@ public class CustomHandler2 extends DefaultHandler {
             }
         }
 
+        /**
+         * invoked when a closing xml tag is parsed
+         * @param uri
+         * @param localName
+         * @param qName
+         * @throws SAXException
+         */
         @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
@@ -64,7 +79,14 @@ public class CustomHandler2 extends DefaultHandler {
                 this.inDevList = false;
             }
         }
-
+        
+        /**
+         * invoked when between start and end XML tags
+         * @param ch
+         * @param start
+         * @param length
+         * @throws SAXException
+         */
         @Override
         public void characters(char[] ch, int start, int length)
                 throws SAXException {

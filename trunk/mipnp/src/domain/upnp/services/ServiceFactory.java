@@ -1,7 +1,21 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * MiPnP, a minimal Plug and Play Server.
+ * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package domain.upnp.services;
 
 import domain.upnp.Action;
@@ -15,8 +29,16 @@ import java.util.List;
  *
  * @author Jeroen De Wilde
  */
+
+
 public class ServiceFactory {
 
+    /**
+     * initializes a service to the correct object (contentdirectory, connectionmanager)
+     * @param service the service to be initialized
+     * @param serviceType the type of the service
+     * @return initialized service
+     */
     public static Service initializeService(Service service, String serviceType) {
         if (serviceType.equalsIgnoreCase("contentdirectory")) {
             return initializeContentDirectory(service);
@@ -27,6 +49,12 @@ public class ServiceFactory {
         }
     }
 
+    /**
+     * 
+     * @param service the service to be initialized
+     * @return initialized service
+     */
+    
     private static Service initializeContentDirectory(Service service) {
         //create actionlist
         List<Action> actions = new ArrayList<Action>();
@@ -134,6 +162,11 @@ public class ServiceFactory {
         return service;
     }
 
+    /**
+     * initialize a connectionmanager
+     * @param service the service to be initialized
+     * @return initialized service
+     */
     private static Service initializeConnectionManager(Service service) {
 
         //create action list
