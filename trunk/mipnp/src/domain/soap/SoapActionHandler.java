@@ -24,4 +24,8 @@ package domain.soap;
  */
 public class SoapActionHandler {
 
+    public void handleSoapAction(SoapAction act) {
+
+    }
+
 }

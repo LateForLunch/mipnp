@@ -34,6 +34,7 @@ public interface HttpConstants {
     public static final int HTTP_DEFAULT_PORT = 80;
     public static final String HTTP_DEFAULT_CHARSET_NAME = "US-ASCII";
     public static final Charset HTTP_DEFAULT_CHARSET = Charset.forName(HTTP_DEFAULT_CHARSET_NAME);
+    public static final String RFC1123_DATE_PATTERN = "EEE, dd MMM yyyyy HH:mm:ss z";
 
     public static final byte CRb = 10;
     public static final byte LFb = 13;

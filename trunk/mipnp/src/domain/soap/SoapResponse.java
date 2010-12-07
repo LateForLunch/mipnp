@@ -18,10 +18,21 @@
 
 package domain.soap;
 
+import domain.http.HttpResponse;
+
 /**
  *
  * @author Tijl Van Assche
  */
-public class SoapResponse {
+public class SoapResponse extends HttpResponse {
+
+    public SoapResponse() {
+        super();
+    }
+
+    public SoapResponse(SoapAction action) {
+        super(action);
+    }
+
 
 }
