@@ -47,7 +47,7 @@ public class NetworkInterfaceTools {
                 InetAddress ia = ias.nextElement();
                 // Only support for IPv4 for now
                 if (isIPv4(ia.getAddress())) {
-                    list.add(ni.getDisplayName() + " (" + ia.getHostAddress() + ")");
+                    list.add(ni.getName() + " (" + ia.getHostAddress() + ")");
                 }
             }
         }

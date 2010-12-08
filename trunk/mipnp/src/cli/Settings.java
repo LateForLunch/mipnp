@@ -36,6 +36,7 @@ public class Settings {
     public static final String INTERFACE = "interface";
     public static final String BIND_ADDRESS = "bindaddr";
     public static final String HTTP_PORT = "httpport";
+    public static final String HELP = "help";
 
     private static Properties settings;
 
@@ -48,8 +49,12 @@ public class Settings {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-i") || args[i].equalsIgnoreCase("--" + INTERFACE)) {
                 setProperty(INTERFACE, args[++i]);
-            } else if (args[i].equals("-h") || args[i].equalsIgnoreCase("--" + HTTP_PORT)) {
+                System.out.println(getProperty(INTERFACE));
+            } else if (args[i].equals("-p") || args[i].equalsIgnoreCase("--" + HTTP_PORT)) {
                 setProperty(HTTP_PORT, args[++i]);
+            } else if (args[i].equals("-h") || args[i].equalsIgnoreCase("--" + HELP)) {
+                help();
+                System.exit(0);
             }
         }
     }
@@ -99,5 +104,26 @@ public class Settings {
     private static int askUser(String question, String[] options, int defaultValue) {
         CliMenu menu = new CliMenu(question, options, defaultValue);
         return menu.show();
+    }
+
+    private static void help() {
+        System.out.println("java mipnp.jar [-i " + INTERFACE +
+                "] [-b " + BIND_ADDRESS + "] [-p " + HTTP_PORT + "]");
+        System.out.println();
+        System.out.println("  -i " + INTERFACE);
+        System.out.println("  --" + INTERFACE + " " + INTERFACE);
+        System.out.println("      Specify the interface to use.");
+        System.out.println();
+        System.out.println("  -b " + BIND_ADDRESS);
+        System.out.println("  --" + BIND_ADDRESS + " " + BIND_ADDRESS);
+        System.out.println("      Specify the address the server will bind to.");
+        System.out.println();
+        System.out.println("  -p" + HTTP_PORT);
+        System.out.println("  --" + HTTP_PORT + " " + HTTP_PORT);
+        System.out.println("      Specify the HTTP port.");
+        System.out.println();
+        System.out.println("  -h");
+        System.out.println("  --help");
+        System.out.println("      Display this help.");
     }
 }
