@@ -107,7 +107,7 @@ public class HttpServerController {
         HttpResource r1;
         try {
             r1 = new HttpResource(content.getBytes("UTF-8"), "text/html", "utf-8");
-            addHttpResource(new URI("/test.html"), r1);
+            addHttpResource(new URI("/"), r1);
         } catch (UnsupportedEncodingException ex) {
             // should not happen
         } catch (URISyntaxException ex) {
