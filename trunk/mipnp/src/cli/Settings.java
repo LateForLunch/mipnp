@@ -37,6 +37,7 @@ public class Settings {
     public static final String BIND_ADDRESS = "bindaddr";
     public static final String HTTP_PORT = "httpport";
     public static final String HELP = "help";
+    public static final String HTTP_DIR = "httpdir";
 
     private static Properties settings;
 
@@ -55,6 +56,8 @@ public class Settings {
             } else if (args[i].equals("-h") || args[i].equalsIgnoreCase("--" + HELP)) {
                 help();
                 System.exit(0);
+            } else if (args[i].equals("-d") || args[i].equalsIgnoreCase("--" + HTTP_DIR)) {
+                setProperty(HTTP_DIR, args[++i]);
             }
         }
     }
