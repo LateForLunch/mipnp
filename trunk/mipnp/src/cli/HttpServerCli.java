@@ -24,14 +24,29 @@ package cli;
 
 import domain.http.HttpRequest;
 import domain.http.IHttpRequestHandler;
+import domain.shutdown.IShutdownListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class HttpServerCli implements IHttpRequestHandler {
+public class HttpServerCli implements IHttpRequestHandler, IShutdownListener {
 
-    public HttpServerCli() {
+    private HttpServerController controller;
+
+    public HttpServerCli(HttpServerController controller) {
+        this.controller = controller;
+        startMessage();
+        try {
+            controller.start();
+        } catch (IOException ex) {
+            System.err.println("Could not start HTTP server: \n" + ex.getMessage());
+            System.exit(2);
+        }
+        okMessage();
     }
 
     public void handleHttpRequest(HttpRequest request) {
@@ -40,5 +55,24 @@ public class HttpServerCli implements IHttpRequestHandler {
                     "HTTP request: " + request.getMethod() +
                     " " + request.getRequestUri());
         }
+    }
+
+    public void shutdown() {
+        stopMessage();
+        controller.stop();
+        okMessage();
+    }
+
+    private void startMessage() {
+        System.out.print("Starting HTTP server on address " +
+                controller.getBindAddr() + " port " + controller.getPort() + "...");
+    }
+
+    private void stopMessage() {
+        System.out.print("Stopping HTTP server...");
+    }
+
+    private void okMessage() {
+        System.out.println("OK");
     }
 }

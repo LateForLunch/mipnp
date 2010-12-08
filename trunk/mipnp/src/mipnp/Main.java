@@ -23,7 +23,6 @@
 package mipnp;
 
 import cli.MainController;
-import domain.shutdown.ShutdownHook;
 
 /**
  *
@@ -42,7 +41,6 @@ public class Main {
          * - ShutdownHook should print "Shutdown" when the program is shutting down.
          * - ShutdownHook should work with System.exit(int), ^C, etc...
          */
-        new ShutdownHook();
         new MainController(args);
     }
 }

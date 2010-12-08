@@ -66,7 +66,6 @@ public class ShutdownHook {
         public void run() {
             // Don't allow add/remove ShutdownListener anymore
             setShutdownStarted(true);
-System.out.println("Shutdown."); // TEST
             for (IShutdownListener l : listeners) {
                 l.shutdown();
             }

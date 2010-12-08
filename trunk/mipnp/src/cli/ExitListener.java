@@ -22,13 +22,14 @@
  */
 package cli;
 
+import domain.shutdown.IShutdownListener;
 import java.util.Scanner;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class ExitListener implements Runnable {
+public class ExitListener implements Runnable, IShutdownListener {
 
     private MainController mainController;
     private Scanner input;
@@ -39,12 +40,16 @@ public class ExitListener implements Runnable {
     }
 
     public void run() {
-System.out.println("Press 'q' to exit."); // TEST
+        System.out.println("Press 'q' to exit.");
         while (true) {
             String str = input.nextLine();
             if (str.charAt(0) == 'q') {
-                mainController.exit(0);
+                System.exit(0);
             }
         }
+    }
+
+    public void shutdown() {
+        System.out.println("Shutdown");
     }
 }

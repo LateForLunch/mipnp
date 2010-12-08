@@ -23,10 +23,13 @@
 package cli;
 
 import domain.http.HttpServer;
+import domain.shutdown.IShutdownListener;
+import domain.shutdown.ShutdownHook;
 import domain.upnp.HttpRequestHandler;
 import domain.upnp.HttpResource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -36,27 +39,44 @@ import java.net.URISyntaxException;
  */
 public class HttpServerController {
 
+    private ShutdownHook shutdownHook;
     private HttpServer httpServer;
     private HttpServerCli httpServerCli;
     private HttpRequestHandler httpRequestHandler;
 
-    public HttpServerController(MainController main, HttpServer server) {
+    public HttpServerController(ShutdownHook shutdownHook, HttpServer server) {
+        this.shutdownHook = shutdownHook;
         this.httpServer = server;
-        this.httpServerCli = new HttpServerCli();
         this.httpRequestHandler = new HttpRequestHandler();
-        server.addRequestHandler(httpServerCli);
-        server.addRequestHandler(httpRequestHandler);
         test();
-        try {
-            server.start();
-        } catch (IOException ex) {
-            System.err.println("Could not start HTTP server: \n" + ex.getMessage());
-            main.exit(2);
-        }
+        httpServer.addRequestHandler(httpRequestHandler);
+        this.httpServerCli = new HttpServerCli(this);
+        shutdownHook.addShutdownListener(httpServerCli);
+        httpServer.addRequestHandler(httpServerCli);
+    }
+
+    public void start() throws IOException {
+        httpServer.start();
+    }
+
+    public void stop() {
+        httpServer.stop();
+    }
+
+    public int getPort() {
+        return httpServer.getPort();
+    }
+
+    public String getBindAddr() {
+        return httpServer.getBindAddr().getHostAddress();
     }
 
     public void addHttpResource(URI relativeUri, HttpResource resource) {
         httpRequestHandler.addHttpResource(relativeUri, resource);
+    }
+
+    public void shutdown() {
+        stop();
     }
 
     private void test() {

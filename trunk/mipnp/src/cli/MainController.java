@@ -23,6 +23,7 @@
 package cli;
 
 import domain.http.HttpServer;
+import domain.shutdown.ShutdownHook;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -32,11 +33,13 @@ import java.net.UnknownHostException;
  */
 public class MainController {
 
+    private ShutdownHook shutdownHook;
     private ExitListener exitListener;
     private HttpServer httpServer;
     private HttpServerController httpServerController;
 
     public MainController(String[] args) {
+        shutdownHook = new ShutdownHook();
         Settings.parseArguments(args);
         Settings.checkSettings();
         init();
@@ -44,6 +47,7 @@ public class MainController {
 
     private void init() {
         this.exitListener = new ExitListener(this);
+        shutdownHook.addShutdownListener(exitListener);
         new Thread(exitListener).start();
         int httpPort = 0;
         try {
@@ -62,10 +66,10 @@ public class MainController {
             exit(1);
         }
         this.httpServer = new HttpServer(httpPort, 0, httpAddress);
-        this.httpServerController = new HttpServerController(this, httpServer);
+        this.httpServerController = new HttpServerController(shutdownHook, httpServer);
     }
 
-    public void exit(int status) {
+    private void exit(int status) {
         System.exit(status);
     }
 }
