@@ -23,13 +23,11 @@
 package cli;
 
 import domain.http.HttpServer;
-import domain.shutdown.IShutdownListener;
 import domain.shutdown.ShutdownHook;
 import domain.upnp.HttpRequestHandler;
 import domain.upnp.HttpResource;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 

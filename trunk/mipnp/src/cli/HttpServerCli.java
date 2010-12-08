@@ -26,8 +26,6 @@ import domain.http.HttpRequest;
 import domain.http.IHttpRequestHandler;
 import domain.shutdown.IShutdownListener;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
