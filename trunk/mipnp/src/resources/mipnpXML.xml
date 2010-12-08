@@ -4,7 +4,7 @@
 		<major>1</major>
 		<minor>0</minor>
 	</specVersion>
-	<URLBase>URLBase wop wop wop</URLBase>
+	<URLBase>http://192.168.1.3:44444</URLBase>
 	<device>
 		<deviceType> urn:schemas-upnp-org:device:MediaServer:1</deviceType>
 		<friendlyName>MiPnP v0.1</friendlyName>
@@ -19,20 +19,20 @@
 		<UPC>Universal Product Code</UPC>
 		<serviceList>
 			<service>
-				<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1 </serviceType>
+				<serviceType>urn:schemas-upnp-org:service:ContentDirectory:1</serviceType>
 				<serviceId>urn:upnp-org:serviceId:ContentDirectory </serviceId>
-				<SCPDURL>URL to service description</SCPDURL>
-				<controlURL>URL for control</controlURL>
-				<eventSubURL>URL for eventing</eventSubURL>
+				<SCPDURL>/mipnp/mipnp_cds.xml</SCPDURL>
+				<controlURL>/mipnp/mipnp_cds_control</controlURL>
+				<eventSubURL>/mipnp/mipnp_cds_event</eventSubURL>
 			</service>
 			<service>
 				<serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
 				<serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId>
-				<SCPDURL>URL to service description</SCPDURL>
-				<controlURL>URL for control</controlURL>
-				<eventSubURL>URL for eventing</eventSubURL>
+				<SCPDURL>/mipnp/mipnp_cms.xml</SCPDURL>
+				<controlURL>/mipnp/mipnp_cms_control</controlURL>
+				<eventSubURL>/mipnp/mipnp_cms_event</eventSubURL>
 			</service>
 		</serviceList>
-		<presentationURL>URL for presentation</presentationURL>
+		<presentationURL>/mipnp/mipnp.html</presentationURL>
 	</device>
 </root>

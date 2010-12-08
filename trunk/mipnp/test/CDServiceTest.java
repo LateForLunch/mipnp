@@ -5,6 +5,7 @@
 
 import domain.upnp.services.ServiceFactory;
 import domain.upnp.Service;
+import domain.xml.ConfigurationManager;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,15 +19,15 @@ import org.junit.Test;
  */
 public class CDServiceTest {
 
-    private static Service cd;
+    private Service cd;
 
     public CDServiceTest() {
+        cd = new ConfigurationManager().createDeviceFromXML("src/resources/mipnpXML_1.xml").getServices().get(0);
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        cd = new Service();
-        ServiceFactory.initializeService(cd,"contentdirectory");
+        
     }
 
     @AfterClass

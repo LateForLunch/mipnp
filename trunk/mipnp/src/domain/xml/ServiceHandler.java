@@ -26,6 +26,8 @@ class ServiceHandler extends DefaultHandler {
         private XMLReader xmlReader;
         private ContentHandler parent;
         private Service currentServ;
+        //Jeroen
+        private String urlBase;
 
         public ServiceHandler() {
             this.buffer = new CharArrayWriter();
@@ -43,6 +45,8 @@ class ServiceHandler extends DefaultHandler {
             this.currentServ = newServ;
             this.xmlReader = xmlReader;
             this.parent = parent;
+            //Jeroen          
+            urlBase = ((DeviceHandler)parent).getCurrentDev().getUrlBase().toString();
             xmlReader.setContentHandler(this);
 
         }
@@ -89,11 +93,11 @@ class ServiceHandler extends DefaultHandler {
                 }
                 currentServ.setServiceId(currentServiceId);
             } else if (qName.equalsIgnoreCase("SCPDURL")) {
-                    currentServ.setScpdURL(new URL(buffer.toString()));
+                    currentServ.setScpdURL(new URL(urlBase.concat(buffer.toString())));
             } else if (qName.equalsIgnoreCase("controlURL")) {
-                    currentServ.setControlURL(new URL(buffer.toString()));
+                    currentServ.setControlURL(new URL(urlBase.concat(buffer.toString())));
             } else if (qName.equalsIgnoreCase("eventSubURL")) {
-                    currentServ.setEventSubURL(new URL(buffer.toString()));
+                    currentServ.setEventSubURL(new URL(urlBase.concat(buffer.toString())));
             } else if (qName.equalsIgnoreCase("service")) {
                 xmlReader.setContentHandler(parent);
             }

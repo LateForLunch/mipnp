@@ -2,11 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package domain.xml;
 
 import domain.upnp.Device;
 import java.io.CharArrayWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -18,83 +21,94 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class CustomHandler2 extends DefaultHandler {
 
-        private XMLReader xmlReader;
-        private CharArrayWriter buffer;
-        private DeviceHandler deviceHandler;
-        private ServiceHandler serviceHandler;
-        private Device rootDev;
-        private Device currentDev;
-        private boolean inDevList;
+    private XMLReader xmlReader;
+    private CharArrayWriter buffer;
+    private DeviceHandler deviceHandler;
+    private ServiceHandler serviceHandler;
+    private Device rootDev;
+    private Device currentDev;
+    private boolean inDevList;
+    //Jeroen
+    private URL urlBase;
 
-        public CustomHandler2(XMLReader xmlReader) {
-            this.xmlReader = xmlReader;
-            this.buffer = new CharArrayWriter();
-            this.deviceHandler = new DeviceHandler();
-            this.rootDev = new Device();
-            this.currentDev = rootDev;
-            this.inDevList = false;
-        }
+    public CustomHandler2(XMLReader xmlReader) {
+        this.xmlReader = xmlReader;
+        this.buffer = new CharArrayWriter();
+        this.deviceHandler = new DeviceHandler();
+        this.rootDev = new Device();
+        this.currentDev = rootDev;
+        this.inDevList = false;
+    }
 
-        /**
-         * invoked when a start xml tag is parsed
-         * @param uri
-         * @param localName
-         * @param qName
-         * @param attributes
-         * @throws SAXException
-         */
-        @Override
-        public void startElement(
-                String uri, String localName,
-                String qName, Attributes attributes)
-                throws SAXException {
+    /**
+     * invoked when a start xml tag is parsed
+     * @param uri
+     * @param localName
+     * @param qName
+     * @param attributes
+     * @throws SAXException
+     */
+    @Override
+    public void startElement(
+            String uri, String localName,
+            String qName, Attributes attributes)
+            throws SAXException {
 
-            buffer.reset();
+        buffer.reset();
 
-            if (qName.equalsIgnoreCase("device")) {
-                Device dev = rootDev;
-                if (inDevList) {
-                    dev = new Device();
+        if (qName.equalsIgnoreCase("device")) {
+            Device dev = rootDev;
+            rootDev.setUrlBase(urlBase);
+            if (inDevList) {
+                dev = new Device();
 //                    rootDev.addEmbeddedDevice(dev); // TODO (low priority) add support for embedded devices
-                    currentDev = dev;
-                }
-                deviceHandler.handleDevice(dev, xmlReader, this);
-                } else if (qName.equalsIgnoreCase("deviceList")) {
-                    this.inDevList = true;
+                currentDev = dev;
             }
-        }
-
-        /**
-         * invoked when a closing xml tag is parsed
-         * @param uri
-         * @param localName
-         * @param qName
-         * @throws SAXException
-         */
-        @Override
-        public void endElement(String uri, String localName, String qName)
-                throws SAXException {
-
-            if (localName.equalsIgnoreCase("deviceList")) {
-                this.inDevList = false;
-            }
-        }
-        
-        /**
-         * invoked when between start and end XML tags
-         * @param ch
-         * @param start
-         * @param length
-         * @throws SAXException
-         */
-        @Override
-        public void characters(char[] ch, int start, int length)
-                throws SAXException {
-
-            buffer.write(ch, start, length);
-        }
-
-        public Device getRootDevice() {
-            return rootDev;
+            deviceHandler.handleDevice(dev, xmlReader, this);
+        } else if (qName.equalsIgnoreCase("deviceList")) {
+            this.inDevList = true;
         }
     }
+
+    /**
+     * invoked when a closing xml tag is parsed
+     * @param uri
+     * @param localName
+     * @param qName
+     * @throws SAXException
+     */
+    @Override
+    public void endElement(String uri, String localName, String qName)
+            throws SAXException {
+
+        if (localName.equalsIgnoreCase("deviceList")) {
+            this.inDevList = false;
+        } else if (qName.equalsIgnoreCase("URLBase")){ //Jeroen
+            try {
+                urlBase = new URL(buffer.toString());               
+            } catch (MalformedURLException ex) {
+                System.out.println("Malformed URL!");
+                ex.printStackTrace();;
+                System.exit(1);
+            }
+        }
+    }
+
+    /**
+     * invoked when between start and end XML tags
+     * @param ch
+     * @param start
+     * @param length
+     * @throws SAXException
+     */
+    @Override
+    public void characters(char[] ch, int start, int length)
+            throws SAXException {
+
+        buffer.write(ch, start, length);
+    }
+
+    public Device getRootDevice() {
+        return rootDev;
+    }
+}

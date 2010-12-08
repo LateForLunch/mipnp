@@ -6,6 +6,7 @@
 import domain.upnp.Service;
 import org.junit.Assert;
 import domain.upnp.services.ServiceFactory;
+import domain.xml.ConfigurationManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -17,15 +18,15 @@ import org.junit.Test;
  * @author Jeroen De Wilde
  */
 public class CMServiceTest {
-    private static Service cm;
+    private Service cm;
 
     public CMServiceTest() {
+          cm = new ConfigurationManager().createDeviceFromXML("src/resources/mipnpXML_1.xml").getServices().get(1);
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        cm = new Service();
-        ServiceFactory.initializeService(cm,"connectionmanager");
+      
     }
 
     @AfterClass

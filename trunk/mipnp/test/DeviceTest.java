@@ -18,15 +18,20 @@ import org.junit.Test;
  * @author Jeroen De Wilde
  */
 public class DeviceTest {
-    private static Device d;
+    private  Device d;
+    private Service contentDirectory;
+    private Service connectionManager;
 
     public DeviceTest() {
+        ConfigurationManager cm = new ConfigurationManager();
+         d = cm.createDeviceFromXML("src/resources/mipnpXML_1.xml");
+         contentDirectory = d.getServices().get(0);
+         connectionManager = d.getServices().get(1);
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-         ConfigurationManager cm = new ConfigurationManager();
-         d = cm.createDeviceFromXML("src/resources/mipnpXML_1.xml");
+         
     }
 
     @AfterClass
@@ -45,62 +50,60 @@ public class DeviceTest {
     // The methods must be annotated with annotation @Test. For example:
     //
      @Test
-     public void TestDeviceNotNull() {
+     public void testDeviceNotNull() {
      Assert.assertNotNull(d);
      }
 
      @Test
-     public void TestDeviceOK() {
-     // UUID
+     public void testDeviceOK() {
      Assert.assertEquals("uuid:UUID", d.getUdn());
-     //<friendlyName>MiPnP v0.1</friendlyName>
      Assert.assertEquals("MiPnP v0.1", d.getFriendlyName());
-     //<deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType>
      Assert.assertEquals("urn:schemas-upnp-org:device:MediaServer:1", d.getDeviceType());
-     //<manufacturer>MiPnP devs</manufacturer>
      Assert.assertEquals("MiPnP devs",d.getManufacturer());
-     //<manufacturerURL>https://code.google.com/p/mipnp/</manufacturerURL>
      Assert.assertEquals("MiPnP: Minimal UPnP MediaServer",d.getModelDescription());
-        //<modelDescription>MiPnP: Minimal UPnP MediaServer</modelDescription>
-        //<modelName>Modelname: MiPnP xxx</modelName>
-        //<modelNumber>01</modelNumber>
-        //<modelURL>https://code.google.com/p/mipnp/</modelURL>
-        //<serialNumber>serialNumber</serialNumber>
-        //<UDN>uuid:UUID</UDN>
-        //<UPC>Universal Product Code</UPC>
+
+     
      }
 
      @Test
-     public void TestDeviceServices() {
-         /*
-          * <serviceList>
-            <service>
-            <serviceType>urn:schemas-upnp-org:service:ContentDirectory:1 </serviceType>
-            <serviceId>urn:upnp-org:serviceId:ContentDirectory </serviceId>
-            <SCPDURL>http://www.CDdescription.com</SCPDURL>
-            <controlURL>http://www.CDcontrol.com</controlURL>
-            <eventSubURL>http://www.CDeventing.com</eventSubURL>
-            </service>
-            <service>
-            <serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType>
-            <serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId>
-            <SCPDURL>http://www.CMdescription.com</SCPDURL>
-            <controlURL>http://www.CMcontrol.com</controlURL>
-            <eventSubURL>http://www.CMeventing.com</eventSubURL>
-            </service>
-            </serviceList>
-          */
+     public void testURLSDevice(){
+         //presentation URL device
+         Assert.assertEquals("http://192.168.1.3:44444/mipnp/mipnp.html",d.getPresentationURL().toString());
+    }
+
+    @Test
+    public void testURLSContentdirectory(){
+         //presentation URL contentdirectory
+         Assert.assertEquals("http://192.168.1.3:44444/mipnp/mipnp_cds.xml",contentDirectory.getScpdURL().toString());
+         //control URL contentdirectory
+         Assert.assertEquals("http://192.168.1.3:44444/mipnp/mipnp_cds_control",contentDirectory.getControlURL().toString());
+         //eventing URL contentdirectory
+         Assert.assertEquals("http://192.168.1.3:44444/mipnp/mipnp_cds_event",contentDirectory.getEventSubURL().toString());
+    }
+    @Test
+    public void testURLSConnectionManager(){
+         //presentation URL connectionManager
+         Assert.assertEquals("http://192.168.1.3:44444/mipnp/mipnp_cms.xml",connectionManager.getScpdURL().toString());
+         //control URL connectionManager
+         Assert.assertEquals("http://192.168.1.3:44444/mipnp/mipnp_cms_control",connectionManager.getControlURL().toString());
+         //eventing URL connectionManager
+         Assert.assertEquals("http://192.168.1.3:44444/mipnp/mipnp_cms_event",connectionManager.getEventSubURL().toString());
+     }
+
+     @Test
+     public void testDeviceServices() {
          //Test of twee services (CD en CM)
          Assert.assertTrue(d.getServices().size() == 2);
 
          //Test Contentdirectory
-         Service contentDirectory = d.getServices().get(0);
+         
          Assert.assertEquals("urn:schemas-upnp-org:service:ContentDirectory:1", contentDirectory.getServiceType());
          Assert.assertEquals("urn:upnp-org:serviceId:ContentDirectory", contentDirectory.getServiceId());
-         Assert.assertEquals("http://www.CDdescription.com", contentDirectory.getScpdURL().toString());
 
          //Test ConnectionManager
-         //Service connectionManager = d.getServices().get(1);
+         
+         Assert.assertEquals("urn:schemas-upnp-org:service:ConnectionManager:1", connectionManager.getServiceType());
+         //...
      }
 
 }

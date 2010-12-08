@@ -29,6 +29,7 @@ class DeviceHandler extends DefaultHandler {
         private Device currentDev;
         private ServiceHandler serviceHandler;
 
+
         public DeviceHandler() {
             this.buffer = new CharArrayWriter();
         }
@@ -64,7 +65,7 @@ class DeviceHandler extends DefaultHandler {
 
             if (qName.equalsIgnoreCase("service")) {
                 Service newServ = new Service();
-                currentDev.addService(newServ);
+                getCurrentDev().addService(newServ);
                 serviceHandler.handleService(newServ, xmlReader, this);
             }
 
@@ -83,31 +84,31 @@ class DeviceHandler extends DefaultHandler {
                 throws SAXException {
         try{
             if (qName.equalsIgnoreCase("deviceType")) {
-                currentDev.setDeviceType(buffer.toString());
+                getCurrentDev().setDeviceType(buffer.toString());
             } else if (qName.equalsIgnoreCase("friendlyName")) {
-                currentDev.setFriendlyName(buffer.toString());
+                getCurrentDev().setFriendlyName(buffer.toString());
             } else if (qName.equalsIgnoreCase("manufacturer")) {
-                currentDev.setManufacturer(buffer.toString());
+                getCurrentDev().setManufacturer(buffer.toString());
             } else if (qName.equalsIgnoreCase("manufacturerURL")) {
-                currentDev.setManufacturerURL(new URL(buffer.toString()));
+                getCurrentDev().setManufacturerURL(new URL(buffer.toString()));
             } else if(qName.equalsIgnoreCase("modelDescription")) {
-                currentDev.setModelDescription(buffer.toString());
+                getCurrentDev().setModelDescription(buffer.toString());
             } else if(qName.equalsIgnoreCase("modelName")) {
-                currentDev.setModelName(buffer.toString());
+                getCurrentDev().setModelName(buffer.toString());
             } else if(qName.equalsIgnoreCase("modelNumber")) {
-                currentDev.setModelNumber(Integer.parseInt(buffer.toString()));
+                getCurrentDev().setModelNumber(Integer.parseInt(buffer.toString()));
             } else if(qName.equalsIgnoreCase("modelURL")) {
-                currentDev.setModelURL(new URL(buffer.toString()));
+                getCurrentDev().setModelURL(new URL(buffer.toString()));
             } else if(qName.equalsIgnoreCase("serialNumber")) {
-                currentDev.setSerialNumber(buffer.toString());
+                getCurrentDev().setSerialNumber(buffer.toString());
             } else if(qName.equalsIgnoreCase("UDN")) {
-                currentDev.setUdn(buffer.toString());
+                getCurrentDev().setUdn(buffer.toString());
             } else if(qName.equalsIgnoreCase("UPC")) {
-                currentDev.setUpc(buffer.toString());
+                getCurrentDev().setUpc(buffer.toString());
             } else if(qName.equalsIgnoreCase("presentationURL")) {
-                currentDev.setPresentationURL(new URL(buffer.toString()));
-            } else if(qName.equalsIgnoreCase("urlBase")) {
-                currentDev.setUrlBase(new URL(buffer.toString()));
+                getCurrentDev().setPresentationURL(new URL(getCurrentDev().getUrlBase().toString().concat(buffer.toString())));
+            } else if(qName.equalsIgnoreCase("urlBase")) {          
+                getCurrentDev().setUrlBase(new URL(buffer.toString()));
             } else if (qName.equalsIgnoreCase("device")) {
                 xmlReader.setContentHandler(parent);
             }
@@ -132,4 +133,11 @@ class DeviceHandler extends DefaultHandler {
             buffer.write(ch, start, length);
 
         }
+
+    /**@author Jeroen
+     * @return the currentDev
+     */
+    public Device getCurrentDev() {
+        return currentDev;
+    }
     }
