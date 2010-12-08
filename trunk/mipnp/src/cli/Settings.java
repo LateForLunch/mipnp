@@ -125,6 +125,10 @@ public class Settings {
         System.out.println("  --" + HTTP_PORT + " " + HTTP_PORT);
         System.out.println("      Specify the HTTP port.");
         System.out.println();
+        System.out.println("  -d " + HTTP_DIR);
+        System.out.println("  --" + HTTP_DIR + " " + HTTP_DIR);
+        System.out.println("      Specify the directory to share.");
+        System.out.println();
         System.out.println("  -h");
         System.out.println("  --help");
         System.out.println("      Display this help.");
