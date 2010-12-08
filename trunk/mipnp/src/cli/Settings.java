@@ -35,18 +35,21 @@ public class Settings {
 
     public static final String INTERFACE = "interface";
     public static final String BIND_ADDRESS = "bindaddr";
+    public static final String HTTP_PORT = "httpport";
 
     private static Properties settings;
 
     static {
         settings = new Properties();
-        // TODO: Set default settings
+        setProperty(HTTP_PORT, "8080");
     }
 
     public static void parseArguments(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-i") || args[i].equalsIgnoreCase("--" + INTERFACE)) {
                 setProperty(INTERFACE, args[++i]);
+            } else if (args[i].equals("-h") || args[i].equalsIgnoreCase("--" + HTTP_PORT)) {
+                setProperty(HTTP_PORT, args[++i]);
             }
         }
     }

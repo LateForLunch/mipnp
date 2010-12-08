@@ -17,32 +17,28 @@
  */
 
 /*
- * Main.java
- * Created on Oct 17, 2010, 3:43:32 PM
+ * HttpServerCli.java
+ * Created on Dec 8, 2010, 9:06:31 PM
  */
-package mipnp;
+package cli;
 
-import cli.MainController;
-import domain.shutdown.ShutdownHook;
+import domain.http.HttpRequest;
+import domain.http.IHttpRequestHandler;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class Main {
+public class HttpServerCli implements IHttpRequestHandler {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        /*
-         * TEST:
-         * - Don't use the stop button in NetBeans.
-         * - Use 'q' <Enter> instead.
-         * - ShutdownHook should print "Shutdown" when the program is shutting down.
-         * - ShutdownHook should work with System.exit(int), ^C, etc...
-         */
-        new ShutdownHook();
-        new MainController(args);
+    public HttpServerCli() {
+    }
+
+    public void handleHttpRequest(HttpRequest request) {
+        if (request.isGet() || request.isHead()) {
+            System.out.println(
+                    "HTTP request: " + request.getMethod() +
+                    " " + request.getRequestUri());
+        }
     }
 }

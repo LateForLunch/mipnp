@@ -22,21 +22,47 @@
  */
 package cli;
 
+import domain.http.HttpServer;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class MainController {
 
-    private MainCli cli;
     private ExitListener exitListener;
+    private HttpServer httpServer;
+    private HttpServerController httpServerController;
 
     public MainController(String[] args) {
         Settings.parseArguments(args);
         Settings.checkSettings();
-        this.cli = new MainCli();
+        init();
+    }
+
+    private void init() {
         this.exitListener = new ExitListener(this);
         new Thread(exitListener).start();
+        int httpPort = 0;
+        try {
+            httpPort = Integer.parseInt(Settings.getProperty(Settings.HTTP_PORT));
+        } catch (NumberFormatException ex) {
+            System.err.println(
+                    "Illegal HTTP port: " + Settings.getProperty(Settings.HTTP_PORT));
+            exit(1);
+        }
+        InetAddress httpAddress = null;
+        try {
+            httpAddress = InetAddress.getByName(Settings.getProperty(Settings.BIND_ADDRESS));
+        } catch (UnknownHostException ex) {
+            System.err.println(
+                    "Illegal bind address: " + Settings.getProperty(Settings.BIND_ADDRESS));
+            exit(1);
+        }
+        this.httpServer = new HttpServer(httpPort, 0, httpAddress);
+        this.httpServerController = new HttpServerController(this, httpServer);
     }
 
     public void exit(int status) {

@@ -56,7 +56,6 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
             return; // Job already done
         }
         URI requestUri = request.getRequestUri();
-        System.out.println("HTTP Request: " + request.getMethod() + " " + requestUri); // TEST
         HttpResponse response = null;
         if (request.isGet() || request.isHead()) {
             requestUri = URI.create(requestUri.getPath());
