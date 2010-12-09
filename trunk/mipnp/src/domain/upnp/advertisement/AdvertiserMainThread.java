@@ -26,7 +26,7 @@ import domain.ssdp.SsdpConstants;
 import java.util.Random;
 
 /**
- *
+ * see {@link Advertiser}
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 class AdvertiserMainThread implements Runnable, SsdpConstants {

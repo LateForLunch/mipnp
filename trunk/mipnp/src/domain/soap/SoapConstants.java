@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
+ * Copyright (C) 2010  Tijl Van Assche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ * This interface provides constants useful for SOAP.
  * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
 public interface SoapConstants {

@@ -23,6 +23,7 @@
 package mipnp;
 
 import cli.MainController;
+import cli.Settings;
 
 /**
  *
@@ -31,7 +32,8 @@ import cli.MainController;
 public class Main {
 
     /**
-     * @param args the command line arguments
+     * Starts the program.
+     * @param args the command line arguments, see {@link Settings#help()}
      */
     public static void main(String[] args) {
         /*

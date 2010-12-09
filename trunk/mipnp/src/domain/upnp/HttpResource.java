@@ -22,8 +22,10 @@
  */
 package domain.upnp;
 
+import java.nio.charset.Charset;
+
 /**
- *
+ * A HttpResource object contains the data as a byte array + the content type.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class HttpResource {
@@ -32,6 +34,18 @@ public class HttpResource {
     private String contentType;
     private String charset;
 
+    /**
+     * Creates a new resource.<br/>
+     * <br />
+     * An example of a content type is: text/html<br />
+     * See the HTTP RFC for all conent types.<br/>
+     * <br/>
+     * An example of a charset is: UTF-8<br />
+     * See {@link Charset} for all charsets.
+     * @param data the data
+     * @param contentType the content type of the data
+     * @param charset the charset of the data
+     */
     public HttpResource(byte[] data, String contentType, String charset) {
         this.data = data;
         this.contentType = contentType;

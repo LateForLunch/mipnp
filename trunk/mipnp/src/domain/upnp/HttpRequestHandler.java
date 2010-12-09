@@ -36,21 +36,34 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- *
+ * This class can handle GET and HEAD HTTP methods.<br />
+ * Use the {@link HttpResource} class to feed this handler with data.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
 
     private Map<URI, HttpResource> resources;
 
+    /**
+     * Creates a new HttpRequestHandler, without any HTTP resources.
+     */
     public HttpRequestHandler() {
         this.resources = new HashMap<URI, HttpResource>();
     }
 
+    /**
+     * Add a HttpResource.
+     * @param relativeUri the URI the resource will be located at
+     * @param resource the resource
+     */
     public void addHttpResource(URI relativeUri, HttpResource resource) {
         resources.put(relativeUri, resource);
     }
 
+    /**
+     * Method that will be called when there is a new HttpRequest.
+     * @param request the new request
+     */
     public void handleHttpRequest(HttpRequest request) {
         if (request.isHandled()) {
             return; // Job already done
@@ -86,7 +99,12 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
         return response;
     }
 
-    // TEST
+    /**
+     * Test
+     * @param args
+     * @throws URISyntaxException
+     * @throws UnsupportedEncodingException
+     */
     public static void main(String[] args) throws URISyntaxException, UnsupportedEncodingException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating HTTP server...");

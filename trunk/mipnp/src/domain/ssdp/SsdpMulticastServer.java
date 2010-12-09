@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- *
+ * This class creates a new Thread to listen to multicast SSDP messages.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class SsdpMulticastServer implements SsdpConstants {
@@ -54,6 +54,10 @@ public class SsdpMulticastServer implements SsdpConstants {
         this.handlers = new ArrayList<ISsdpRequestHandler>();
     }
 
+    /**
+     * Start to listen to multicast SSDP messages.
+     * @throws IOException if an I/O error occurs
+     */
     public void start() throws IOException {
         this.group = InetAddress.getByName(groupAddress);
         this.multicastSocket = new MulticastSocket(port);
@@ -65,6 +69,9 @@ public class SsdpMulticastServer implements SsdpConstants {
         serverThread.start();
     }
 
+    /**
+     * Srop listening for multicast SSDP messages.
+     */
     public void stop() {
         try {
             multicastSocket.leaveGroup(group);
@@ -78,14 +85,28 @@ public class SsdpMulticastServer implements SsdpConstants {
         this.serverMain = null;
     }
 
+    /**
+     * Add a ISsdpRequestHandler.<br />
+     * The ISsdpRequestHandler will be calles when a new SsdpRequest comes in.
+     * @param handler the handler to add
+     */
     public void addRequestHandler(ISsdpRequestHandler handler) {
         handlers.add(handler);
     }
 
+    /**
+     * Remove a ISsdpRequestHandler.
+     * @param handler the handler to remove
+     */
     public void removeRequestHandler(ISsdpRequestHandler handler) {
         handlers.remove(handler);
     }
 
+    /**
+     * This method will notify all handlers when a new SsdpRequest comes in,<br/>
+     * even if a SsdpRequest is already handled.
+     * @param request
+     */
     protected void notifyHandlers(SsdpRequest request) {
         for (ISsdpRequestHandler handler : handlers) {
             handler.handleSsdpRequest(request);
@@ -129,7 +150,10 @@ public class SsdpMulticastServer implements SsdpConstants {
         this.ttl = ttl;
     }
 
-    // TEST
+    /**
+     * Test
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating SSDP server...");

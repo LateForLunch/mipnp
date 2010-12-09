@@ -76,6 +76,11 @@ public class SsdpListener implements Runnable {
         socket.close();
     }
 
+    /**
+     * Starts the SSDP test. This should start an SSDP listener.<br/>
+     * When there is SSDP traffic, the listener should print all the messages.
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating SSDP listener...");

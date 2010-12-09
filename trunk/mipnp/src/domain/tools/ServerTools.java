@@ -23,15 +23,23 @@
 package domain.tools;
 
 /**
- *
+ * This class provides static methods to get more info about the OS.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class ServerTools {
 
+    /**
+     * Get the OS name.
+     * @return the OS name
+     */
     public static String getOsName() {
         return System.getProperty("os.name");
     }
 
+    /**
+     * Get the OS version.
+     * @return the OS version
+     */
     public static String getOsVersion() {
         return System.getProperty("os.version");
     }

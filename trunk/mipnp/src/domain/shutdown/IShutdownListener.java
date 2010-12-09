@@ -23,7 +23,8 @@
 package domain.shutdown;
 
 /**
- *
+ * A shutdown listener gets called when the program is about to shut down.<br />
+ * This allows the program to shut down properly.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public interface IShutdownListener {

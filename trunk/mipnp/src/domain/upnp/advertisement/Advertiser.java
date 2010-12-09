@@ -30,7 +30,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 /**
- *
+ * An Advertiser starts a new Thread to advertise a root device and all of it's services.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class Advertiser implements SsdpConstants {
@@ -54,6 +54,10 @@ public class Advertiser implements SsdpConstants {
         setPort(port);
     }
 
+    /**
+     * Start the advertising.
+     * @throws IOException if an I/O error occurs
+     */
     public void start() throws IOException {
         this.group = InetAddress.getByName(groupAddress);
         this.multicastSocket = new MulticastSocket(port);
@@ -65,6 +69,9 @@ public class Advertiser implements SsdpConstants {
         advertiserThread.start();
     }
 
+    /**
+     * Stop the advertising.
+     */
     public void stop() {
         try {
             multicastSocket.leaveGroup(group);
@@ -78,6 +85,9 @@ public class Advertiser implements SsdpConstants {
         this.advertiserMain = null;
     }
 
+    /**
+     * This will request the Advertiser to send an alive message.
+     */
     public synchronized void requestAlive() {
         SsdpRequest[] list =
                 AdvertisePacketFactory.createMulticastAdvertiseSet(
@@ -106,6 +116,11 @@ public class Advertiser implements SsdpConstants {
         this.port = port;
     }
 
+    /**
+     * Get the TTL (Time To Live).<br />
+     * The default if 2.
+     * @return the TTL
+     */
     public int getTimeToLive() {
         if (multicastSocket != null) {
             try {
@@ -117,6 +132,11 @@ public class Advertiser implements SsdpConstants {
         return ttl;
     }
 
+    /**
+     * Sets the TTL (Time To Live).
+     * @param ttl the new TTL
+     * @throws IOException if an I/O error occurs
+     */
     public void setTimeToLive(int ttl) throws IOException {
         if (multicastSocket != null) {
             multicastSocket.setTimeToLive(ttl);

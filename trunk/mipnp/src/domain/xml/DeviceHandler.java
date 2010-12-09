@@ -1,8 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * MiPnP, a minimal Plug and Play Server.
+ * Copyright (C) 2010  Jeroen De Wilde, Jochem Van denbussche
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package domain.xml;
 
 import domain.upnp.Device;
@@ -18,71 +30,71 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  *
+ * @author Jeroen De Wilde
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
- *
  */
 class DeviceHandler extends DefaultHandler {
 
-        private CharArrayWriter buffer;
-        private XMLReader xmlReader;
-        private ContentHandler parent;
-        private Device currentDev;
-        private ServiceHandler serviceHandler;
+    private CharArrayWriter buffer;
+    private XMLReader xmlReader;
+    private ContentHandler parent;
+    private Device currentDev;
+    private ServiceHandler serviceHandler;
 
+    public DeviceHandler() {
+        this.buffer = new CharArrayWriter();
+    }
 
-        public DeviceHandler() {
-            this.buffer = new CharArrayWriter();
-        }
-        /**
-         * handles the device with the correct handler
-         * @param newDev
-         * @param xmlReader
-         * @param parent
-         */
-        public void handleDevice(
-                Device newDev, XMLReader xmlReader, ContentHandler parent) {
+    /**
+     * handles the device with the correct handler
+     * @param newDev
+     * @param xmlReader
+     * @param parent
+     */
+    public void handleDevice(
+            Device newDev, XMLReader xmlReader, ContentHandler parent) {
 
-            this.currentDev = newDev;
-            this.xmlReader = xmlReader;
-            this.parent = parent;
-            xmlReader.setContentHandler(this);
-            serviceHandler = new ServiceHandler();
-        }
+        this.currentDev = newDev;
+        this.xmlReader = xmlReader;
+        this.parent = parent;
+        xmlReader.setContentHandler(this);
+        serviceHandler = new ServiceHandler();
+    }
 
-        /**
-         * invoked when a start xml tag is parsed
-         * @param uri
-         * @param localName
-         * @param qName
-         * @param attributes
-         * @throws SAXException
-         */
-        @Override
-        public void startElement(
-                String uri, String localName,
-                String qName, Attributes attributes)
-                throws SAXException {
+    /**
+     * invoked when a start xml tag is parsed
+     * @param uri
+     * @param localName
+     * @param qName
+     * @param attributes
+     * @throws SAXException
+     */
+    @Override
+    public void startElement(
+            String uri, String localName,
+            String qName, Attributes attributes)
+            throws SAXException {
 
-            if (qName.equalsIgnoreCase("service")) {
-                Service newServ = new Service();
-                getCurrentDev().addService(newServ);
-                serviceHandler.handleService(newServ, xmlReader, this);
-            }
-
-            buffer.reset();
+        if (qName.equalsIgnoreCase("service")) {
+            Service newServ = new Service();
+            getCurrentDev().addService(newServ);
+            serviceHandler.handleService(newServ, xmlReader, this);
         }
 
-        /**
-         * invoked when a closing xml tag is parsed
-         * @param uri
-         * @param localName
-         * @param qName
-         * @throws SAXException
-         */
-        @Override
-        public void endElement(String uri, String localName, String qName)
-                throws SAXException {
-        try{
+        buffer.reset();
+    }
+
+    /**
+     * invoked when a closing xml tag is parsed
+     * @param uri
+     * @param localName
+     * @param qName
+     * @throws SAXException
+     */
+    @Override
+    public void endElement(String uri, String localName, String qName)
+            throws SAXException {
+        try {
             if (qName.equalsIgnoreCase("deviceType")) {
                 getCurrentDev().setDeviceType(buffer.toString());
             } else if (qName.equalsIgnoreCase("friendlyName")) {
@@ -91,53 +103,53 @@ class DeviceHandler extends DefaultHandler {
                 getCurrentDev().setManufacturer(buffer.toString());
             } else if (qName.equalsIgnoreCase("manufacturerURL")) {
                 getCurrentDev().setManufacturerURL(new URL(buffer.toString()));
-            } else if(qName.equalsIgnoreCase("modelDescription")) {
+            } else if (qName.equalsIgnoreCase("modelDescription")) {
                 getCurrentDev().setModelDescription(buffer.toString());
-            } else if(qName.equalsIgnoreCase("modelName")) {
+            } else if (qName.equalsIgnoreCase("modelName")) {
                 getCurrentDev().setModelName(buffer.toString());
-            } else if(qName.equalsIgnoreCase("modelNumber")) {
+            } else if (qName.equalsIgnoreCase("modelNumber")) {
                 getCurrentDev().setModelNumber(Integer.parseInt(buffer.toString()));
-            } else if(qName.equalsIgnoreCase("modelURL")) {
+            } else if (qName.equalsIgnoreCase("modelURL")) {
                 getCurrentDev().setModelURL(new URL(buffer.toString()));
-            } else if(qName.equalsIgnoreCase("serialNumber")) {
+            } else if (qName.equalsIgnoreCase("serialNumber")) {
                 getCurrentDev().setSerialNumber(buffer.toString());
-            } else if(qName.equalsIgnoreCase("UDN")) {
+            } else if (qName.equalsIgnoreCase("UDN")) {
                 getCurrentDev().setUdn(buffer.toString());
-            } else if(qName.equalsIgnoreCase("UPC")) {
+            } else if (qName.equalsIgnoreCase("UPC")) {
                 getCurrentDev().setUpc(buffer.toString());
-            } else if(qName.equalsIgnoreCase("presentationURL")) {
+            } else if (qName.equalsIgnoreCase("presentationURL")) {
                 getCurrentDev().setPresentationURL(new URL(getCurrentDev().getUrlBase().toString().concat(buffer.toString())));
-            } else if(qName.equalsIgnoreCase("urlBase")) {          
+            } else if (qName.equalsIgnoreCase("urlBase")) {
                 getCurrentDev().setUrlBase(new URL(buffer.toString()));
             } else if (qName.equalsIgnoreCase("device")) {
                 xmlReader.setContentHandler(parent);
             }
-
-            } catch (MalformedURLException ex) {
-                    System.out.println("malformed URL");
-                    ex.printStackTrace();
-            }
+        } catch (MalformedURLException ex) {
+            System.out.println("malformed URL");
+            ex.printStackTrace();
         }
+    }
 
-        /**
-         * invoked when between start and end XML tags
-         * @param ch
-         * @param start
-         * @param length
-         * @throws SAXException
-         */
-        @Override
-        public void characters(char[] ch, int start, int length)
-                throws SAXException {
+    /**
+     * invoked when between start and end XML tags
+     * @param ch
+     * @param start
+     * @param length
+     * @throws SAXException
+     */
+    @Override
+    public void characters(char[] ch, int start, int length)
+            throws SAXException {
 
-            buffer.write(ch, start, length);
+        buffer.write(ch, start, length);
 
-        }
+    }
 
-    /**@author Jeroen
+    /**
+     *
      * @return the currentDev
      */
     public Device getCurrentDev() {
         return currentDev;
     }
-    }
+}

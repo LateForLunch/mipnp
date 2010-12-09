@@ -23,10 +23,9 @@
 package testTools;
 
 /**
- *
+ * @deprecated see {@link domain.http.HttpServer}
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class HttpServer {
 
-    // See test in domain.http.HttpSever
 }

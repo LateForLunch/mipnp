@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * This shutdown hook waits until the program is about to shut down.<br />
+ * It then warns all {@link IShutdownListener}.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class ShutdownHook {
@@ -34,12 +35,20 @@ public class ShutdownHook {
     private List<IShutdownListener> listeners;
     private boolean shutdownStarted;
 
+    /**
+     * Creates a new ShutdownHook.
+     */
     public ShutdownHook() {
         this.listeners = new ArrayList<IShutdownListener>();
         setShutdownStarted(false);
         Runtime.getRuntime().addShutdownHook(new Thread(new Hook()));
     }
 
+    /**
+     * Add a shutdown listener.
+     * @param l the shutdown listener to add
+     * @return true if successful, false otherwise
+     */
     public synchronized boolean addShutdownListener(IShutdownListener l) {
         if (!isShutdownStarted()) {
             return listeners.add(l);
@@ -47,6 +56,11 @@ public class ShutdownHook {
         return false;
     }
 
+    /**
+     * Remoce a shutdown listener
+     * @param l the shutdown listener to remove
+     * @return true is successful, false otherwise
+     */
     public synchronized boolean removeShutdownListener(IShutdownListener l) {
         if (!isShutdownStarted()) {
             return listeners.remove(l);

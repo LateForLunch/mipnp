@@ -25,6 +25,10 @@ package domain.upnp;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * 
+ * @author Jeroen De Wilde
+ */
 public class Service {
 
     private String serviceType;

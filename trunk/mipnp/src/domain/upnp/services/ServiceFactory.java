@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jochem Van denbussche, Tijl Van Assche
+ * Copyright (C) 2010  Jeroen De Wilde
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@ import java.util.List;
  *
  * @author Jeroen De Wilde
  */
-
-
 public class ServiceFactory {
 
     /**
@@ -54,7 +52,6 @@ public class ServiceFactory {
      * @param service the service to be initialized
      * @return initialized service
      */
-    
     private static Service initializeContentDirectory(Service service) {
         //create actionlist
         List<Action> actions = new ArrayList<Action>();

@@ -23,20 +23,24 @@
 package domain.xml;
 
 import domain.upnp.Device;
-import domain.upnp.Service;
 import java.io.File;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
 
 /**
- *
+ * The ConfigurationManager can read an XML file and create a Device object.
  * @author Jeroen De Wilde
  */
 public class ConfigurationManager {
 
     private SAXParserFactory saxParserFactory;
 
+    /**
+     * Creates a device from an XML file.
+     * @param xmlFilePath the path to the XML file to read
+     * @return the newly created Device
+     */
      public Device createDeviceFromXML(String xmlFilePath) {
         try {
             //create File from XMLFilePath

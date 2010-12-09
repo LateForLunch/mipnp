@@ -30,11 +30,16 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- *
+ * This class provides static methods to get more info about the network interfaces.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class NetworkInterfaceTools {
 
+    /**
+     * Makes a list of all network interfaces available.
+     * @return a list that contains all available network interfaces
+     * @throws SocketException if there is an error while retrieving all network interfaces
+     */
     public static String[] list() throws SocketException {
         Enumeration<NetworkInterface> nis =
                 NetworkInterface.getNetworkInterfaces();
@@ -56,10 +61,21 @@ public class NetworkInterfaceTools {
         return ret;
     }
 
+    /**
+     * Check if an IP address is version 4.
+     * @param ip the IP address to check
+     * @return true if the given IP address is IPv4, false otherwise
+     */
     public static boolean isIPv4(byte[] ip) {
         return (ip.length == 4 ? true : false);
     }
 
+    /**
+     * Get the IP address of a network interface.
+     * @param interf the network interface
+     * @return the IP address of the given network interface or null if nothing was found
+     * @throws SocketException if there was an error while retrieving the network interface
+     */
     public static String interfaceToIp(String interf) throws SocketException {
         NetworkInterface ni = NetworkInterface.getByName(interf);
         Enumeration<InetAddress> ias = ni.getInetAddresses();

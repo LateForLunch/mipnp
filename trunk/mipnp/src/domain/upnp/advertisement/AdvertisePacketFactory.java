@@ -41,6 +41,12 @@ public class AdvertisePacketFactory implements SsdpConstants {
     private static final int MAX_CONFIG_ID = 16777215;
     private static int configId = 0;
 
+    /**
+     * Creates a set of {@link SsdpRequest} objects to advertise a root device and all of it's services.
+     * @param rootDevice
+     * @param maxAge
+     * @return
+     */
     public static SsdpRequest[] createMulticastAdvertiseSet(
             Device rootDevice, int maxAge) {
 

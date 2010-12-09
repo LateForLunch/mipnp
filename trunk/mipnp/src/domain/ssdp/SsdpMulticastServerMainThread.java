@@ -28,7 +28,7 @@ import java.net.MulticastSocket;
 import java.net.SocketException;
 
 /**
- *
+ * see {@link SsdpMulticastServer}
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 class SsdpMulticastServerMainThread implements Runnable, SsdpConstants {

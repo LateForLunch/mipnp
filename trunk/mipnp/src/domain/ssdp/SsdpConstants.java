@@ -25,7 +25,7 @@ package domain.ssdp;
 import domain.http.HttpConstants;
 
 /**
- *
+ * This interface provides constants useful for SSDP.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public interface SsdpConstants extends HttpConstants {

@@ -34,6 +34,9 @@ import java.util.Enumeration;
  */
 public class IpInfo {
 
+    /**
+     * Starts the IpInfo test. This should print all the network interfaces.
+     */
     public static void main(String[] args) {
         try {
             InetAddress address = InetAddress.getLocalHost();
