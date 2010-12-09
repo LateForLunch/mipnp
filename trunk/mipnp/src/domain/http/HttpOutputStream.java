@@ -29,7 +29,8 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
 /**
- *
+ * This class can be used to write lines as well as byte arrays to an OutputStream.<br />
+ * The {@link HttpConstants#HTTP_DEFAULT_CHARSET} will be used to convert the Strings into a bytes.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class HttpOutputStream extends FilterOutputStream implements HttpConstants {
@@ -38,6 +39,12 @@ public class HttpOutputStream extends FilterOutputStream implements HttpConstant
         super(out);
     }
 
+    /**
+     * Write a String to the OutputStream.<br />
+     * This method will append {@link HttpConstants#CRLF} to the end of the String.
+     * @param line the String to send to the OutputStream
+     * @throws IOException if an I/O error occurs while writing the data
+     */
     public void writeLine(String line) throws IOException {
         line = line + CRLF;
         ByteBuffer bb = HTTP_DEFAULT_CHARSET.encode(CharBuffer.wrap(line));

@@ -49,6 +49,11 @@ public class HttpRequest extends HttpPacket {
         setSocket(socket);
     }
 
+    /**
+     * Parse the data from the InputStream into this HttpRequest.
+     * @return true if successful, false otherwise
+     * @throws IOException if an I/O error occurs while parsing
+     */
     public boolean parse() throws IOException {
         HttpInputStream his = new HttpInputStream(
                 new BufferedInputStream(getInputStream()));
@@ -85,10 +90,18 @@ public class HttpRequest extends HttpPacket {
         }
     }
 
+    /**
+     * Check if the method of this request is GET.
+     * @return true if the method is GET, false otherwise
+     */
     public boolean isGet() {
         return isMethod(GET);
     }
 
+    /**
+     * Check if the method of this request is HEAD.
+     * @return true if the method is HEAD, false otherwise
+     */
     public boolean isHead() {
         return isMethod(HEAD);
     }
@@ -113,6 +126,10 @@ public class HttpRequest extends HttpPacket {
         return socket;
     }
 
+    /**
+     * Sets the Socket so that you can use {@link #parse()}.
+     * @param socket
+     */
     public void setSocket(Socket socket) {
         this.socket = socket;
     }
@@ -125,10 +142,18 @@ public class HttpRequest extends HttpPacket {
         return socket.getOutputStream();
     }
 
+    /**
+     * Check if this request is handled or not.
+     * @return true of this request is handled, false otherwise.
+     */
     public boolean isHandled() {
         return handled;
     }
 
+    /**
+     * Sets the handled state.
+     * @param handled
+     */
     public void setHandled(boolean handled) {
         this.handled = handled;
     }

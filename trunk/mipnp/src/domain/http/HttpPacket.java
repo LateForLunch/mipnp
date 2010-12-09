@@ -156,6 +156,12 @@ public abstract class HttpPacket implements HttpConstants {
         }
     }
 
+    /**
+     * Parse data from a HttpInputStream.
+     * @param his the HttpInputStream to parse from
+     * @return true if successful, false otherwise
+     * @throws IOException if an I/O error occurs while parsing
+     */
     protected boolean parse(HttpInputStream his) throws IOException {
         String line = his.readLine();
         while (!line.trim().isEmpty()) {

@@ -28,7 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
+ * This class can be used to read Strings as well as byte arrays from an {@link InputStream}.<br />
+ * The {@link HttpConstants#HTTP_DEFAULT_CHARSET} will be used to convert the bytes into a String.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class HttpInputStream extends FilterInputStream implements HttpConstants {
@@ -37,6 +38,11 @@ public class HttpInputStream extends FilterInputStream implements HttpConstants 
         super(in);
     }
 
+    /**
+     * Read a line from the InputStream.
+     * @return a line
+     * @throws IOException if an I/O error occurs while reading
+     */
     public String readLine() throws IOException {
         byte[] buf = new byte[1];
         ByteArrayOutputStream line = new ByteArrayOutputStream();

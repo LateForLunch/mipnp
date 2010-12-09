@@ -25,7 +25,8 @@ package domain.http;
 import java.io.IOException;
 
 /**
- *
+ * The default HttpRequestHandler.<br />
+ * This class will send 501 Not Implemented.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 class HttpDefaultRequestHandler implements IHttpRequestHandler {
@@ -33,6 +34,10 @@ class HttpDefaultRequestHandler implements IHttpRequestHandler {
     public HttpDefaultRequestHandler() {
     }
 
+    /**
+     * Send 501 Not Implemented.
+     * @param request the request to be handled
+     */
     public void handleHttpRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse(request);
         response.setStatusCode(501); // 501 Not Implemented

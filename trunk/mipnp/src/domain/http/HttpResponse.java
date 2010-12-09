@@ -40,6 +40,10 @@ public class HttpResponse extends HttpPacket {
         super();
     }
 
+    /**
+     * Creates a HttpResponse for a HttpRequest.
+     * @param request the request this response is for.
+     */
     public HttpResponse(HttpRequest request) {
         setRequest(request);
     }
@@ -48,6 +52,11 @@ public class HttpResponse extends HttpPacket {
         return statusCode;
     }
 
+    /**
+     * Sets the status code.
+     * @param statusCode the status code, see {@link HttpConstants#HTTP_STATUS}
+     * @param updateReason
+     */
     public void setStatusCode(int statusCode, boolean updateReason) {
         this.statusCode = statusCode;
         setReasonPhrase(HTTP_STATUS.get(statusCode));

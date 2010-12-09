@@ -22,9 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created on Oct 24, 2010, 10:54:07 AM
- * 
+ * This interface provides constant useful for HTTP.<br/>
+ * <br />
  * See RFC 2616: http://tools.ietf.org/html/rfc2616.html
+ * <br />
+ * <br />
+ * Created on Oct 24, 2010, 10:54:07 AM
  * 
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  * @author Tijl Van Assche <tijlvanassche@gmail.com>
