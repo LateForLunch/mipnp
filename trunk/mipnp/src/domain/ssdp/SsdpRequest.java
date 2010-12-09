@@ -64,8 +64,8 @@ public class SsdpRequest extends HttpRequest implements SsdpConstants {
     }
 
     /**
-     * Little fix so that the parse method in HttpRequest would work
-     * @return
+     * Little fix so that the parse method in HttpRequest would work.
+     * @return the InputStream
      * @throws IOException
      */
     @Override

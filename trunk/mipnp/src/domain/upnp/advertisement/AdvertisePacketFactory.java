@@ -45,7 +45,7 @@ public class AdvertisePacketFactory implements SsdpConstants {
      * Creates a set of {@link SsdpRequest} objects to advertise a root device and all of it's services.
      * @param rootDevice
      * @param maxAge
-     * @return
+     * @return an array containing a set of SsdpRequests
      */
     public static SsdpRequest[] createMulticastAdvertiseSet(
             Device rootDevice, int maxAge) {
