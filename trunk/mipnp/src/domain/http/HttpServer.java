@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- *
+ * A HttpServer can listen to HTTP requests and call HttpRequestHandlers.<br />
+ * This class will create a new Thread.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class HttpServer implements HttpConstants {
@@ -49,6 +50,13 @@ public class HttpServer implements HttpConstants {
         this(HTTP_DEFAULT_PORT, 0, null);
     }
 
+    /**
+     * Creates a new HTTP server.<br />
+     * see {@link ServerSocket#ServerSocket(int, int, java.net.InetAddress)} for more info.
+     * @param port the port to listen to
+     * @param backlog
+     * @param bindAddr the address to bind to
+     */
     public HttpServer(int port, int backlog, InetAddress bindAddr) {
         setPort(port);
         setBacklog(backlog);
@@ -57,6 +65,11 @@ public class HttpServer implements HttpConstants {
         this.defaultHandler = new HttpDefaultRequestHandler();
     }
 
+    /**
+     * Starts the HTTP server.<br />
+     * When a new HTTP request comes in, the HttpRequestHandlers will be called.
+     * @throws IOException when an I/O error occurs while starting the server
+     */
     public void start() throws IOException {
         this.serverSocket = new ServerSocket(port, backlog, bindAddr);
         this.serverMain = new HttpServerMainThread(this, serverSocket);
@@ -65,6 +78,9 @@ public class HttpServer implements HttpConstants {
         serverThread.start();
     }
 
+    /**
+     * Stop the HTTP server.
+     */
     public void stop() {
         serverMain.stop();
         this.serverThread = null;
@@ -72,14 +88,27 @@ public class HttpServer implements HttpConstants {
         this.serverSocket = null;
     }
 
+    /**
+     * Add a HttpRequestHandler.<br />
+     * The request handler will be called when a new HTTP request comes in.
+     * @param handler the handler to add
+     */
     public void addRequestHandler(IHttpRequestHandler handler) {
         handlers.add(handler);
     }
 
+    /**
+     * Remove a handler.
+     * @param handler the handler to remove
+     */
     public void removeRequestHandler(IHttpRequestHandler handler) {
         handlers.remove(handler);
     }
 
+    /**
+     * Notify all the handler.
+     * @param request the HTTP request
+     */
     protected void notifyHandlers(HttpRequest request) {
         for (IHttpRequestHandler handler : handlers) {
             handler.handleHttpRequest(request);
@@ -116,7 +145,10 @@ public class HttpServer implements HttpConstants {
         this.bindAddr = bindAddr;
     }
 
-    // TEST
+    /**
+     * TEST
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating HTTP server...");

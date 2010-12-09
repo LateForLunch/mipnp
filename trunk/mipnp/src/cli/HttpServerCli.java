@@ -47,6 +47,10 @@ public class HttpServerCli implements IHttpRequestHandler, IShutdownListener {
         okMessage();
     }
 
+    /**
+     * Prints the method and request URI of the HttpRequest.
+     * @param request
+     */
     public void handleHttpRequest(HttpRequest request) {
         if (request.isGet() || request.isHead()) {
             System.out.println(

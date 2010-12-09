@@ -25,7 +25,7 @@ package cli.menu;
 import java.util.Scanner;
 
 /**
- *
+ * This class can be used to create a CLI (command line interface) menu.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class CliMenu {
@@ -35,10 +35,22 @@ public class CliMenu {
     private int defaultValue;
     private Scanner scanner;
 
+    /**
+     * Creates a new menu with -1 as the default value.
+     * @param question the question to ask the user
+     * @param options the options the user get
+     */
     public CliMenu(String question, String[] options) {
         this(question, options, -1);
     }
 
+    /**
+     * Creates a new menu.<br />
+     * Use a negative defaultValue if you don't want a default value.
+     * @param question the question to ask the user
+     * @param options the options the user get
+     * @param defaultValue the default value
+     */
     public CliMenu(String question, String[] options, int defaultValue) {
         this.question = question;
         this.options = options;
@@ -46,6 +58,10 @@ public class CliMenu {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Shows the menu and wait for the user to enter a valid answer.
+     * @return the integer the user entered
+     */
     public int show() {
         while (true) {
             for (int i = 0; i < options.length; i++) {
@@ -102,7 +118,10 @@ public class CliMenu {
         return false;
     }
 
-    // TEST
+    /**
+     * TEST
+     * @param args
+     */
     public static void main(String[] args) {
         System.out.println(new CliMenu("test", new String[] {"t1", "t2"}, 2).show());
     }

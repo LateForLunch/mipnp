@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- *
+ * See {@link HttpServer}
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 class HttpWorkerThread implements Runnable {

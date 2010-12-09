@@ -32,7 +32,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * See {@link HttpServer}
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 class HttpServerMainThread implements Runnable {

@@ -46,6 +46,10 @@ public class Settings {
         setProperty(HTTP_PORT, "8080");
     }
 
+    /**
+     * Parse the arguments.
+     * @param args the arguments to parse
+     */
     public static void parseArguments(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-i") || args[i].equalsIgnoreCase("--" + INTERFACE)) {
@@ -62,6 +66,9 @@ public class Settings {
         }
     }
 
+    /**
+     * Checks the settings.
+     */
     public static void checkSettings() {
         /*
          * Interface
@@ -96,10 +103,22 @@ public class Settings {
         }
     }
 
+    /**
+     * Sets a property.
+     * @param key the key to identify this setting
+     * @param value the value of the setting
+     * @return see {@link Properties#setProperty(java.lang.String, java.lang.String)}
+     */
     public static synchronized Object setProperty(String key, String value) {
         return settings.setProperty(key, value);
     }
 
+    /**
+     * Gets a property.<br />
+     * see {@link Properties#getProperty(java.lang.String)}
+     * @param key the key
+     * @return the value
+     */
     public static String getProperty(String key) {
         return settings.getProperty(key);
     }
@@ -121,7 +140,7 @@ public class Settings {
         System.out.println("  --" + BIND_ADDRESS + " " + BIND_ADDRESS);
         System.out.println("      Specify the address the server will bind to.");
         System.out.println();
-        System.out.println("  -p" + HTTP_PORT);
+        System.out.println("  -p " + HTTP_PORT);
         System.out.println("  --" + HTTP_PORT + " " + HTTP_PORT);
         System.out.println("      Specify the HTTP port.");
         System.out.println();

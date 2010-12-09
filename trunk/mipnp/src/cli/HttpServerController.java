@@ -59,10 +59,17 @@ public class HttpServerController {
         httpServer.addRequestHandler(httpServerCli);
     }
 
+    /**
+     * Starts the HTTP server.
+     * @throws IOException if an I/O error occurs while starting the HTTP server
+     */
     public void start() throws IOException {
         httpServer.start();
     }
 
+    /**
+     * Stops the HTTP server
+     */
     public void stop() {
         httpServer.stop();
     }
@@ -75,13 +82,15 @@ public class HttpServerController {
         return httpServer.getBindAddr().getHostAddress();
     }
 
+    /**
+     * Add a HttpResource object.<br />
+     * see {@link HttpResource}
+     * @param relativeUri the URI this resource should be located at
+     * @param resource the resource to add
+     */
     public void addHttpResource(URI relativeUri, HttpResource resource) {
         httpRequestHandler.addHttpResource(relativeUri, resource);
         System.out.println("Adding HTTP resource: " + relativeUri);
-    }
-
-    public void shutdown() {
-        stop();
     }
 
     private void test() {

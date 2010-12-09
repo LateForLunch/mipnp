@@ -26,7 +26,8 @@ import domain.shutdown.IShutdownListener;
 import java.util.Scanner;
 
 /**
- *
+ * This class will print the "Press 'q' to exit." message.<br />
+ * After that it will wait for the user to enter 'q'.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class ExitListener implements Runnable, IShutdownListener {
