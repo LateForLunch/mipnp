@@ -32,8 +32,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * This class can handle GET and HEAD HTTP methods.<br />
@@ -58,6 +60,10 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
      */
     public void addHttpResource(URI relativeUri, HttpResource resource) {
         resources.put(relativeUri, resource);
+    }
+
+    public Iterator<Map.Entry<URI, HttpResource>> getHttpResources() {
+        return resources.entrySet().iterator();
     }
 
     /**

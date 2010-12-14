@@ -34,6 +34,10 @@ public class HttpResource {
     private String contentType;
     private String charset;
 
+    public HttpResource(byte[] data, String contentType) {
+        this(data, contentType, null);
+    }
+
     /**
      * Creates a new resource.<br/>
      * <br />
@@ -53,7 +57,11 @@ public class HttpResource {
     }
 
     public String getHttpContentTypeHeader() {
-        return "Content-Type: " + contentType + "; charset=" + charset;
+        String header = "Content-Type: " + contentType;
+        if (charset != null) {
+            header = header.concat("; charset=" + charset);
+        }
+        return header;
     }
 
     public byte[] getAsByteArray() {
