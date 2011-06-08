@@ -22,10 +22,12 @@
  */
 package domain.upnp.advertisement;
 
+import cli.Settings;
 import domain.ssdp.ISsdpRequestHandler;
 import domain.ssdp.SsdpRequest;
 import domain.ssdp.SsdpMulticastServer;
 import java.io.IOException;
+import java.net.NetworkInterface;
 import java.util.Scanner;
 
 /**
@@ -48,7 +50,15 @@ public class SsdpRequestHandler implements ISsdpRequestHandler {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating SSDP server...");
-        SsdpMulticastServer ssdpServer = new SsdpMulticastServer();
+        SsdpMulticastServer ssdpServer = null;
+        try {
+            ssdpServer = new SsdpMulticastServer(
+                    NetworkInterface.getByName("eth0"));
+        } catch (IOException ex) {
+            System.out.println("FAILED");
+            ex.printStackTrace();
+            System.exit(1);
+        }
         SsdpRequestHandler handler = new SsdpRequestHandler();
         ssdpServer.addRequestHandler(handler);
         try {

@@ -22,9 +22,14 @@
  */
 package domain.ssdp;
 
+import cli.Settings;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -35,22 +40,29 @@ import java.util.Scanner;
  */
 public class SsdpMulticastServer implements SsdpConstants {
 
-    private String groupAddress;
     private InetAddress group;
     private int port;
+    private SocketAddress socketAddress;
+    private NetworkInterface nic;
     private MulticastSocket multicastSocket;
     private int ttl;
     private SsdpMulticastServerMainThread serverMain;
     private Thread serverThread;
     private List<ISsdpRequestHandler> handlers;
 
-    public SsdpMulticastServer() {
-        this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT, SSDP_DEFAULT_TTL);
+    public SsdpMulticastServer(NetworkInterface nic) throws UnknownHostException, IOException {
+        this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT, nic, SSDP_DEFAULT_TTL);
     }
 
-    public SsdpMulticastServer(String groupAddress, int port, int ttl) {
-        setGroupAddress(groupAddress);
-        setPort(port);
+    public SsdpMulticastServer(
+            String groupAddress, int port, NetworkInterface nic, int ttl)
+            throws UnknownHostException {
+
+        this.port = port;
+        this.ttl = ttl;
+        this.group = InetAddress.getByName(groupAddress);
+        this.socketAddress = new InetSocketAddress(group, port);
+        this.nic = nic;
         this.handlers = new ArrayList<ISsdpRequestHandler>();
     }
 
@@ -59,28 +71,27 @@ public class SsdpMulticastServer implements SsdpConstants {
      * @throws IOException if an I/O error occurs
      */
     public void start() throws IOException {
-        this.group = InetAddress.getByName(groupAddress);
         this.multicastSocket = new MulticastSocket(port);
         multicastSocket.setTimeToLive(ttl);
-        multicastSocket.joinGroup(group);
-        this.serverMain = new SsdpMulticastServerMainThread(this, multicastSocket);
+        multicastSocket.joinGroup(socketAddress, nic);
+        this.serverMain = new SsdpMulticastServerMainThread(
+                this, multicastSocket);
         this.serverThread = new Thread(serverMain);
         serverThread.setName("SsdpServerMain");
         serverThread.start();
     }
 
     /**
-     * Srop listening for multicast SSDP messages.
+     * Stop listening for multicast SSDP messages.
      */
     public void stop() {
         try {
-            multicastSocket.leaveGroup(group);
+            multicastSocket.leaveGroup(socketAddress, nic);
         } catch (IOException ex) {
             ex.printStackTrace(); // TODO
         }
         multicastSocket.close();
         this.multicastSocket = null;
-        this.group = null;
         this.serverThread = null;
         this.serverMain = null;
     }
@@ -114,11 +125,7 @@ public class SsdpMulticastServer implements SsdpConstants {
     }
 
     public String getGroupAddress() {
-        return groupAddress;
-    }
-
-    public void setGroupAddress(String groupAddress) {
-        this.groupAddress = groupAddress;
+        return group.getHostAddress();
     }
 
     public int getPort() {
@@ -126,10 +133,6 @@ public class SsdpMulticastServer implements SsdpConstants {
             return multicastSocket.getLocalPort();
         }
         return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public int getTimeToLive() {
@@ -143,13 +146,6 @@ public class SsdpMulticastServer implements SsdpConstants {
         return ttl;
     }
 
-    public void setTimeToLive(int ttl) throws IOException {
-        if (multicastSocket != null) {
-            multicastSocket.setTimeToLive(ttl);
-        }
-        this.ttl = ttl;
-    }
-
     /**
      * Test
      * @param args
@@ -157,7 +153,15 @@ public class SsdpMulticastServer implements SsdpConstants {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Press 'q' to stop.\nCreating SSDP server...");
-        SsdpMulticastServer server = new SsdpMulticastServer();
+        SsdpMulticastServer server = null;
+        try {
+            server = new SsdpMulticastServer(
+                    NetworkInterface.getByName("eth0"));
+        } catch (IOException ex) {
+            System.out.println("FAILED");
+            ex.printStackTrace();
+            System.exit(1);
+        }
         ISsdpRequestHandler handler = new ISsdpRequestHandler() {
 
             public void handleSsdpRequest(SsdpRequest request) {

@@ -35,8 +35,8 @@ public class MainController {
 
     private ShutdownHook shutdownHook;
     private ExitListener exitListener;
-    private HttpServer httpServer;
-    private HttpServerController httpServerController;
+//    private HttpServer httpServer;
+//    private HttpServerController httpServerController;
 
     public MainController(String[] args) {
         shutdownHook = new ShutdownHook();
@@ -65,8 +65,8 @@ public class MainController {
                     "Illegal bind address: " + Settings.getProperty(Settings.BIND_ADDRESS));
             exit(1);
         }
-        this.httpServer = new HttpServer(httpPort, 0, httpAddress);
-        this.httpServerController = new HttpServerController(shutdownHook, httpServer);
+//        this.httpServer = new HttpServer(httpPort, 0, httpAddress);
+//        this.httpServerController = new HttpServerController(shutdownHook, httpServer);
     }
 
     private void exit(int status) {

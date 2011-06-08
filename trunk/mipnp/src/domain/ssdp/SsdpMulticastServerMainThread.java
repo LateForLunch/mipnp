@@ -36,7 +36,9 @@ class SsdpMulticastServerMainThread implements Runnable, SsdpConstants {
     private SsdpMulticastServer server;
     private MulticastSocket multicastSocket;
 
-    public SsdpMulticastServerMainThread(SsdpMulticastServer server, MulticastSocket multicastSocket) {
+    public SsdpMulticastServerMainThread(
+            SsdpMulticastServer server, MulticastSocket multicastSocket) {
+
         this.server = server;
         this.multicastSocket = multicastSocket;
     }
