@@ -94,7 +94,7 @@ public class AdvertisePacketFactory implements SsdpConstants {
             Device rootDevice, int maxAge, String nt, String usn) {
 
         SsdpRequest request = new SsdpRequest();
-        request.setMethod(NOTIFY);
+        request.setMethod(STATUS_NOTIFY);
         try {
             request.setRequestUri(new URI("*"));
         } catch (URISyntaxException ex) {

@@ -41,6 +41,6 @@ public interface SsdpConstants extends HttpConstants {
     /*
      * Methods
      */
-    public static final String NOTIFY = "NOTIFY";
-    public static final String M_SEARCH = "M-SEARCH";
+    public static final String STATUS_NOTIFY = "NOTIFY";
+    public static final String STATUS_M_SEARCH = "M-SEARCH";
 }

@@ -25,7 +25,10 @@ package testTools;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Scanner;
 
@@ -39,16 +42,20 @@ public class SsdpListener implements Runnable {
     private static final int PORT = 1900;
 
     private InetAddress group;
+    private SocketAddress socketAddress;
+    private NetworkInterface nic;
     private MulticastSocket socket;
 
     private SsdpListener() throws IOException {
         this.group = InetAddress.getByName(ADDRESS);
+        this.socketAddress = new InetSocketAddress(group, PORT);
+        this.nic = NetworkInterface.getByName("eth0");
         this.socket = new MulticastSocket(PORT);
     }
 
     public void run() {
         try {
-            socket.joinGroup(group);
+            socket.joinGroup(socketAddress, nic);
         } catch (IOException ex) {
             ex.printStackTrace();
             return;
@@ -69,7 +76,7 @@ public class SsdpListener implements Runnable {
 
     public void stop() {
         try {
-            socket.leaveGroup(group);
+            socket.leaveGroup(socketAddress, nic);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

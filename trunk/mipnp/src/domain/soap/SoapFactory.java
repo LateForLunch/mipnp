@@ -29,7 +29,7 @@ import java.util.Iterator;
  *
  * @author Tijl Van Assche
  */
-public class SoapFactory {
+public class SoapFactory implements HttpConstants {
 
     public static SoapResponse createSoapResponse(SoapAction action) {
 
@@ -60,7 +60,7 @@ public class SoapFactory {
                 + "</s:Envelope>";
 
         SoapResponse response = new SoapResponse();
-        response.setStatusCode(200);
+        response.setStatusCode(STATUS_OK);
         response.setVersion(HttpConstants.HTTP_VERSION_1_0); // of HTTP/1.1 (?)
         response.setHeader(HttpConstants.CONTENT_TYPE, "text/xml; charset utf-8");
         response.setHeader(HttpConstants.DATE, new SimpleDateFormat(HttpConstants.RFC1123_DATE_PATTERN).format(new Date()));

@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 /**
  * This class can handle GET and HEAD HTTP methods.<br />
@@ -80,7 +79,7 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
             requestUri = URI.create(requestUri.getPath());
             HttpResource resource = resources.get(requestUri);
             if (resource != null) {
-                response = createResponse(request, 200);
+                response = createResponse(request, STATUS_OK);
                 response.setHeader(resource.getHttpContentTypeHeader());
                 if (request.isGet()) {
                     response.setContent(resource.getAsByteArray());
@@ -88,7 +87,7 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
                     response.setContentLength(resource.getLength());
                 }
             } else {
-                response = createResponse(request, 404);
+                response = createResponse(request, STATUS_NOT_FOUND);
             }
         }
         try {

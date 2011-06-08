@@ -47,7 +47,7 @@ public class Device {
     private String upc;
     private URL presentationURL;
     private List<Service> services;
-    //TODO (low priority) don't support embedded device for now
+    // TODO (low priority) support embedded devices
 //    private List<Device> embeddedDevices;
     private URL descriptionUrl;
     private UUID uuid;

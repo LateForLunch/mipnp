@@ -159,7 +159,7 @@ public class HttpServer implements HttpConstants {
                 System.out.println(request.getMethod() + " " + request.getRequestUri());
                 // TODO: check requestUri
                 HttpResponse response = new HttpResponse(request);
-                response.setStatusCode(200);
+                response.setStatusCode(STATUS_OK);
                 String res = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
                         + "<html><body>Java HttpServer works!µ</body></html>";
                 try {

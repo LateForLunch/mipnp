@@ -29,7 +29,7 @@ import java.io.IOException;
  * This class will send 501 Not Implemented.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class HttpDefaultRequestHandler implements IHttpRequestHandler {
+class HttpDefaultRequestHandler implements HttpConstants, IHttpRequestHandler {
 
     public HttpDefaultRequestHandler() {
     }
@@ -40,7 +40,7 @@ class HttpDefaultRequestHandler implements IHttpRequestHandler {
      */
     public void handleHttpRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse(request);
-        response.setStatusCode(501); // 501 Not Implemented
+        response.setStatusCode(STATUS_NOT_IMPLEMENTED);
         try {
             response.writeToRequest();
             request.setHandled(true);
