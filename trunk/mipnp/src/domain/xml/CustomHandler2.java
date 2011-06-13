@@ -69,7 +69,7 @@ public class CustomHandler2 extends DefaultHandler {
 
         if (qName.equalsIgnoreCase("device")) {
             Device dev = rootDev;
-            rootDev.setUrlBase(urlBase);
+            rootDev.setBaseURL(urlBase);
             if (inDevList) {
                 dev = new Device();
 //                    rootDev.addEmbeddedDevice(dev); // TODO (low priority) add support for embedded devices

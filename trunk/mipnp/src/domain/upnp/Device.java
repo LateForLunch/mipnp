@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jeroen De Wilde
+ * Copyright (C) 2010  Jeroen De Wilde, Jochem Van denbussche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,35 +26,43 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.swing.Icon;
 
 /**
  *
- * @author Jeroen De Wilde
+ * @author Jeroen De Wilde, Jochem Van denbussche
  */
 public class Device {
-    
-    private URL urlBase;
-    private String deviceType;
+
+    private String configId;
+    private int upnpVersionMajor;
+    private int upnpVersionMinor;
+    private URL presentationURL;
+
+    private URL baseURL; // Only for UPnP 1.0 devices
+    private String type;
+    private String version;
     private String friendlyName;
     private String manufacturer;
     private URL manufacturerURL;
     private String modelDescription;
     private String modelName;
-    private int modelNumber;
+    private String modelNumber;
     private URL modelURL;
     private String serialNumber;
-    private String udn;
-    private String upc;
-    private URL presentationURL;
+    private String uniqueDeviceName;
+    private String universalProductCode;
+    private List<Icon> icons;
     private List<Service> services;
-    // TODO (low priority) support embedded devices
-//    private List<Device> embeddedDevices;
+    private List<Device> embeddedDevices;
+
     private URL descriptionUrl;
     private UUID uuid;
 
     public Device() {
+        this.icons = new ArrayList<Icon>();
         services = new ArrayList<Service>();
-//        embeddedDevices = new ArrayList<Device>();
+        embeddedDevices = new ArrayList<Device>();
     }
 
     public void addService(Service s) {
@@ -66,29 +74,29 @@ public class Device {
     /**
      * @return the urlBase
      */
-    public URL getUrlBase() {
-        return urlBase;
+    public URL getBaseURL() {
+        return baseURL;
     }
 
     /**
      * @param urlBase the urlBase to set
      */
-    public void setUrlBase(URL urlBase) {
-        this.urlBase = urlBase;
+    public void setBaseURL(URL baseURL) {
+        this.baseURL = baseURL;
     }
 
     /**
      * @return the deviceType
      */
-    public String getDeviceType() {
-        return deviceType;
+    public String getType() {
+        return type;
     }
 
     /**
      * @param deviceType the deviceType to set
      */
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
+    public void setDeviceType(String type) {
+        this.type = type;
     }
 
     /**
@@ -164,14 +172,14 @@ public class Device {
     /**
      * @return the modelNumber
      */
-    public int getModelNumber() {
+    public String getModelNumber() {
         return modelNumber;
     }
 
     /**
      * @param modelNumber the modelNumber to set
      */
-    public void setModelNumber(int modelNumber) {
+    public void setModelNumber(String modelNumber) {
         this.modelNumber = modelNumber;
     }
 
@@ -197,31 +205,31 @@ public class Device {
     }
 
     /**
-     * @return the udn
+     * @return the Unique Device Name
      */
-    public String getUdn() {
-        return udn;
+    public String getUniqueDeviceName() {
+        return uniqueDeviceName;
     }
 
     /**
-     * @param udn the udn to set
+     * @param uniqueDeviceName the Unique Device Name to set
      */
-    public void setUdn(String udn) {
-        this.udn = udn;
+    public void setUniqueDeviceName(String uniqueDeviceName) {
+        this.uniqueDeviceName = uniqueDeviceName;
     }
 
     /**
-     * @return the upc
+     * @return the Universal Product Code
      */
-    public String getUpc() {
-        return upc;
+    public String getUniversalProductCode() {
+        return universalProductCode;
     }
 
     /**
-     * @param upc the upc to set
+     * @param universalProductCode the Universal Product Code to set
      */
-    public void setUpc(String upc) {
-        this.upc = upc;
+    public void setUniversalProductCode(String universalProductCode) {
+        this.universalProductCode = universalProductCode;
     }
 
     /**

@@ -53,9 +53,9 @@ public class AdvertisePacketFactory implements SsdpConstants {
         List<SsdpRequest> list = new ArrayList<SsdpRequest>();
         // Root device
         list.add(createAdvertisePacket(rootDevice, maxAge,
-                "upnp:rootdevice", rootDevice.getUdn() + "::upnp:rootdevice"));
+                "upnp:rootdevice", rootDevice.getUniqueDeviceName() + "::upnp:rootdevice"));
         list.add(createAdvertisePacket(rootDevice, maxAge,
-                rootDevice.getUdn(), rootDevice.getUdn()));
+                rootDevice.getUniqueDeviceName(), rootDevice.getUniqueDeviceName()));
         list.add(createAdvertisePacket(rootDevice, maxAge, // TODO
                 "urn:schemas-upnp-org:device:deviceType:ver " +
                 "or urn:domain-name:device:deviceType:ver",

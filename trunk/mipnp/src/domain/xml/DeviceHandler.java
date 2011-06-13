@@ -108,19 +108,19 @@ class DeviceHandler extends DefaultHandler {
             } else if (qName.equalsIgnoreCase("modelName")) {
                 getCurrentDev().setModelName(buffer.toString());
             } else if (qName.equalsIgnoreCase("modelNumber")) {
-                getCurrentDev().setModelNumber(Integer.parseInt(buffer.toString()));
+                getCurrentDev().setModelNumber(buffer.toString());
             } else if (qName.equalsIgnoreCase("modelURL")) {
                 getCurrentDev().setModelURL(new URL(buffer.toString()));
             } else if (qName.equalsIgnoreCase("serialNumber")) {
                 getCurrentDev().setSerialNumber(buffer.toString());
             } else if (qName.equalsIgnoreCase("UDN")) {
-                getCurrentDev().setUdn(buffer.toString());
+                getCurrentDev().setUniqueDeviceName(buffer.toString());
             } else if (qName.equalsIgnoreCase("UPC")) {
-                getCurrentDev().setUpc(buffer.toString());
+                getCurrentDev().setUniversalProductCode(buffer.toString());
             } else if (qName.equalsIgnoreCase("presentationURL")) {
-                getCurrentDev().setPresentationURL(new URL(getCurrentDev().getUrlBase().toString().concat(buffer.toString())));
+                getCurrentDev().setPresentationURL(new URL(getCurrentDev().getBaseURL().toString().concat(buffer.toString())));
             } else if (qName.equalsIgnoreCase("urlBase")) {
-                getCurrentDev().setUrlBase(new URL(buffer.toString()));
+                getCurrentDev().setBaseURL(new URL(buffer.toString()));
             } else if (qName.equalsIgnoreCase("device")) {
                 xmlReader.setContentHandler(parent);
             }

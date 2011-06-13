@@ -56,9 +56,9 @@ public class DeviceTest {
 
      @Test
      public void testDeviceOK() {
-     Assert.assertEquals("uuid:UUID", d.getUdn());
+     Assert.assertEquals("uuid:UUID", d.getUniqueDeviceName());
      Assert.assertEquals("MiPnP v0.1", d.getFriendlyName());
-     Assert.assertEquals("urn:schemas-upnp-org:device:MediaServer:1", d.getDeviceType());
+     Assert.assertEquals("urn:schemas-upnp-org:device:MediaServer:1", d.getType());
      Assert.assertEquals("MiPnP devs",d.getManufacturer());
      Assert.assertEquals("MiPnP: Minimal UPnP MediaServer",d.getModelDescription());
 

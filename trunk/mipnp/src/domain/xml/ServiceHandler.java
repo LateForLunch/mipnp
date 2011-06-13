@@ -58,7 +58,7 @@ class ServiceHandler extends DefaultHandler {
         this.currentServ = newServ;
         this.xmlReader = xmlReader;
         this.parent = parent;
-        urlBase = ((DeviceHandler) parent).getCurrentDev().getUrlBase().toString();
+        urlBase = ((DeviceHandler) parent).getCurrentDev().getBaseURL().toString();
         xmlReader.setContentHandler(this);
 
     }
