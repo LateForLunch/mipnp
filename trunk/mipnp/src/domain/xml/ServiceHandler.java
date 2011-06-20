@@ -105,7 +105,7 @@ class ServiceHandler extends DefaultHandler {
                 }
                 currentServ.setServiceId(currentServiceId);
             } else if (qName.equalsIgnoreCase("SCPDURL")) {
-                currentServ.setScpdURL(new URL(urlBase.concat(buffer.toString())));
+                currentServ.setDescriptionURL(new URL(urlBase.concat(buffer.toString())));
             } else if (qName.equalsIgnoreCase("controlURL")) {
                 currentServ.setControlURL(new URL(urlBase.concat(buffer.toString())));
             } else if (qName.equalsIgnoreCase("eventSubURL")) {

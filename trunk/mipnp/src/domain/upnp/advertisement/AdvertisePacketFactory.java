@@ -26,6 +26,7 @@ import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
 import domain.tools.ServerTools;
 import domain.upnp.Device;
+import domain.upnp.IService;
 import domain.upnp.Service;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -61,7 +62,7 @@ public class AdvertisePacketFactory implements SsdpConstants {
                 "or urn:domain-name:device:deviceType:ver",
                 "uuid:device-UUID::urn:schemas-upnp-org:device:deviceType:ver " +
                 "or uuid:device-UUID::urn:domain-name:device:deviceType:ver"));
-        for (Service s : rootDevice.getServices()) {
+        for (IService s : rootDevice.getServices()) {
             list.add(createAdvertisePacket(rootDevice, maxAge, // TODO
                     "urn:schemas-upnp-org:service:serviceType:ver " +
                     "or urn:domain-name:service:serviceType:ver",

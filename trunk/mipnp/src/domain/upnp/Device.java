@@ -53,7 +53,7 @@ public class Device {
     private String uniqueDeviceName;
     private String universalProductCode;
     private List<Icon> icons;
-    private List<Service> services;
+    private List<IService> services;
     private List<Device> embeddedDevices;
 
     private URL descriptionUrl;
@@ -61,13 +61,13 @@ public class Device {
 
     public Device() {
         this.icons = new ArrayList<Icon>();
-        services = new ArrayList<Service>();
+        services = new ArrayList<IService>();
         embeddedDevices = new ArrayList<Device>();
     }
 
-    public void addService(Service s) {
-        if (!services.contains(s)) {
-            services.add(s);
+    public void addService(IService service) {
+        if (!services.contains(service)) {
+            services.add(service);
         }
     }
 
@@ -249,7 +249,7 @@ public class Device {
     /**
      * @return the serviceList
      */
-    public List<Service> getServices() {
+    public List<IService> getServices() {
         return services;
     }
 

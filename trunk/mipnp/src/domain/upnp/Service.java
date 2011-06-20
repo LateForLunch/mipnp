@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010  Jeroen De Wilde
+ * Copyright (C) 2010  Jeroen De Wilde, Jochem Van denbussche
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,98 +27,96 @@ import java.util.List;
 
 /**
  * 
- * @author Jeroen De Wilde
+ * @author Jeroen De Wilde, Jochem Van denbussche
  */
-public class Service {
+public class Service implements IService {
 
-    private String serviceType;
-    private String serviceId;
-
-    //all URLS:
-    private URL scpdURL;
+    private String type;
+    private String id;
+    private URL descriptionURL;
     private URL controlURL;
     private URL eventSubURL;
 
     private List<Action> actions;
     private List<StateVariable> serviceStateTable;
 
-    public Service(){}
-    
-    public Service(String serviceId, String serviceType){
-        this.serviceId=serviceId;
-        this.serviceType=serviceType;
+    public Service(String type, String id){
+        this.type = type;
+        this.id = id;
         //actions = new ArrayList<Action>();
         //serviceStateTable = new ArrayList<StateVariable>();
     }
 
+    public Service() {}
+
     /**
-     * @return the scpdURL
+     * @return the description URL
      */
-    public URL getScpdURL() {
-        return scpdURL;
+    public URL getDescriptionURL() {
+        return descriptionURL;
     }
 
     /**
-     * @param scpdURL the scpdURL to set
+     * @param descriptionURL the description URL to set
      */
-    public void setScpdURL(URL scpdURL) {
-        this.scpdURL = scpdURL;
+    public void setDescriptionURL(URL descriptionURL) {
+        this.descriptionURL = descriptionURL;
     }
 
     /**
-     * @return the controlURL
+     * @return the control URL
      */
     public URL getControlURL() {
         return controlURL;
     }
 
     /**
-     * @param controlURL the controlURL to set
+     * @param controlURL the control URL to set
      */
     public void setControlURL(URL controlURL) {
         this.controlURL = controlURL;
     }
 
     /**
-     * @return the eventSubURL
+     * @return the URL for eventing
      */
     public URL getEventSubURL() {
         return eventSubURL;
     }
 
     /**
-     * @param eventSubURL the eventSubURL to set
+     * @param eventSubURL the URL for eventing to set
      */
     public void setEventSubURL(URL eventSubURL) {
         this.eventSubURL = eventSubURL;
     }
 
     /**
-     * @return the serviceType
+     * @return the service type
      */
     public String getServiceType() {
-        return serviceType;
+        return type;
     }
 
     /**
-     * @param serviceType the serviceType to set
+     * @param type the service type to set
      */
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
+    public void setServiceType(String type) {
+        this.type = type;
     }
 
     /**
-     * @return the serviceId
+     * @return the id
      */
     public String getServiceId() {
-        return serviceId;
+        return id;
     }
 
     /**
-     * @param serviceId the serviceId to set
+     * @param id the service id to set
      */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setServiceId(String id) {
+        this.id = id;
     }
 
     /**
