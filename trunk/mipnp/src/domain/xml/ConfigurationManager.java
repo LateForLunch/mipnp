@@ -22,7 +22,7 @@
  */
 package domain.xml;
 
-import domain.upnp.Device;
+import domain.upnp.AbstractDeviceImpl;
 import java.io.File;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -32,41 +32,41 @@ import org.xml.sax.XMLReader;
  * The ConfigurationManager can read an XML file and create a Device object.
  * @author Jeroen De Wilde
  */
-public class ConfigurationManager {
-
-    private SAXParserFactory saxParserFactory;
-
-    /**
-     * Creates a device from an XML file.
-     * @param xmlFilePath the path to the XML file to read
-     * @return the newly created Device
-     */
-     public Device createDeviceFromXML(String xmlFilePath) {
-        try {
-            //create File from XMLFilePath
-            File xmlDoc = new File(xmlFilePath);
-
-            //create SAXParserFactory
-            saxParserFactory = SAXParserFactory.newInstance();
-
-            //Parsing from XML document using SAX            
-            saxParserFactory.setValidating(false); 
-            saxParserFactory.setNamespaceAware(false);
-
-            SAXParser parser = saxParserFactory.newSAXParser();
-            XMLReader r = parser.getXMLReader();
-            CustomHandler2 handler = new CustomHandler2(r);
-            //r.setContentHandler(handler);
-            //r.setErrorHandler(new MyErrorHandler());
-            //r.parse("src/resources/mipnpXML_1.xml");
-            parser.parse(xmlDoc, handler);
-            return handler.getRootDevice();
-            
-        }catch(Exception e){
-            System.out.println("Error at createDeviceFromXML");
-            e.printStackTrace();
-        }
-        return null;
-    }
-   
-}
+//public class ConfigurationManager {
+//
+//    private SAXParserFactory saxParserFactory;
+//
+//    /**
+//     * Creates a device from an XML file.
+//     * @param xmlFilePath the path to the XML file to read
+//     * @return the newly created Device
+//     */
+//     public Device createDeviceFromXML(String xmlFilePath) {
+//        try {
+//            //create File from XMLFilePath
+//            File xmlDoc = new File(xmlFilePath);
+//
+//            //create SAXParserFactory
+//            saxParserFactory = SAXParserFactory.newInstance();
+//
+//            //Parsing from XML document using SAX            
+//            saxParserFactory.setValidating(false); 
+//            saxParserFactory.setNamespaceAware(false);
+//
+//            SAXParser parser = saxParserFactory.newSAXParser();
+//            XMLReader r = parser.getXMLReader();
+//            CustomHandler2 handler = new CustomHandler2(r);
+//            //r.setContentHandler(handler);
+//            //r.setErrorHandler(new MyErrorHandler());
+//            //r.parse("src/resources/mipnpXML_1.xml");
+//            parser.parse(xmlDoc, handler);
+//            return handler.getRootDevice();
+//            
+//        }catch(Exception e){
+//            System.out.println("Error at createDeviceFromXML");
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//   
+//}

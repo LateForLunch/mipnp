@@ -31,6 +31,8 @@ import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -105,6 +107,19 @@ public class SsdpListener implements Runnable {
         while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
             System.out.println("Unknown command.\nPress 'q' to stop.\n");
         }
+        System.out.print("Sending interrupt...");
+        thread.interrupt();
+        System.out.println(" OK");
+        System.out.print("Joining thread...");
+        try {
+            thread.join(3000);
+        } catch (InterruptedException ex) {
+            System.out.println(" FAILED");
+            ex.printStackTrace();
+        }
+        System.out.println(" OK");
+        System.out.print("Cleaning up...");
         listener.stop();
+        System.out.println(" OK");
     }
 }

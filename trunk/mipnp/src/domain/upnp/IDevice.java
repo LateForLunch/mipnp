@@ -17,30 +17,19 @@
  */
 
 /*
- * DiscoveryController.java
- * Created on Oct 30, 2010, 5:12:13 PM
+ * IDevice.java
+ * Created on Jun 21, 2011, 2:00:15 PM
  */
-package cli;
-
-import domain.upnp.AbstractDeviceImpl;
-import java.io.IOException;
+package domain.upnp;
 
 /**
  *
- * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ * @author jochem
  */
-public class DiscoveryController {
+public interface IDevice {
 
-    private DiscoveryCli discoveryCli;
-
-    public DiscoveryController(AbstractDeviceImpl rootDevice) {
-        this.discoveryCli = new DiscoveryCli();
-    }
-
-    public void startDiscovery() throws IOException {
-        discoveryCli.printStartMessage(System.out);
-    }
-
-    public void stopDiscovery() throws IOException {
-    }
+    /**
+     * @return the type of the device
+     */
+    String getType();
 }

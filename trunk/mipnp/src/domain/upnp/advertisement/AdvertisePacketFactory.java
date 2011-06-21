@@ -25,7 +25,7 @@ package domain.upnp.advertisement;
 import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
 import domain.tools.ServerTools;
-import domain.upnp.Device;
+import domain.upnp.AbstractDeviceImpl;
 import domain.upnp.IService;
 import domain.upnp.Service;
 import java.net.URI;
@@ -49,7 +49,7 @@ public class AdvertisePacketFactory implements SsdpConstants {
      * @return an array containing a set of SsdpRequests
      */
     public static SsdpRequest[] createMulticastAdvertiseSet(
-            Device rootDevice, int maxAge) {
+            AbstractDeviceImpl rootDevice, int maxAge) {
 
         List<SsdpRequest> list = new ArrayList<SsdpRequest>();
         // Root device
@@ -92,7 +92,7 @@ public class AdvertisePacketFactory implements SsdpConstants {
     }
 
     private static SsdpRequest createAdvertisePacket(
-            Device rootDevice, int maxAge, String nt, String usn) {
+            AbstractDeviceImpl rootDevice, int maxAge, String nt, String usn) {
 
         SsdpRequest request = new SsdpRequest();
         request.setMethod(STATUS_NOTIFY);
@@ -102,7 +102,7 @@ public class AdvertisePacketFactory implements SsdpConstants {
             ex.printStackTrace();
         }
         request.setVersion(HTTP_VERSION_1_1);
-        request.setHeader(HOST, SSDP_DEFAULT_ADDRESS + ":" + SSDP_DEFAULT_PORT);
+        request.setHeader(HOST, SSDP_DEFAULT_MULTICAST_ADDRESS + ":" + SSDP_DEFAULT_PORT);
         request.setHeader("CACHE-CONTROL", "max-age=" + maxAge);
         request.setHeader("LOCATION", rootDevice.getDescriptionUrl().toString());
         request.setHeader("NT", nt);

@@ -3,16 +3,6 @@
  * and open the template in the editor.
  */
 
-import domain.upnp.Service;
-import junit.framework.Assert;
-import domain.xml.ConfigurationManager;
-import domain.upnp.Device;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 /**
  *
  * @author Jeroen De Wilde

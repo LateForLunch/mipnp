@@ -24,7 +24,7 @@ package domain.upnp.advertisement;
 
 import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
-import domain.upnp.Device;
+import domain.upnp.AbstractDeviceImpl;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -35,7 +35,7 @@ import java.net.MulticastSocket;
  */
 public class Advertiser implements SsdpConstants {
 
-    private Device rootDevice;
+    private AbstractDeviceImpl rootDevice;
     private String groupAddress;
     private InetAddress group;
     private int port;
@@ -44,11 +44,11 @@ public class Advertiser implements SsdpConstants {
     private AdvertiserMainThread advertiserMain;
     private Thread advertiserThread;
 
-    public Advertiser(Device rootDevice) {
-        this(rootDevice, SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT, SSDP_DEFAULT_TTL);
+    public Advertiser(AbstractDeviceImpl rootDevice) {
+        this(rootDevice, SSDP_DEFAULT_MULTICAST_ADDRESS, SSDP_DEFAULT_PORT, SSDP_DEFAULT_TTL);
     }
 
-    public Advertiser(Device rootDevice, String groupAddress, int port, int ttl) {
+    public Advertiser(AbstractDeviceImpl rootDevice, String groupAddress, int port, int ttl) {
         this.rootDevice = rootDevice;
         setGroupAddress(groupAddress);
         setPort(port);

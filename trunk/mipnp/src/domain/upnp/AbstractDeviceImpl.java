@@ -17,7 +17,7 @@
  */
 
 /*
- * Device.java
+ * AbstractDeviceImpl.java
  * Created on Oct 23, 2010, 3:36:01 PM
  */
 package domain.upnp;
@@ -30,9 +30,9 @@ import javax.swing.Icon;
 
 /**
  *
- * @author Jeroen De Wilde, Jochem Van denbussche
+ * @author Jeroen De Wilde, Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class Device {
+public abstract class AbstractDeviceImpl implements IDevice {
 
     private String configId;
     private int upnpVersionMajor;
@@ -54,15 +54,15 @@ public class Device {
     private String universalProductCode;
     private List<Icon> icons;
     private List<IService> services;
-    private List<Device> embeddedDevices;
+    private List<AbstractDeviceImpl> embeddedDevices;
 
     private URL descriptionUrl;
     private UUID uuid;
 
-    public Device() {
+    public AbstractDeviceImpl() {
         this.icons = new ArrayList<Icon>();
         services = new ArrayList<IService>();
-        embeddedDevices = new ArrayList<Device>();
+        embeddedDevices = new ArrayList<AbstractDeviceImpl>();
     }
 
     public void addService(IService service) {
@@ -86,8 +86,9 @@ public class Device {
     }
 
     /**
-     * @return the deviceType
+     * @return the type of the device
      */
+    @Override
     public String getType() {
         return type;
     }

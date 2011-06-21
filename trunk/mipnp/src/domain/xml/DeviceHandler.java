@@ -17,7 +17,7 @@
  */
 package domain.xml;
 
-import domain.upnp.Device;
+import domain.upnp.AbstractDeviceImpl;
 import domain.upnp.Service;
 import java.io.CharArrayWriter;
 import java.net.MalformedURLException;
@@ -38,7 +38,7 @@ class DeviceHandler extends DefaultHandler {
     private CharArrayWriter buffer;
     private XMLReader xmlReader;
     private ContentHandler parent;
-    private Device currentDev;
+    private AbstractDeviceImpl currentDev;
     private ServiceHandler serviceHandler;
 
     public DeviceHandler() {
@@ -52,7 +52,7 @@ class DeviceHandler extends DefaultHandler {
      * @param parent
      */
     public void handleDevice(
-            Device newDev, XMLReader xmlReader, ContentHandler parent) {
+            AbstractDeviceImpl newDev, XMLReader xmlReader, ContentHandler parent) {
 
         this.currentDev = newDev;
         this.xmlReader = xmlReader;
@@ -149,7 +149,7 @@ class DeviceHandler extends DefaultHandler {
      *
      * @return the currentDev
      */
-    public Device getCurrentDev() {
+    public AbstractDeviceImpl getCurrentDev() {
         return currentDev;
     }
 }

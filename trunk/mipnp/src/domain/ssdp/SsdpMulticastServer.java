@@ -51,7 +51,7 @@ public class SsdpMulticastServer implements SsdpConstants {
     private List<ISsdpRequestHandler> handlers;
 
     public SsdpMulticastServer(NetworkInterface nic) throws UnknownHostException, IOException {
-        this(SSDP_DEFAULT_ADDRESS, SSDP_DEFAULT_PORT, nic, SSDP_DEFAULT_TTL);
+        this(SSDP_DEFAULT_MULTICAST_ADDRESS, SSDP_DEFAULT_PORT, nic, SSDP_DEFAULT_TTL);
     }
 
     public SsdpMulticastServer(
