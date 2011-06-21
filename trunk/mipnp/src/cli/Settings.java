@@ -24,6 +24,7 @@ package cli;
 
 import cli.menu.CliMenu;
 import domain.tools.NetworkInterfaceTools;
+import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Properties;
 
@@ -91,7 +92,9 @@ public class Settings {
             }
         } else {
             try {
-                String ip = NetworkInterfaceTools.interfaceToIp(getProperty(INTERFACE));
+                NetworkInterface nic =
+                        NetworkInterface.getByName(getProperty(INTERFACE));
+                String ip = NetworkInterfaceTools.interfaceToIp(nic).getHostAddress();
                 if (ip == null) {
                     throw new SocketException();
                 }

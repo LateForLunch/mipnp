@@ -76,14 +76,13 @@ public class NetworkInterfaceTools {
      * @return the IP address of the given network interface or null if nothing was found
      * @throws SocketException if there was an error while retrieving the network interface
      */
-    public static String interfaceToIp(String interf) throws SocketException {
-        NetworkInterface ni = NetworkInterface.getByName(interf);
-        Enumeration<InetAddress> ias = ni.getInetAddresses();
+    public static InetAddress interfaceToIp(NetworkInterface nic) {
+        Enumeration<InetAddress> ias = nic.getInetAddresses();
         while (ias.hasMoreElements()) {
             InetAddress ia = ias.nextElement();
             // Only support for IPv4 for now
             if (isIPv4(ia.getAddress())) {
-                return ia.getHostAddress();
+                return ia;
             }
         }
         return null;

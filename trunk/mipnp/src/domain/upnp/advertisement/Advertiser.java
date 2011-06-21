@@ -23,124 +23,104 @@
 package domain.upnp.advertisement;
 
 import domain.ssdp.SsdpConstants;
-import domain.ssdp.SsdpRequest;
-import domain.upnp.AbstractDeviceImpl;
+import domain.tools.NetworkInterfaceTools;
+import domain.upnp.IDevice;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Scanner;
 
 /**
- * An Advertiser starts a new Thread to advertise a root device and all of it's services.
+ * 
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class Advertiser implements SsdpConstants {
 
-    private AbstractDeviceImpl rootDevice;
-    private String groupAddress;
-    private InetAddress group;
-    private int port;
-    private MulticastSocket multicastSocket;
-    private int ttl;
-    private AdvertiserMainThread advertiserMain;
-    private Thread advertiserThread;
+    private IDevice rootDevice;
+    private MulticastSocket mcastSocket;
+    private DatagramSocket ucastSocket;
+    private Thread mcastAdThread;
+    private Thread ucastAdThread;
+    private SocketAddress mcastAddr;
+    private SocketAddress ucastAddr;
+    private NetworkInterface nic;
 
-    public Advertiser(AbstractDeviceImpl rootDevice) {
-        this(rootDevice, SSDP_DEFAULT_MULTICAST_ADDRESS, SSDP_DEFAULT_PORT, SSDP_DEFAULT_TTL);
-    }
-
-    public Advertiser(AbstractDeviceImpl rootDevice, String groupAddress, int port, int ttl) {
+    public Advertiser(IDevice rootDevice, NetworkInterface nic)
+            throws UnknownHostException, SocketException {
         this.rootDevice = rootDevice;
-        setGroupAddress(groupAddress);
-        setPort(port);
+        this.nic = nic;
+        InetAddress mcastInetAddr =
+                InetAddress.getByName(SSDP_DEFAULT_MULTICAST_ADDRESS);
+        this.mcastAddr = new InetSocketAddress(mcastInetAddr, SSDP_DEFAULT_PORT);
+        InetAddress ucastInetAddress = NetworkInterfaceTools.interfaceToIp(nic);
+        this.ucastAddr = new InetSocketAddress(ucastInetAddress, SSDP_DEFAULT_PORT);
     }
 
-    /**
-     * Start the advertising.
-     * @throws IOException if an I/O error occurs
-     */
-    public void start() throws IOException {
-        this.group = InetAddress.getByName(groupAddress);
-        this.multicastSocket = new MulticastSocket(port);
-        multicastSocket.setTimeToLive(ttl);
-        multicastSocket.joinGroup(group);
-        this.advertiserMain = new AdvertiserMainThread(this);
-        this.advertiserThread = new Thread(advertiserMain);
-        advertiserThread.setName("AdvertiserMain");
-        advertiserThread.start();
+    public void start() throws SocketException, IOException {
+        this.mcastSocket = new MulticastSocket(mcastAddr);
+        mcastSocket.setReuseAddress(true);
+        mcastSocket.joinGroup(mcastAddr, nic);
+        this.mcastAdThread =
+                new Thread(new AdvertiserThread(rootDevice, mcastSocket));
+
+        this.ucastSocket = new DatagramSocket(ucastAddr);
+        this.ucastAdThread =
+                new Thread(new AdvertiserThread(rootDevice, ucastSocket));
+
+        mcastAdThread.start();
+        ucastAdThread.start();
     }
 
-    /**
-     * Stop the advertising.
-     */
-    public void stop() {
+    public void stop() throws IOException {
+        if (mcastSocket != null) {
+            mcastSocket.leaveGroup(mcastAddr, nic);
+            mcastSocket.close();
+        }
+        if (ucastSocket != null) {
+            ucastSocket.close();
+        }
         try {
-            multicastSocket.leaveGroup(group);
+            mcastAdThread.join();
+            ucastAdThread.join();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        String s_nic = "eth0";
+        NetworkInterface nic = null;
+        try {
+            nic = NetworkInterface.getByName(s_nic);
         } catch (IOException ex) {
-            ex.printStackTrace(); // TODO
+            ex.printStackTrace();
+            System.exit(1);
         }
-        multicastSocket.close();
-        this.multicastSocket = null;
-        this.group = null;
-        this.advertiserThread = null;
-        this.advertiserMain = null;
-    }
-
-    /**
-     * This will request the Advertiser to send an alive message.
-     */
-    public synchronized void requestAlive() {
-        SsdpRequest[] list =
-                AdvertisePacketFactory.createMulticastAdvertiseSet(
-                rootDevice, SSDP_DEFAULT_MAX_AGE);
-        for (int i = 0; i < list.length; i++) {
-            // TODO: send list[i]
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Press 'q' to stop.\nCreating SSDP listener...");
+        Advertiser advertiser = null;
+        try {
+            advertiser = new Advertiser(null, nic);
+            advertiser.start();
+        } catch (IOException ex) {
+            System.out.println(" FAILED\n");
+            ex.printStackTrace();
+            System.exit(1);
         }
-    }
-
-    public String getGroupAddress() {
-        return groupAddress;
-    }
-
-    public void setGroupAddress(String groupAddress) {
-        this.groupAddress = groupAddress;
-    }
-
-    public int getPort() {
-        if (multicastSocket != null) {
-            return multicastSocket.getLocalPort();
+        System.out.println(" OK\n");
+        while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
+            System.out.println("Unknown command.\nPress 'q' to stop.\n");
         }
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    /**
-     * Get the TTL (Time To Live).<br />
-     * The default if 2.
-     * @return the TTL
-     */
-    public int getTimeToLive() {
-        if (multicastSocket != null) {
-            try {
-                return multicastSocket.getTimeToLive();
-            } catch (IOException ex) {
-                return ttl;
-            }
+        try {
+            advertiser.stop();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        return ttl;
-    }
-
-    /**
-     * Sets the TTL (Time To Live).
-     * @param ttl the new TTL
-     * @throws IOException if an I/O error occurs
-     */
-    public void setTimeToLive(int ttl) throws IOException {
-        if (multicastSocket != null) {
-            multicastSocket.setTimeToLive(ttl);
-        }
-        this.ttl = ttl;
     }
 }

@@ -17,46 +17,44 @@
  */
 
 /*
- * UnicastAdvertiser.java
- * Created on Jun 21, 2011, 2:55:35 PM
+ * AdvertiserThread.java
+ * Created on Jun 21, 2011, 5:26:10 PM
  */
 package domain.upnp.advertisement;
 
 import domain.ssdp.SsdpConstants;
 import domain.upnp.IDevice;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.SocketException;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class UnicastAdvertiser implements SsdpConstants, Runnable {
+public class AdvertiserThread implements Runnable, SsdpConstants {
 
     private IDevice rootDevice;
-    private InetAddress unicastAddr;
-    private int port;
     private DatagramSocket socket;
 
-    public UnicastAdvertiser(IDevice rootDevice) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public UnicastAdvertiser(IDevice rootDevice,
-            InetAddress unicastAddr, int port) throws IOException {
-
+    public AdvertiserThread(IDevice rootDevice, DatagramSocket socket) {
         this.rootDevice = rootDevice;
-        this.unicastAddr = unicastAddr;
-        this.port = port;
-        this.socket = new DatagramSocket(port);
+        this.socket = socket;
     }
 
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void stop() throws IOException {
-        socket.close();
+        while (!Thread.interrupted()) {
+            byte[] buf = new byte[SSDP_DEFAULT_BUF_SIZE];
+            DatagramPacket recv = new DatagramPacket(buf, buf.length);
+            try {
+                socket.receive(recv);
+                System.out.println(new String(recv.getData())); // TODO
+            } catch (SocketException ex) { // Socket closed
+                return;
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
