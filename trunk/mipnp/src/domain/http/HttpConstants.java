@@ -37,7 +37,7 @@ public interface HttpConstants {
     public static final int HTTP_DEFAULT_PORT = 80;
     public static final String HTTP_DEFAULT_CHARSET_NAME = "US-ASCII";
     public static final Charset HTTP_DEFAULT_CHARSET = Charset.forName(HTTP_DEFAULT_CHARSET_NAME);
-    public static final String RFC1123_DATE_PATTERN = "EEE, dd MMM yyyyy HH:mm:ss z";
+    public static final String HTTP_DATE_PATTERN = "EEE, dd MMM yyyyy HH:mm:ss z";
 
     public static final byte CRb = 10;
     public static final byte LFb = 13;
@@ -57,16 +57,16 @@ public interface HttpConstants {
     /*
      * Methods
      */
-    public static final String GET = "GET";
-    public static final String HEAD = "HEAD";
+    public static final String METHOD_GET = "GET";
+    public static final String METHOD_HEAD = "HEAD";
 
     /*
      * Header field names
      */
-    public static final String CONTENT_LENGTH = "Content-Length";
-    public static final String CONTENT_TYPE = "Content-Type";
-    public static final String DATE = "Date";
-    public static final String HOST = "Host";
+    public static final String HEADER_CONTENT_LENGTH = "Content-Length";
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_DATE = "Date";
+    public static final String HEADER_HOST = "Host";
 
     /*
      * Response status codes

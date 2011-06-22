@@ -17,43 +17,59 @@
  */
 
 /*
- * AdvertiserThread.java
- * Created on Jun 21, 2011, 5:26:10 PM
+ * MulticastAdvertiserThread.java
+ * Created on Jun 22, 2011, 5:25:10 PM
  */
 package domain.upnp.advertisement;
 
 import domain.ssdp.SsdpConstants;
 import domain.upnp.IDevice;
-import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.util.Random;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class AdvertiserThread implements Runnable, SsdpConstants {
+class MulticastAdvertiserThread implements Runnable, SsdpConstants {
+
+    private static final int ADVERTISEMENT_DURATION = 1800;
+    private static final int ADVERTISEMENT_REPEATS = 2;
+    private static final int INITIAL_SLEEP_MILLIS = 100;
+    private static final int SET_SLEEP_MILLIS = 300;
 
     private IDevice rootDevice;
     private DatagramSocket socket;
+    private Random random;
 
-    public AdvertiserThread(IDevice rootDevice, DatagramSocket socket) {
+    public MulticastAdvertiserThread(IDevice rootDevice, DatagramSocket socket) {
         this.rootDevice = rootDevice;
         this.socket = socket;
+        this.random = new Random();
     }
 
     public void run() {
+        try {
+            Thread.sleep(random.nextInt(INITIAL_SLEEP_MILLIS));
+        } catch (InterruptedException ex) {
+            return;
+        }
+        // TODO: Send ad
         while (!Thread.interrupted()) {
-            byte[] buf = new byte[SSDP_DEFAULT_BUF_SIZE];
-            DatagramPacket recv = new DatagramPacket(buf, buf.length);
+            int sleep = ADVERTISEMENT_DURATION / 2;
+            sleep -= random.nextInt(ADVERTISEMENT_DURATION / 10);
             try {
-                socket.receive(recv);
-                System.out.println(new String(recv.getData())); // TODO
-            } catch (SocketException ex) { // Socket closed
+                Thread.sleep(sleep);
+            } catch (InterruptedException ex) {
                 return;
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            }
+            for (int i = 1; i <= ADVERTISEMENT_REPEATS; i++) {
+                try {
+                    // TODO: Send ad
+                    Thread.sleep(random.nextInt(SET_SLEEP_MILLIS));
+                } catch (InterruptedException ex) {
+                    return;
+                }
             }
         }
     }

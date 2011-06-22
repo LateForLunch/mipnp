@@ -45,14 +45,16 @@ public class Advertiser implements SsdpConstants {
     private IDevice rootDevice;
     private MulticastSocket mcastSocket;
     private DatagramSocket ucastSocket;
-    private Thread mcastAdThread;
-    private Thread ucastAdThread;
+    private Thread mcastSearchHandler;
+    private Thread ucastSearchHandler;
     private SocketAddress mcastAddr;
     private SocketAddress ucastAddr;
     private NetworkInterface nic;
+    private Thread mcastAdvertiserThread;
 
     public Advertiser(IDevice rootDevice, NetworkInterface nic)
             throws UnknownHostException, SocketException {
+
         this.rootDevice = rootDevice;
         this.nic = nic;
         InetAddress mcastInetAddr =
@@ -65,31 +67,51 @@ public class Advertiser implements SsdpConstants {
     public void start() throws SocketException, IOException {
         this.mcastSocket = new MulticastSocket(mcastAddr);
         mcastSocket.setReuseAddress(true);
+        mcastSocket.setTimeToLive(SSDP_DEFAULT_TTL);
         mcastSocket.joinGroup(mcastAddr, nic);
-        this.mcastAdThread =
-                new Thread(new AdvertiserThread(rootDevice, mcastSocket));
-
         this.ucastSocket = new DatagramSocket(ucastAddr);
-        this.ucastAdThread =
-                new Thread(new AdvertiserThread(rootDevice, ucastSocket));
 
-        mcastAdThread.start();
-        ucastAdThread.start();
+        this.mcastSearchHandler = new Thread(
+                new SearchHandlerThread(rootDevice, mcastSocket));
+        mcastSearchHandler.setName("Multicast Search Handler");
+
+        this.ucastSearchHandler = new Thread(
+                new SearchHandlerThread(rootDevice, ucastSocket));
+        ucastSearchHandler.setName("Unicast Search Handler");
+
+        this.mcastAdvertiserThread = new Thread(
+                new MulticastAdvertiserThread(rootDevice, mcastSocket));
+        mcastAdvertiserThread.setName("Multicast Advertiser");
+
+        mcastSearchHandler.start();
+        ucastSearchHandler.start();
+        mcastAdvertiserThread.start();
     }
 
     public void stop() throws IOException {
         if (mcastSocket != null) {
             mcastSocket.leaveGroup(mcastAddr, nic);
             mcastSocket.close();
+            mcastAdvertiserThread.interrupt();
+            try {
+                mcastSearchHandler.join();
+                mcastAdvertiserThread.join();
+            } catch (InterruptedException ex) {
+                // This should not happen
+            }
+            mcastSocket = null;
+            mcastSearchHandler = null;
+            mcastAdvertiserThread = null;
         }
         if (ucastSocket != null) {
             ucastSocket.close();
-        }
-        try {
-            mcastAdThread.join();
-            ucastAdThread.join();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            try {
+                ucastSearchHandler.join();
+            } catch (InterruptedException ex) {
+                // This should not happen
+            }
+            ucastSocket = null;
+            ucastSearchHandler = null;
         }
     }
 

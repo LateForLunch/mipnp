@@ -47,11 +47,11 @@ public class SsdpRequest extends HttpRequest implements SsdpConstants {
     }
 
     public boolean isNotify() {
-        return isMethod(STATUS_NOTIFY);
+        return isMethod(METHOD_NOTIFY);
     }
 
     public boolean isMsearch() {
-        return isMethod(STATUS_M_SEARCH);
+        return isMethod(METHOD_M_SEARCH);
     }
 
     public DatagramPacket getDatagramPacket() {

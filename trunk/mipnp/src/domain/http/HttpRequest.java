@@ -68,7 +68,7 @@ public class HttpRequest extends HttpPacket {
         URI req = null;
         try {
             req = URI.create(split[1]);
-            String hostHeader = getHeader(HOST);
+            String hostHeader = getHeader(HEADER_HOST);
             if (!req.equals(URI.create("*")) && hostHeader != null) {
                 if (!hostHeader.startsWith("http://")) {
                     hostHeader = "http://".concat(hostHeader);
@@ -95,7 +95,7 @@ public class HttpRequest extends HttpPacket {
      * @return true if the method is GET, false otherwise
      */
     public boolean isGet() {
-        return isMethod(GET);
+        return isMethod(METHOD_GET);
     }
 
     /**
@@ -103,7 +103,7 @@ public class HttpRequest extends HttpPacket {
      * @return true if the method is HEAD, false otherwise
      */
     public boolean isHead() {
-        return isMethod(HEAD);
+        return isMethod(METHOD_HEAD);
     }
 
     public String getMethod() {

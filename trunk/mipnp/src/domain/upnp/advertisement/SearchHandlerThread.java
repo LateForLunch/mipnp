@@ -17,52 +17,44 @@
  */
 
 /*
- * SsdpMulticastServerMainThread.java
- * Created on Dec 4, 2010, 4:51:10 PM
+ * SearchHandlerThread.java
+ * Created on Jun 21, 2011, 5:26:10 PM
  */
-package domain.ssdp;
+package domain.upnp.advertisement;
 
+import domain.ssdp.SsdpConstants;
+import domain.upnp.IDevice;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.MulticastSocket;
+import java.net.DatagramSocket;
 import java.net.SocketException;
 
 /**
- * see {@link SsdpMulticastServer}
+ *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class SsdpMulticastServerMainThread implements Runnable, SsdpConstants {
+class SearchHandlerThread implements Runnable, SsdpConstants {
 
-    private SsdpMulticastServer server;
-    private MulticastSocket multicastSocket;
+    private IDevice rootDevice;
+    private DatagramSocket socket;
 
-    public SsdpMulticastServerMainThread(
-            SsdpMulticastServer server, MulticastSocket multicastSocket) {
-
-        this.server = server;
-        this.multicastSocket = multicastSocket;
+    public SearchHandlerThread(IDevice rootDevice, DatagramSocket socket) {
+        this.rootDevice = rootDevice;
+        this.socket = socket;
     }
 
     public void run() {
         while (!Thread.interrupted()) {
+            byte[] buf = new byte[SSDP_DEFAULT_BUF_SIZE];
+            DatagramPacket recv = new DatagramPacket(buf, buf.length);
             try {
-                byte[] buf = new byte[SSDP_DEFAULT_BUF_SIZE];
-                DatagramPacket dp = new DatagramPacket(buf, buf.length);
-                multicastSocket.receive(dp);
-                SsdpRequest request = new SsdpRequest(dp);
-                request.parse();
-                server.notifyHandlers(request);
-                Thread.yield();
-            } catch (SocketException ex) {
-                // MulticastSocket closed
+                socket.receive(recv);
+                System.out.println(new String(recv.getData())); // TODO
+            } catch (SocketException ex) { // Socket closed
                 return;
             } catch (IOException ex) {
-                // I/O error during receive(), try again
+                ex.printStackTrace();
             }
         }
-    }
-
-    public void stop() {
-        // TODO
     }
 }

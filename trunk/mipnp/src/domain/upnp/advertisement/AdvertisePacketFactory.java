@@ -27,7 +27,6 @@ import domain.ssdp.SsdpRequest;
 import domain.tools.ServerTools;
 import domain.upnp.AbstractDeviceImpl;
 import domain.upnp.IService;
-import domain.upnp.Service;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class AdvertisePacketFactory implements SsdpConstants {
+class AdvertisePacketFactory implements SsdpConstants {
 
     private static final int MAX_CONFIG_ID = 16777215;
     private static int configId = 0;
@@ -95,14 +94,14 @@ public class AdvertisePacketFactory implements SsdpConstants {
             AbstractDeviceImpl rootDevice, int maxAge, String nt, String usn) {
 
         SsdpRequest request = new SsdpRequest();
-        request.setMethod(STATUS_NOTIFY);
+        request.setMethod(METHOD_NOTIFY);
         try {
             request.setRequestUri(new URI("*"));
         } catch (URISyntaxException ex) {
             ex.printStackTrace();
         }
         request.setVersion(HTTP_VERSION_1_1);
-        request.setHeader(HOST, SSDP_DEFAULT_MULTICAST_ADDRESS + ":" + SSDP_DEFAULT_PORT);
+        request.setHeader(HEADER_HOST, SSDP_DEFAULT_MULTICAST_ADDRESS + ":" + SSDP_DEFAULT_PORT);
         request.setHeader("CACHE-CONTROL", "max-age=" + maxAge);
         request.setHeader("LOCATION", rootDevice.getDescriptionUrl().toString());
         request.setHeader("NT", nt);
@@ -115,5 +114,12 @@ public class AdvertisePacketFactory implements SsdpConstants {
         request.setHeader("CONFIGID.UPNP.ORG", String.valueOf(configId)); // TODO (low priority)
 //        request.setHeader("SEARCHPORT.UPNP.ORG", "number identifies port on which device responds to unicast M-SEARCH"); // TODO (low priority)
         return request;
+    }
+
+    public static SsdpRequest[] createAliveSet() {
+        List<SsdpRequest> set = new ArrayList<SsdpRequest>();
+        SsdpRequest[] ret = new SsdpRequest[set.size()];
+        set.toArray(ret);
+        return ret;
     }
 }

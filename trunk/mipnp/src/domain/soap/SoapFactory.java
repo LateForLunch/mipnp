@@ -62,8 +62,8 @@ public class SoapFactory implements HttpConstants {
         SoapResponse response = new SoapResponse();
         response.setStatusCode(STATUS_OK);
         response.setVersion(HttpConstants.HTTP_VERSION_1_0); // of HTTP/1.1 (?)
-        response.setHeader(HttpConstants.CONTENT_TYPE, "text/xml; charset utf-8");
-        response.setHeader(HttpConstants.DATE, new SimpleDateFormat(HttpConstants.RFC1123_DATE_PATTERN).format(new Date()));
+        response.setHeader(HttpConstants.HEADER_CONTENT_TYPE, "text/xml; charset utf-8");
+        response.setHeader(HttpConstants.HEADER_DATE, new SimpleDateFormat(HttpConstants.HTTP_DATE_PATTERN).format(new Date()));
         // TODO
         response.setHeader("SERVER", "OS/version UPnP/1.1 product/version");
         //

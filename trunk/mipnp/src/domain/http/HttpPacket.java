@@ -138,7 +138,7 @@ public abstract class HttpPacket implements HttpConstants {
      * @return the content length of the data or -1 if there is no valid value for Content-Length
      */
     public int getContentLength() {
-        String val = getHeader(CONTENT_LENGTH);
+        String val = getHeader(HEADER_CONTENT_LENGTH);
         int contentLength = -1;
         try {
             contentLength = Integer.parseInt(val);
@@ -150,7 +150,7 @@ public abstract class HttpPacket implements HttpConstants {
 
     public void setContentLength(int length) {
         if (length > 0) {
-            setHeader(CONTENT_LENGTH, String.valueOf(length));
+            setHeader(HEADER_CONTENT_LENGTH, String.valueOf(length));
         } else {
 
         }

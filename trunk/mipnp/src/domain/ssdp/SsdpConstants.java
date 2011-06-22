@@ -23,9 +23,6 @@
 package domain.ssdp;
 
 import domain.http.HttpConstants;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 /**
  * This interface provides constants useful for SSDP.
@@ -36,13 +33,9 @@ public interface SsdpConstants extends HttpConstants {
     public static final String SSDP_DEFAULT_MULTICAST_ADDRESS = "239.255.255.250";
     public static final int SSDP_DEFAULT_PORT = 1900;
     public static final int SSDP_DEFAULT_TTL = 2;
-    public static final int SSDP_DEFAULT_MAX_AGE = 1800;
 
     public static final int SSDP_DEFAULT_BUF_SIZE = 1024;
 
-    /*
-     * Methods
-     */
-    public static final String STATUS_NOTIFY = "NOTIFY";
-    public static final String STATUS_M_SEARCH = "M-SEARCH";
+    public static final String METHOD_NOTIFY = "NOTIFY";
+    public static final String METHOD_M_SEARCH = "M-SEARCH";
 }
