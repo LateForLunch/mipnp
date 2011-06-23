@@ -25,6 +25,7 @@ package domain.upnp.advertisement;
 import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
 import domain.upnp.IDevice;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -61,6 +62,8 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
                 Thread.sleep(sleep);
             } catch (SocketException ex) {
                 ex.printStackTrace(); // TODO
+            } catch (IOException ex) {
+                ex.printStackTrace(); // TODO
             } catch (InterruptedException ex) {
                 return;
             }
@@ -68,16 +71,17 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
     }
 
     private void sendAliveSet(int adDuration)
-            throws InterruptedException, SocketException {
+            throws InterruptedException, SocketException, IOException {
 
         List<SsdpRequest> requests =
                 AdvertisePacketFactory.createAliveSet(rootDevice, adDuration);
         for (int i = 1; i <= ADVERTISEMENT_REPEATS; i++) {
             for (SsdpRequest request : requests) {
-                byte[] buf = new byte[SSDP_DEFAULT_BUF_SIZE];
+                byte[] data = request.getBytes();
                 DatagramPacket packet = new DatagramPacket(
-                        buf, buf.length, socket.getRemoteSocketAddress());
-                // TODO: send packet
+                        data, 0, data.length,
+                        socket.getInetAddress(), socket.getPort());
+                socket.send(packet);
             }
             Thread.sleep(random.nextInt(SET_SLEEP_MILLIS));
         }

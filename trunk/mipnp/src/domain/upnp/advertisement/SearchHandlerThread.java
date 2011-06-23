@@ -22,8 +22,11 @@
  */
 package domain.upnp.advertisement;
 
+import domain.http.MalformedHttpPacketException;
 import domain.ssdp.SsdpConstants;
+import domain.ssdp.SsdpRequest;
 import domain.upnp.IDevice;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -49,11 +52,18 @@ class SearchHandlerThread implements Runnable, SsdpConstants {
             DatagramPacket recv = new DatagramPacket(buf, buf.length);
             try {
                 socket.receive(recv);
-                System.out.println(new String(recv.getData())); // TODO
+                ByteArrayInputStream bais =
+                        new ByteArrayInputStream(
+                        recv.getData(), recv.getOffset(), recv.getLength());
+                SsdpRequest request = new SsdpRequest(bais);
+                // TODO: handle request
+                System.out.println("SsdpRequest received");
+            } catch (MalformedHttpPacketException ex) {
+                // Ignore
             } catch (SocketException ex) { // Socket closed
                 return;
             } catch (IOException ex) {
-                ex.printStackTrace();
+                ex.printStackTrace(); // TODO
             }
         }
     }
