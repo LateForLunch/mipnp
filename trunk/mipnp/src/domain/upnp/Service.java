@@ -146,4 +146,8 @@ public class Service implements IService {
     public void setServiceStateTable(List<StateVariable> serviceStateTable) {
         this.serviceStateTable = serviceStateTable;
     }
+
+    public String getURN() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

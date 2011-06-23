@@ -22,6 +22,8 @@
  */
 package domain.upnp;
 
+import java.net.URL;
+
 /**
  *
  * @author jochem
@@ -29,7 +31,23 @@ package domain.upnp;
 public interface IDevice {
 
     /**
+     * Returns the type of the device.
      * @return the type of the device
      */
-    String getType();
+    String getDeviceType();
+
+    /**
+     * Returns the Uniform Resource Name (URN) of the device.
+     * <br/>
+     * See http://www.ietf.org/rfc/rfc2141.txt for more information about URNs.
+     * @return the Uniform Resource Name of the device
+     */
+    String getURN();
+
+    URL getDescriptionUrl();
+    String getUuid();
+    Iterable<IDevice> getEmbeddedDevices();
+    Iterable<IService> getServices();
+    int getBootId();
+    int getConfigId();
 }

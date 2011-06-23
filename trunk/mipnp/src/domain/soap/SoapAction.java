@@ -18,7 +18,6 @@
 package domain.soap;
 
 import domain.http.HttpRequest;
-import java.net.Socket;
 
 /**
  *
@@ -28,9 +27,5 @@ public class SoapAction extends HttpRequest {
 
     public SoapAction() {
         super();
-    }
-
-    public SoapAction(Socket socket) {
-        super(socket);
     }
 }

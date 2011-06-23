@@ -48,14 +48,20 @@ public class HttpInputStream extends FilterInputStream implements HttpConstants 
         ByteArrayOutputStream line = new ByteArrayOutputStream();
 
         int read = read(buf);
-        if (buf[0] == LFb || buf[0] == CRb) {
-            read = read(buf);
-        }
         while (read > 0) {
-            if (buf[0] == LFb) {
-                break;
-            } else if (buf[0] == CRb) {
-                break;
+            if (buf[0] == CRb) {
+                read = read(buf);
+                if (read <= 0) { // No more data, CR was last char
+                    byte[] cr = new byte[] {CRb};
+                    line.write(cr);
+                    break;
+                } else if (buf[0] == LFb) { // CRLF found
+                    break;
+                } else { // CR followed by some other char
+                    byte[] cr = new byte[] {CRb};
+                    line.write(cr);
+                    line.write(buf);
+                }
             } else {
                 line.write(buf);
             }

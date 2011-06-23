@@ -22,8 +22,8 @@
  */
 package domain.http;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -34,18 +34,19 @@ public class HttpResponse extends HttpPacket {
 
     private int statusCode;
     private String reasonPhrase;
-    private HttpRequest request;
 
     public HttpResponse() {
         super();
     }
 
-    /**
-     * Creates a HttpResponse for a HttpRequest.
-     * @param request the request this response is for.
-     */
-    public HttpResponse(HttpRequest request) {
-        setRequest(request);
+    public HttpResponse(InputStream inputStream)
+            throws MalformedHttpPacketException, IOException {
+
+        super(inputStream);
+    }
+
+    public HttpResponse(OutputStream outputStream) {
+        super(outputStream);
     }
 
     public int getStatusCode() {
@@ -55,15 +56,10 @@ public class HttpResponse extends HttpPacket {
     /**
      * Sets the status code.
      * @param statusCode the status code, see {@link HttpConstants#HTTP_STATUS}
-     * @param updateReason
      */
-    public void setStatusCode(int statusCode, boolean updateReason) {
+    public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
         setReasonPhrase(HTTP_STATUS.get(statusCode));
-    }
-
-    public void setStatusCode(int statusCode) {
-        setStatusCode(statusCode, true);
     }
 
     public String getReasonPhrase() {
@@ -74,33 +70,29 @@ public class HttpResponse extends HttpPacket {
         this.reasonPhrase = reasonPhrase;
     }
 
-    public void writeToRequest() throws IOException {
-        writeTo(getRequest().getOutputStream());
+    @Override
+    public String getStartLine() {
+        return getVersion() + " " + getStatusCode() + " " + getReasonPhrase();
     }
 
-    public void writeTo(OutputStream out) throws IOException {
-        BufferedOutputStream bos = new BufferedOutputStream(out);
-        HttpOutputStream hos = new HttpOutputStream(bos);
-        String statusLine = getVersion() + " " +
-                getStatusCode() + " " + getReasonPhrase();
-        hos.writeLine(statusLine);
-        String[] headers = getHeaders();
-        for (int i = 0; i < headers.length; i++) {
-            hos.writeLine(headers[i]);
+    @Override
+    protected void parseFirstLine(String firstLine)
+            throws MalformedHttpPacketException {
+
+        String[] split = firstLine.split(" ");
+        if (split.length < 3) {
+            throw new MalformedHttpPacketException();
         }
-        hos.writeLine(); // Write empty line
-        byte[] content = getContent();
-        if (content != null) {
-            hos.write(getContent());
+        setVersion(split[0]);
+        try {
+            setStatusCode(Integer.parseInt(split[1]));
+        } catch (NumberFormatException ex) {
+            throw new MalformedHttpPacketException(ex.getMessage());
         }
-        hos.flush();
-    }
-
-    public HttpRequest getRequest() {
-        return request;
-    }
-
-    public void setRequest(HttpRequest request) {
-        this.request = request;
+        String reason = split[2];
+        for (int i = 3; i < split.length; i++) {
+            reason = reason + " " + split[i];
+        }
+        setReasonPhrase(reason);
     }
 }

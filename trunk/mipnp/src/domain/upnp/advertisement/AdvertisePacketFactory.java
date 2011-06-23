@@ -25,10 +25,11 @@ package domain.upnp.advertisement;
 import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
 import domain.tools.ServerTools;
-import domain.upnp.AbstractDeviceImpl;
+import domain.upnp.IDevice;
 import domain.upnp.IService;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,87 +40,95 @@ import java.util.List;
 class AdvertisePacketFactory implements SsdpConstants {
 
     private static final int MAX_CONFIG_ID = 16777215;
-    private static int configId = 0;
 
     /**
-     * Creates a set of {@link SsdpRequest} objects to advertise a root device and all of it's services.
-     * @param rootDevice
-     * @param maxAge
-     * @return an array containing a set of SsdpRequests
+     * Creates a list of {@link SsdpRequest} objects to advertise a root device,
+     * all of its embedded devices and all the services.
+     * @param rootDevice the root device
+     * @param advertisementDuration the duration of the advertisement
+     * @return a list of {@link SsdpRequest} objects
      */
-    public static SsdpRequest[] createMulticastAdvertiseSet(
-            AbstractDeviceImpl rootDevice, int maxAge) {
+    public static List<SsdpRequest> createAliveSet(
+            IDevice rootDevice, int advertisementDuration) {
 
-        List<SsdpRequest> list = new ArrayList<SsdpRequest>();
+        List<SsdpRequest> set = new ArrayList<SsdpRequest>();
         // Root device
-        list.add(createAdvertisePacket(rootDevice, maxAge,
-                "upnp:rootdevice", rootDevice.getUniqueDeviceName() + "::upnp:rootdevice"));
-        list.add(createAdvertisePacket(rootDevice, maxAge,
-                rootDevice.getUniqueDeviceName(), rootDevice.getUniqueDeviceName()));
-        list.add(createAdvertisePacket(rootDevice, maxAge, // TODO
-                "urn:schemas-upnp-org:device:deviceType:ver " +
-                "or urn:domain-name:device:deviceType:ver",
-                "uuid:device-UUID::urn:schemas-upnp-org:device:deviceType:ver " +
-                "or uuid:device-UUID::urn:domain-name:device:deviceType:ver"));
-        for (IService s : rootDevice.getServices()) {
-            list.add(createAdvertisePacket(rootDevice, maxAge, // TODO
-                    "urn:schemas-upnp-org:service:serviceType:ver " +
-                    "or urn:domain-name:service:serviceType:ver",
-                    "uuid:device-UUID::urn:schemas-upnp-org:service:serviceType:ver " +
-                    "or uuid:device-UUID::urn:domain-name:service:serviceType:ver"));
+        set.add(createAlive(advertisementDuration,
+                rootDevice.getDescriptionUrl(), "upnp:rootdevice",
+                "uuid:" + rootDevice.getUuid() + "::upnp:rootdevice",
+                rootDevice.getBootId(), rootDevice.getConfigId()));
+        set.add(createAlive(advertisementDuration,
+                rootDevice.getDescriptionUrl(), "uuid:" + rootDevice.getUuid(),
+                "uuid:" + rootDevice.getUuid(),
+                rootDevice.getBootId(), rootDevice.getConfigId()));
+        set.add(createAlive(advertisementDuration,
+                rootDevice.getDescriptionUrl(), rootDevice.getURN(),
+                "uuid:" + rootDevice.getUuid() + "::" + rootDevice.getURN(),
+                rootDevice.getBootId(), rootDevice.getConfigId()));
+        // Services
+        for (IService service : rootDevice.getServices()) {
+            set.add(createAlive(advertisementDuration,
+                    rootDevice.getDescriptionUrl(), service.getURN(),
+                    "uuid:" + rootDevice.getUuid() + "::" + service.getURN(),
+                    rootDevice.getBootId(), rootDevice.getConfigId()));
         }
-
-        // Don't support embedded devices for now
-//        for (Device d : rootDevice.getEmbeddedDevices()) {
-//            list.add(createAdvertisePacket(rootDevice, maxAge,
-//                    d.getUdn(), d.getUdn()));
-//            list.add(createAdvertisePacket(rootDevice, maxAge, // TODO
-//                    "urn:schemas-upnp-org:device:deviceType:ver " +
-//                    "or urn:domain-name:device:deviceType:ver",
-//                    "uuid:device-UUID::urn:schemas-upnp-org:device:deviceType:ver " +
-//                    "or uuid:device-UUID::urn:domain-name:device:deviceType:ver"));
-//        }
-
-        // Prevent caching of configuration (for now)
-        configId++;
-        if (configId > MAX_CONFIG_ID) {
-            configId = 0;
+        // Embedded Devices
+        for (IDevice embDev : rootDevice.getEmbeddedDevices()) {
+            set.add(createAlive(advertisementDuration,
+                    rootDevice.getDescriptionUrl(), "uuid:" + embDev.getUuid(),
+                    "uuid:" + embDev.getUuid(),
+                    rootDevice.getBootId(), rootDevice.getConfigId()));
+            set.add(createAlive(advertisementDuration,
+                    rootDevice.getDescriptionUrl(), embDev.getURN(),
+                    "uuid:" + embDev.getUuid() + "::" + embDev.getURN(),
+                    rootDevice.getBootId(), rootDevice.getConfigId()));
+            // Services
+            for (IService service : embDev.getServices()) {
+                set.add(createAlive(advertisementDuration,
+                        rootDevice.getDescriptionUrl(), service.getURN(),
+                        "uuid:" + embDev.getUuid() + "::" + service.getURN(),
+                        rootDevice.getBootId(), rootDevice.getConfigId()));
+            }
         }
-        SsdpRequest[] ret = new SsdpRequest[list.size()];
-        list.toArray(ret);
-        return ret;
+        return set;
     }
 
-    private static SsdpRequest createAdvertisePacket(
-            AbstractDeviceImpl rootDevice, int maxAge, String nt, String usn) {
+    /**
+     * Creates an {@link SsdpRequest} object to advertise a root device,
+     * embedded device or service.
+     * @param advertisementDuration the duration of the advertisement
+     * @param rootDeviceDescriptionUrl the URL to the description of the root device
+     * @param notificationType the notification type
+     * @param uniqueServiceName the unique service name
+     * @param bootId the boot ID (BOOTID.UPNP.ORG)
+     * @param configId the configuration ID (CONFIGID.UPNP.ORG)
+     * @return an {@link SsdpRequest} object
+     */
+    public static SsdpRequest createAlive(
+            int advertisementDuration, URL rootDeviceDescriptionUrl,
+            String notificationType, String uniqueServiceName,
+            int bootId, int configId) {
 
         SsdpRequest request = new SsdpRequest();
         request.setMethod(METHOD_NOTIFY);
         try {
             request.setRequestUri(new URI("*"));
         } catch (URISyntaxException ex) {
-            ex.printStackTrace();
+            // This should not happen
         }
         request.setVersion(HTTP_VERSION_1_1);
-        request.setHeader(HEADER_HOST, SSDP_DEFAULT_MULTICAST_ADDRESS + ":" + SSDP_DEFAULT_PORT);
-        request.setHeader("CACHE-CONTROL", "max-age=" + maxAge);
-        request.setHeader("LOCATION", rootDevice.getDescriptionUrl().toString());
-        request.setHeader("NT", nt);
+        request.setHeader(HEADER_HOST,
+                SSDP_DEFAULT_MULTICAST_ADDRESS + ":" + SSDP_DEFAULT_PORT);
+        request.setHeader("CACHE-CONTROL", "max-age=" + advertisementDuration);
+        request.setHeader("LOCATION", rootDeviceDescriptionUrl.toString());
+        request.setHeader("NT", notificationType);
         request.setHeader("NTS", "ssdp:alive");
         request.setHeader("SERVER",
                 ServerTools.getOsName() + "/" + ServerTools.getOsVersion() +
-                "UPnP/1.1 MiPnP/0.1"); // TODO: version (low priority)
-        request.setHeader("USN", usn);
-        request.setHeader("BOOTID.UPNP.ORG", "1"); // TODO (low priority)
-        request.setHeader("CONFIGID.UPNP.ORG", String.valueOf(configId)); // TODO (low priority)
-//        request.setHeader("SEARCHPORT.UPNP.ORG", "number identifies port on which device responds to unicast M-SEARCH"); // TODO (low priority)
+                " UPnP/1.1 MiPnP/0.1"); // TODO: MiPnP version
+        request.setHeader("USN", uniqueServiceName);
+        request.setHeader("BOOTID.UPNP.ORG", String.valueOf(bootId));
+        request.setHeader("CONFIGID.UPNP.ORG", String.valueOf(configId));
         return request;
-    }
-
-    public static SsdpRequest[] createAliveSet() {
-        List<SsdpRequest> set = new ArrayList<SsdpRequest>();
-        SsdpRequest[] ret = new SsdpRequest[set.size()];
-        set.toArray(ret);
-        return ret;
     }
 }

@@ -23,6 +23,7 @@
 package cli;
 
 import domain.http.HttpRequest;
+import domain.http.HttpResponse;
 import domain.http.IHttpRequestHandler;
 import domain.shutdown.IShutdownListener;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class HttpServerCli implements IHttpRequestHandler, IShutdownListener {
      * Prints the method and request URI of the HttpRequest.
      * @param request
      */
-    public void handleHttpRequest(HttpRequest request) {
+    public void handleHttpRequest(HttpRequest request, HttpResponse response) {
         if (request.isGet() || request.isHead()) {
             System.out.println(
                     "HTTP request: " + request.getMethod() +

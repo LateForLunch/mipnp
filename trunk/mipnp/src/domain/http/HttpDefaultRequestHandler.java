@@ -38,11 +38,13 @@ class HttpDefaultRequestHandler implements HttpConstants, IHttpRequestHandler {
      * Send 501 Not Implemented.
      * @param request the request to be handled
      */
-    public void handleHttpRequest(HttpRequest request) {
-        HttpResponse response = new HttpResponse(request);
+    public void handleHttpRequest(HttpRequest request, HttpResponse response) {
+        if (request.isHandled()) {
+            return;
+        }
         response.setStatusCode(STATUS_NOT_IMPLEMENTED);
         try {
-            response.writeToRequest();
+            response.writeToOutputStream();
             request.setHandled(true);
         } catch (IOException ex) {
             ex.printStackTrace(); // TODO

@@ -22,17 +22,30 @@
  */
 package domain.ssdp;
 
+import domain.http.HttpResponse;
+import domain.http.MalformedHttpPacketException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
-public class SsdpResponse {
-
-    /*
-     * HTTP/1.1 200 OK\r\n
-     */
+public class SsdpResponse extends HttpResponse {
 
     public SsdpResponse() {
+        super();
+    }
+
+    public SsdpResponse(InputStream inputStream)
+            throws MalformedHttpPacketException, IOException {
+
+        super(inputStream);
+    }
+
+    public SsdpResponse(OutputStream outputStream) {
+        super(outputStream);
     }
 }

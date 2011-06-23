@@ -54,7 +54,7 @@ public abstract class AbstractDeviceImpl implements IDevice {
     private String universalProductCode;
     private List<Icon> icons;
     private List<IService> services;
-    private List<AbstractDeviceImpl> embeddedDevices;
+    private List<IDevice> embeddedDevices;
 
     private URL descriptionUrl;
     private UUID uuid;
@@ -62,7 +62,7 @@ public abstract class AbstractDeviceImpl implements IDevice {
     public AbstractDeviceImpl() {
         this.icons = new ArrayList<Icon>();
         services = new ArrayList<IService>();
-        embeddedDevices = new ArrayList<AbstractDeviceImpl>();
+        embeddedDevices = new ArrayList<IDevice>();
     }
 
     public void addService(IService service) {
@@ -89,7 +89,7 @@ public abstract class AbstractDeviceImpl implements IDevice {
      * @return the type of the device
      */
     @Override
-    public String getType() {
+    public String getDeviceType() {
         return type;
     }
 
@@ -260,10 +260,6 @@ public abstract class AbstractDeviceImpl implements IDevice {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
-
-//    public void addEmbeddedDevice(Device d){
-//        embeddedDevices.add(d);
-//    }
     
     public URL getDescriptionUrl() {
         return descriptionUrl;
@@ -273,14 +269,15 @@ public abstract class AbstractDeviceImpl implements IDevice {
         this.descriptionUrl = descriptionUrl;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public String getUuid() {
+        return uuid.toString();
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void addEmbeddedDevice(IDevice device){
+        embeddedDevices.add(device);
     }
-//    public Iterable<Device> getEmbeddedDevices() {
-//        return embeddedDevices;
-//    }
+
+    public Iterable<IDevice> getEmbeddedDevices() {
+        return embeddedDevices;
+    }
 }

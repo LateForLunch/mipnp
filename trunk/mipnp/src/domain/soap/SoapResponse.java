@@ -29,10 +29,4 @@ public class SoapResponse extends HttpResponse {
     public SoapResponse() {
         super();
     }
-
-    public SoapResponse(SoapAction action) {
-        super(action);
-    }
-
-
 }

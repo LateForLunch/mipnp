@@ -22,11 +22,9 @@
  */
 package domain.http;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
 import java.net.URI;
 
 /**
@@ -37,49 +35,20 @@ public class HttpRequest extends HttpPacket {
 
     private String method;
     private URI requestUri;
-    private Socket socket;
     private boolean handled;
 
     public HttpRequest() {
         super();
     }
 
-    public HttpRequest(Socket socket) {
-        super();
-        setSocket(socket);
+    public HttpRequest(InputStream inputStream)
+            throws MalformedHttpPacketException, IOException {
+
+        super(inputStream);
     }
 
-    /**
-     * Parse the data from the InputStream into this HttpRequest.
-     * @return true if successful, false otherwise
-     * @throws IOException if an I/O error occurs while parsing
-     */
-    public boolean parse() throws IOException {
-        HttpInputStream his = new HttpInputStream(
-                new BufferedInputStream(getInputStream()));
-        String firstLine = his.readLine();
-        String[] split = firstLine.split(" ");
-        if (split.length != 3) {
-            return false;
-        }
-        boolean parse = super.parse(his);
-        setMethod(split[0]);
-        setVersion(split[2]);
-        URI req = null;
-        try {
-            req = URI.create(split[1]);
-            String hostHeader = getHeader(HEADER_HOST);
-            if (!req.equals(URI.create("*")) && hostHeader != null) {
-                if (!hostHeader.startsWith("http://")) {
-                    hostHeader = "http://".concat(hostHeader);
-                }
-                req = URI.create(hostHeader).resolve(req);
-            }
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace(); // TODO: the response MUST be a 400 (Bad Request) error message.
-        }
-        setRequestUri(req);
-        return parse;
+    public HttpRequest(OutputStream outputStream) {
+        super(outputStream);
     }
 
     public boolean isMethod(String method) {
@@ -122,26 +91,6 @@ public class HttpRequest extends HttpPacket {
         this.requestUri = requestUri;
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
-
-    /**
-     * Sets the Socket so that you can use {@link #parse()}.
-     * @param socket
-     */
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    public InputStream getInputStream() throws IOException {
-        return socket.getInputStream();
-    }
-
-    public OutputStream getOutputStream() throws IOException {
-        return socket.getOutputStream();
-    }
-
     /**
      * Check if this request is handled or not.
      * @return true of this request is handled, false otherwise.
@@ -156,5 +105,35 @@ public class HttpRequest extends HttpPacket {
      */
     public void setHandled(boolean handled) {
         this.handled = handled;
+    }
+
+    @Override
+    public String getStartLine() {
+        return getMethod() + " " + getRequestUri().toString() + " " + getVersion();
+    }
+
+    protected void parseFirstLine(String firstLine)
+            throws MalformedHttpPacketException {
+
+        String[] split = firstLine.split(" ");
+        if (split.length != 3) {
+            throw new MalformedHttpPacketException();
+        }
+        setMethod(split[0]);
+        setVersion(split[2]);
+        URI req = null;
+        try {
+            req = URI.create(split[1]);
+            String hostHeader = getHeader(HEADER_HOST);
+            if (!req.equals(URI.create("*")) && hostHeader != null) {
+                if (!hostHeader.startsWith("http://")) {
+                    hostHeader = "http://".concat(hostHeader);
+                }
+                req = URI.create(hostHeader).resolve(req);
+            }
+        } catch (IllegalArgumentException ex) {
+            throw new MalformedHttpPacketException();
+        }
+        setRequestUri(req);
     }
 }

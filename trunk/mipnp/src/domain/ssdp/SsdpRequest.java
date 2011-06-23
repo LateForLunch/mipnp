@@ -23,10 +23,10 @@
 package domain.ssdp;
 
 import domain.http.HttpRequest;
-import java.io.ByteArrayInputStream;
+import domain.http.MalformedHttpPacketException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.DatagramPacket;
+import java.io.OutputStream;
 
 /**
  *
@@ -35,15 +35,18 @@ import java.net.DatagramPacket;
  */
 public class SsdpRequest extends HttpRequest implements SsdpConstants {
 
-    private DatagramPacket datagramPacket;
-    private InputStream in;
-
     public SsdpRequest() {
         super();
     }
 
-    public SsdpRequest(DatagramPacket datagramPacket) {
-        setDatagramPacket(datagramPacket);
+    public SsdpRequest(InputStream inputStream)
+            throws MalformedHttpPacketException, IOException {
+
+        super(inputStream);
+    }
+
+    public SsdpRequest(OutputStream outputStream) {
+        super(outputStream);
     }
 
     public boolean isNotify() {
@@ -52,24 +55,5 @@ public class SsdpRequest extends HttpRequest implements SsdpConstants {
 
     public boolean isMsearch() {
         return isMethod(METHOD_M_SEARCH);
-    }
-
-    public DatagramPacket getDatagramPacket() {
-        return datagramPacket;
-    }
-
-    public void setDatagramPacket(DatagramPacket datagramPacket) {
-        this.datagramPacket = datagramPacket;
-        this.in = new ByteArrayInputStream(datagramPacket.getData());
-    }
-
-    /**
-     * Little fix so that the parse method in HttpRequest would work.
-     * @return the InputStream
-     * @throws IOException
-     */
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return in;
     }
 }

@@ -25,16 +25,12 @@ package domain.upnp;
 import domain.http.HttpConstants;
 import domain.http.HttpRequest;
 import domain.http.HttpResponse;
-import domain.http.HttpServer;
 import domain.http.IHttpRequestHandler;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * This class can handle GET and HEAD HTTP methods.<br />
@@ -69,17 +65,16 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
      * Method that will be called when there is a new HttpRequest.
      * @param request the new request
      */
-    public void handleHttpRequest(HttpRequest request) {
+    public void handleHttpRequest(HttpRequest request, HttpResponse response) {
         if (request.isHandled()) {
             return; // Job already done
         }
         URI requestUri = request.getRequestUri();
-        HttpResponse response = null;
         if (request.isGet() || request.isHead()) {
             requestUri = URI.create(requestUri.getPath());
             HttpResource resource = resources.get(requestUri);
             if (resource != null) {
-                response = createResponse(request, STATUS_OK);
+                response.setStatusCode(STATUS_OK);
                 response.setHeader(resource.getHttpContentTypeHeader());
                 if (request.isGet()) {
                     response.setContent(resource.getAsByteArray());
@@ -87,50 +82,14 @@ public class HttpRequestHandler implements IHttpRequestHandler, HttpConstants {
                     response.setContentLength(resource.getLength());
                 }
             } else {
-                response = createResponse(request, STATUS_NOT_FOUND);
+                response.setStatusCode(STATUS_NOT_FOUND);
             }
         }
         try {
-            response.writeToRequest();
+            response.writeToOutputStream();
             request.setHandled(true);
         } catch (IOException ex) {
             ex.printStackTrace(); // TODO
         }
-    }
-
-    private HttpResponse createResponse(HttpRequest request, int statusCode) {
-        HttpResponse response = new HttpResponse(request);
-        response.setStatusCode(statusCode);
-        return response;
-    }
-
-    /**
-     * Test
-     * @param args
-     * @throws URISyntaxException
-     * @throws UnsupportedEncodingException
-     */
-    public static void main(String[] args) throws URISyntaxException, UnsupportedEncodingException {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Press 'q' to stop.\nCreating HTTP server...");
-        HttpServer httpServer = new HttpServer(8080, 0, null);
-        HttpRequestHandler handler = new HttpRequestHandler();
-        httpServer.addRequestHandler(handler);
-        String content = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
-                + "<html><body>Java HttpServer works!µ</body></html>";
-        HttpResource r1 = new HttpResource(content.getBytes("UTF-8"), "text/html", "utf-8");
-        handler.addHttpResource(new URI("/"), r1);
-        try {
-            httpServer.start();
-        } catch (IOException ex) {
-            System.out.println("FAILED");
-            ex.printStackTrace();
-            System.exit(1);
-        }
-        System.out.println("OK");
-        while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
-            System.out.println("Unknown command.\nPress 'q' to stop.\n");
-        }
-        httpServer.stop();
     }
 }

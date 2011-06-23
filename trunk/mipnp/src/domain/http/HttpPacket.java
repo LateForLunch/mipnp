@@ -22,7 +22,12 @@
  */
 package domain.http;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,11 +43,26 @@ public abstract class HttpPacket implements HttpConstants {
     private String version;
     private Map<String /* fieldname */, String /* fieldvalue */> headers;
     private byte[] content;
+    private InputStream inputStream;
+    private OutputStream outputStream;
 
     public HttpPacket() {
-        setVersion(HTTP_VERSION);
+        this.version = HTTP_VERSION;
         this.headers = new HashMap<String, String>();
         setContent(null);
+    }
+
+    public HttpPacket(InputStream inputStream)
+            throws MalformedHttpPacketException, IOException {
+
+        this();
+        this.inputStream = inputStream;
+        parse();
+    }
+
+    public HttpPacket(OutputStream outputStream) {
+        this();
+        this.outputStream = outputStream;
     }
 
     public String getVersion() {
@@ -60,7 +80,7 @@ public abstract class HttpPacket implements HttpConstants {
         return true;
     }
 
-    public String setHeader(String str) {
+    public String setHeader(String str) throws IllegalArgumentException {
         if (str == null) {
             throw new NullPointerException("Can't parse null");
         }
@@ -86,23 +106,21 @@ public abstract class HttpPacket implements HttpConstants {
     /**
      *
      * @param fieldName
-     * @return the field-value to which the specified fieldname is mapped,
-     * or null if there is no mapping for the fieldname
+     * @return the field-value to which the specified field name is mapped,
+     * or null if there is no mapping for the field name
      */
     public String getHeader(String fieldName) {
         return headers.get(fieldName);
     }
 
-    public String[] getHeaders() {
+    public List<String> getHeaders() {
         List<String> result = new ArrayList<String>(headers.size());
         Iterator<Map.Entry<String, String>> it = headers.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, String> entry = it.next();
             result.add(entry.getKey() + ":" + entry.getValue());
         }
-        String[] ret = new String[result.size()];
-        result.toArray(ret);
-        return ret;
+        return result;
     }
 
     /**
@@ -152,26 +170,72 @@ public abstract class HttpPacket implements HttpConstants {
         if (length > 0) {
             setHeader(HEADER_CONTENT_LENGTH, String.valueOf(length));
         } else {
-
+            removeHeader(HEADER_CONTENT_LENGTH);
         }
     }
 
-    /**
-     * Parse data from a HttpInputStream.
-     * @param his the HttpInputStream to parse from
-     * @return true if successful, false otherwise
-     * @throws IOException if an I/O error occurs while parsing
-     */
-    protected boolean parse(HttpInputStream his) throws IOException {
+    public byte[] getBytes() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // Write start line
+        byte[] ba = getStartLine().concat(CRLF).getBytes(HTTP_DEFAULT_CHARSET);
+        baos.write(ba, 0, ba.length);
+
+        // Write headers
+        for (String header : getHeaders()) {
+            ba = header.concat(CRLF).getBytes(HTTP_DEFAULT_CHARSET);
+            baos.write(ba, 0, ba.length);
+        }
+
+        // Write empty line
+        ba = CRLF.getBytes(HTTP_DEFAULT_CHARSET);
+        baos.write(ba, 0, ba.length);
+
+        // Write content
+        ba = getContent();
+        if (ba != null) {
+            baos.write(ba, 0, ba.length);
+        }
+
+        return baos.toByteArray();
+    }
+
+    public abstract String getStartLine();
+
+    protected abstract void parseFirstLine(String firstLine)
+            throws MalformedHttpPacketException;
+
+    private void parse() throws MalformedHttpPacketException, IOException {
+        HttpInputStream his = new HttpInputStream(
+                new BufferedInputStream(inputStream));
+        String firstLine = his.readLine();
+        parseFirstLine(firstLine);
         String line = his.readLine();
         while (!line.trim().isEmpty()) {
-            setHeader(line);
+            try {
+                setHeader(line);
+            } catch (IllegalArgumentException ex) {
+                throw new MalformedHttpPacketException(ex.getMessage());
+            }
             line = his.readLine();
         }
         // The remaining bytes in the InputStream is the content
         byte[] con = new byte[his.available()];
         his.read(con);
         setContent(con, false);
-        return true;
+    }
+
+    public void writeTo(OutputStream out) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(out);
+        byte[] data = getBytes();
+        bos.write(data, 0, data.length);
+        bos.flush();
+    }
+
+    public void writeToOutputStream() throws IOException {
+        if (outputStream == null) {
+            throw new NullPointerException("OutputStream is null");
+        }
+        writeTo(outputStream);
     }
 }

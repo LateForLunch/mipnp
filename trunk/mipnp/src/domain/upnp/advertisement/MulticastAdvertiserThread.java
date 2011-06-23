@@ -23,8 +23,12 @@
 package domain.upnp.advertisement;
 
 import domain.ssdp.SsdpConstants;
+import domain.ssdp.SsdpRequest;
 import domain.upnp.IDevice;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -35,8 +39,7 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
 
     private static final int ADVERTISEMENT_DURATION = 1800;
     private static final int ADVERTISEMENT_REPEATS = 2;
-    private static final int INITIAL_SLEEP_MILLIS = 100;
-    private static final int SET_SLEEP_MILLIS = 300;
+    private static final int SET_SLEEP_MILLIS = 200;
 
     private IDevice rootDevice;
     private DatagramSocket socket;
@@ -49,28 +52,34 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
     }
 
     public void run() {
-        try {
-            Thread.sleep(random.nextInt(INITIAL_SLEEP_MILLIS));
-        } catch (InterruptedException ex) {
-            return;
-        }
-        // TODO: Send ad
+        int sleep;
         while (!Thread.interrupted()) {
-            int sleep = ADVERTISEMENT_DURATION / 2;
-            sleep -= random.nextInt(ADVERTISEMENT_DURATION / 10);
             try {
+                sendAliveSet(ADVERTISEMENT_DURATION);
+                sleep = ADVERTISEMENT_DURATION / 2;
+                sleep -= random.nextInt(ADVERTISEMENT_DURATION / 10);
                 Thread.sleep(sleep);
+            } catch (SocketException ex) {
+                ex.printStackTrace(); // TODO
             } catch (InterruptedException ex) {
                 return;
             }
-            for (int i = 1; i <= ADVERTISEMENT_REPEATS; i++) {
-                try {
-                    // TODO: Send ad
-                    Thread.sleep(random.nextInt(SET_SLEEP_MILLIS));
-                } catch (InterruptedException ex) {
-                    return;
-                }
+        }
+    }
+
+    private void sendAliveSet(int adDuration)
+            throws InterruptedException, SocketException {
+
+        List<SsdpRequest> requests =
+                AdvertisePacketFactory.createAliveSet(rootDevice, adDuration);
+        for (int i = 1; i <= ADVERTISEMENT_REPEATS; i++) {
+            for (SsdpRequest request : requests) {
+                byte[] buf = new byte[SSDP_DEFAULT_BUF_SIZE];
+                DatagramPacket packet = new DatagramPacket(
+                        buf, buf.length, socket.getRemoteSocketAddress());
+                // TODO: send packet
             }
+            Thread.sleep(random.nextInt(SET_SLEEP_MILLIS));
         }
     }
 }

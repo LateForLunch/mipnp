@@ -28,5 +28,5 @@ package domain.http;
  */
 public interface IHttpRequestHandler {
 
-    void handleHttpRequest(HttpRequest request);
+    void handleHttpRequest(HttpRequest request, HttpResponse response);
 }

@@ -23,12 +23,10 @@
 package domain.http;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * A HttpServer can listen to HTTP requests and call HttpRequestHandlers.<br />
@@ -109,12 +107,12 @@ public class HttpServer implements HttpConstants {
      * Notify all the handler.
      * @param request the HTTP request
      */
-    protected void notifyHandlers(HttpRequest request) {
+    protected void notifyHandlers(HttpRequest request, HttpResponse response) {
         for (IHttpRequestHandler handler : handlers) {
-            handler.handleHttpRequest(request);
+            handler.handleHttpRequest(request, response);
         }
         if (!request.isHandled()) {
-            defaultHandler.handleHttpRequest(request);
+            defaultHandler.handleHttpRequest(request, response);
         }
     }
 
@@ -143,50 +141,5 @@ public class HttpServer implements HttpConstants {
 
     public void setBindAddr(InetAddress bindAddr) {
         this.bindAddr = bindAddr;
-    }
-
-    /**
-     * TEST
-     * @param args
-     */
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Press 'q' to stop.\nCreating HTTP server...");
-        HttpServer httpServer = new HttpServer(8080, 0, null);
-        IHttpRequestHandler handler = new IHttpRequestHandler() {
-
-            public void handleHttpRequest(HttpRequest request) {
-                System.out.println(request.getMethod() + " " + request.getRequestUri());
-                // TODO: check requestUri
-                HttpResponse response = new HttpResponse(request);
-                response.setStatusCode(STATUS_OK);
-                String res = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
-                        + "<html><body>Java HttpServer works!µ</body></html>";
-                try {
-                    response.setContent(res.getBytes("utf-8"));
-                    response.setHeader("Content-Type: text/html; charset=utf-8");
-                } catch (UnsupportedEncodingException ex) {
-                    ex.printStackTrace();
-                }
-                try {
-                    response.writeToRequest();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        };
-        httpServer.addRequestHandler(handler);
-        try {
-            httpServer.start();
-        } catch (IOException ex) {
-            System.out.println("FAILED");
-            ex.printStackTrace();
-            System.exit(1);
-        }
-        System.out.println("OK");
-        while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
-            System.out.println("Unknown command.\nPress 'q' to stop.\n");
-        }
-        httpServer.stop();
     }
 }

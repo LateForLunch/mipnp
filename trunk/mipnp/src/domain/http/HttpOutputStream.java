@@ -25,8 +25,6 @@ package domain.http;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 
 /**
  * This class can be used to write lines as well as byte arrays to an OutputStream.<br />
@@ -47,8 +45,7 @@ public class HttpOutputStream extends FilterOutputStream implements HttpConstant
      */
     public void writeLine(String line) throws IOException {
         line = line + CRLF;
-        ByteBuffer bb = HTTP_DEFAULT_CHARSET.encode(CharBuffer.wrap(line));
-        write(bb.array());
+        write(line.getBytes(HTTP_DEFAULT_CHARSET));
     }
 
     public void writeLine() throws IOException {

@@ -28,6 +28,14 @@ package domain.upnp;
  */
 public interface IService {
 
+    /**
+     * Returns the Uniform Resource Name (URN) of the service.
+     * <br/>
+     * See http://www.ietf.org/rfc/rfc2141.txt for more information about URNs.
+     * @return the Uniform Resource Name of the service
+     */
+    String getURN();
+
     public String getServiceType();
     public String getServiceId();
 }
