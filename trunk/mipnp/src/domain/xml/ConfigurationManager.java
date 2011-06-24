@@ -22,12 +22,6 @@
  */
 package domain.xml;
 
-import domain.upnp.AbstractDeviceImpl;
-import java.io.File;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.XMLReader;
-
 /**
  * The ConfigurationManager can read an XML file and create a Device object.
  * @author Jeroen De Wilde

@@ -17,30 +17,36 @@
  */
 
 /*
- * DiscoveryController.java
- * Created on Oct 30, 2010, 5:12:13 PM
+ * AbstractRootDevice.java
+ * Created on Jun 24, 2011, 5:48:31 PM
  */
-package cli;
+package domain.upnp;
 
-import domain.upnp.IRootDevice;
-import java.io.IOException;
+import java.net.URL;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class DiscoveryController {
+public abstract class AbstractRootDevice extends AbstractDevice implements IRootDevice {
 
-    private DiscoveryCli discoveryCli;
+    private int bootId;
+    private int configId;
+    private URL descriptionUrl;
 
-    public DiscoveryController(IRootDevice rootDevice) {
-        this.discoveryCli = new DiscoveryCli();
+    public AbstractRootDevice() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void startDiscovery() throws IOException {
-        discoveryCli.printStartMessage(System.out);
+    public int getBootId() {
+        return bootId;
     }
 
-    public void stopDiscovery() throws IOException {
+    public int getConfigId() {
+        return configId;
+    }
+
+    public URL getDescriptionUrl() {
+        return descriptionUrl;
     }
 }

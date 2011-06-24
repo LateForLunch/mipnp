@@ -24,7 +24,7 @@ package domain.upnp.advertisement;
 
 import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
-import domain.upnp.IDevice;
+import domain.upnp.IRootDevice;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -42,11 +42,11 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
     private static final int ADVERTISEMENT_REPEATS = 2;
     private static final int SET_SLEEP_MILLIS = 200;
 
-    private IDevice rootDevice;
+    private IRootDevice rootDevice;
     private DatagramSocket socket;
     private Random random;
 
-    public MulticastAdvertiserThread(IDevice rootDevice, DatagramSocket socket) {
+    public MulticastAdvertiserThread(IRootDevice rootDevice, DatagramSocket socket) {
         this.rootDevice = rootDevice;
         this.socket = socket;
         this.random = new Random();

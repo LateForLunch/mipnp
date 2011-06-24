@@ -26,6 +26,7 @@ import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
 import domain.tools.ServerTools;
 import domain.upnp.IDevice;
+import domain.upnp.IRootDevice;
 import domain.upnp.IService;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,7 +50,7 @@ class AdvertisePacketFactory implements SsdpConstants {
      * @return a list of {@link SsdpRequest} objects
      */
     public static List<SsdpRequest> createAliveSet(
-            IDevice rootDevice, int advertisementDuration) {
+            IRootDevice rootDevice, int advertisementDuration) {
 
         List<SsdpRequest> set = new ArrayList<SsdpRequest>();
         // Root device
@@ -62,8 +63,8 @@ class AdvertisePacketFactory implements SsdpConstants {
                 "uuid:" + rootDevice.getUuid(),
                 rootDevice.getBootId(), rootDevice.getConfigId()));
         set.add(createAlive(advertisementDuration,
-                rootDevice.getDescriptionUrl(), rootDevice.getURN(),
-                "uuid:" + rootDevice.getUuid() + "::" + rootDevice.getURN(),
+                rootDevice.getDescriptionUrl(), rootDevice.getUniformResourceName(),
+                "uuid:" + rootDevice.getUuid() + "::" + rootDevice.getUniformResourceName(),
                 rootDevice.getBootId(), rootDevice.getConfigId()));
         // Services
         for (IService service : rootDevice.getServices()) {
@@ -79,8 +80,8 @@ class AdvertisePacketFactory implements SsdpConstants {
                     "uuid:" + embDev.getUuid(),
                     rootDevice.getBootId(), rootDevice.getConfigId()));
             set.add(createAlive(advertisementDuration,
-                    rootDevice.getDescriptionUrl(), embDev.getURN(),
-                    "uuid:" + embDev.getUuid() + "::" + embDev.getURN(),
+                    rootDevice.getDescriptionUrl(), embDev.getUniformResourceName(),
+                    "uuid:" + embDev.getUuid() + "::" + embDev.getUniformResourceName(),
                     rootDevice.getBootId(), rootDevice.getConfigId()));
             // Services
             for (IService service : embDev.getServices()) {

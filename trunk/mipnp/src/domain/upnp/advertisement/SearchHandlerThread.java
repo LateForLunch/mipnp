@@ -25,7 +25,7 @@ package domain.upnp.advertisement;
 import domain.http.MalformedHttpPacketException;
 import domain.ssdp.SsdpConstants;
 import domain.ssdp.SsdpRequest;
-import domain.upnp.IDevice;
+import domain.upnp.IRootDevice;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -38,10 +38,10 @@ import java.net.SocketException;
  */
 class SearchHandlerThread implements Runnable, SsdpConstants {
 
-    private IDevice rootDevice;
+    private IRootDevice rootDevice;
     private DatagramSocket socket;
 
-    public SearchHandlerThread(IDevice rootDevice, DatagramSocket socket) {
+    public SearchHandlerThread(IRootDevice rootDevice, DatagramSocket socket) {
         this.rootDevice = rootDevice;
         this.socket = socket;
     }

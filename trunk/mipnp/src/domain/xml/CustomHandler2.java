@@ -17,15 +17,6 @@
  */
 package domain.xml;
 
-import domain.upnp.AbstractDeviceImpl;
-import java.io.CharArrayWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-
 /**
  *
  * @author Jeroen De Wilde

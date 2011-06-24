@@ -24,7 +24,7 @@ package domain.upnp.advertisement;
 
 import domain.ssdp.SsdpConstants;
 import domain.tools.NetworkInterfaceTools;
-import domain.upnp.IDevice;
+import domain.upnp.IRootDevice;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -42,7 +42,7 @@ import java.util.Scanner;
  */
 public class Advertiser implements SsdpConstants {
 
-    private IDevice rootDevice;
+    private IRootDevice rootDevice;
     private MulticastSocket mcastSocket;
     private DatagramSocket ucastSocket;
     private Thread mcastSearchHandler;
@@ -52,7 +52,7 @@ public class Advertiser implements SsdpConstants {
     private NetworkInterface nic;
     private Thread mcastAdvertiserThread;
 
-    public Advertiser(IDevice rootDevice, NetworkInterface nic)
+    public Advertiser(IRootDevice rootDevice, NetworkInterface nic)
             throws UnknownHostException, SocketException {
 
         this.rootDevice = rootDevice;

@@ -17,30 +17,39 @@
  */
 
 /*
- * DiscoveryController.java
- * Created on Oct 30, 2010, 5:12:13 PM
+ * IRootDevice.java
+ * Created on Jun 24, 2011, 5:30:55 PM
  */
-package cli;
+package domain.upnp;
 
-import domain.upnp.IRootDevice;
-import java.io.IOException;
+import java.net.URL;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class DiscoveryController {
+public interface IRootDevice extends IDevice {
 
-    private DiscoveryCli discoveryCli;
+    /**
+     * Returns the boot identifier.<br/>
+     * This is also known as BOOTID.UPNP.ORG.<br/>
+     * The value must be a non-negative 31-bit integer.
+     * @return the boot identifier
+     */
+    int getBootId();
 
-    public DiscoveryController(IRootDevice rootDevice) {
-        this.discoveryCli = new DiscoveryCli();
-    }
+    /**
+     * Returns the configuration identifier.<br/>
+     * This is also known as CONFIGID.UPNP.ORG.<br/>
+     * The value must be a non-negative 31-bit integer.
+     * @return the configuration identifier
+     */
+    int getConfigId();
 
-    public void startDiscovery() throws IOException {
-        discoveryCli.printStartMessage(System.out);
-    }
-
-    public void stopDiscovery() throws IOException {
-    }
+    /**
+     * Returns a URL that points to the XML file that contains the description
+     * of the root device, it's embedded devices and all the services.
+     * @return 
+     */
+    URL getDescriptionUrl();
 }
