@@ -15,11 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/*
- * MiPnP.java
- * Created on Jun 26, 2011, 3:38:48 PM
- */
 package com.googlecode.mipnp;
 
 import com.googlecode.mipnp.upnp.description.DescriptionServlet;
@@ -30,11 +25,8 @@ import org.eclipse.jetty.server.Server;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class MiPnP {
+public class App {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         Server server = new Server(8080);
         server.setHandler(new DescriptionServlet());
