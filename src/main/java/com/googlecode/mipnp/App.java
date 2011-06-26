@@ -18,7 +18,7 @@
 package com.googlecode.mipnp;
 
 import com.googlecode.mipnp.upnp.description.DescriptionServlet;
-import com.googlecode.mipnp.upnp.device.MediaServer;
+import com.googlecode.mipnp.upnp.mediaserver.MediaServer;
 import java.util.Scanner;
 import org.eclipse.jetty.server.Server;
 
@@ -29,9 +29,8 @@ import org.eclipse.jetty.server.Server;
 public class App {
 
     public static void main(String[] args) {
-        new MediaServer();
         Server server = new Server(8080);
-        server.setHandler(new DescriptionServlet(null));
+        server.setHandler(new DescriptionServlet(new MediaServer()));
         try {
             server.start();
         } catch (Exception ex) {

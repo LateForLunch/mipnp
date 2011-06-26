@@ -65,31 +65,45 @@ public class DescriptionServlet extends AbstractHandler {
             out.println(formatTag("minor", "" + rootDevice.getMinorVersion()));
             out.println("</specVersion>");
             out.println("<device>");
-            out.println(formatTag("deviceType",
-                    rootDevice.getUniformResourceName()));
-            out.println(formatTag("friendlyName",
-                    rootDevice.getFriendlyName()));
-            out.println(formatTag("manufacturer",
-                    rootDevice.getManufacturer(), true));
-            out.println(formatTag("manufacturerURL",
-                    rootDevice.getManufacturerUrl().toString(), true));
-            out.println(formatTag("modelDescription",
-                    rootDevice.getModelDescription(), true));
-            out.println(formatTag("modelName",
-                    rootDevice.getModelName()));
-            out.println(formatTag("modelNumber",
-                    rootDevice.getModelNumber(), true));
-            out.println(formatTag("modelURL",
-                    rootDevice.getModelUrl().toString(), true));
-            out.println(formatTag("serialNumber",
-                    rootDevice.getSerialNumber(), true));
-            out.println(formatTag("UDN",
-                    "uuid:" + rootDevice.getUuid()));
+            out.println("<deviceType>" +
+                    rootDevice.getUniformResourceName() + "</deviceType>");
+            out.println("<friendlyName>" +
+                    rootDevice.getFriendlyName() + "</friendlyName>");
+            if (rootDevice.getManufacturer() != null) {
+                out.println("<manufacturer>" +
+                        rootDevice.getManufacturer() + "</manufacturer>");
+            }
+            if (rootDevice.getManufacturerUrl() != null) {
+                out.println("<manufacturerURL>" +
+                        rootDevice.getManufacturerUrl() + "</manufacturerURL>");
+            }
+            if (rootDevice.getModelDescription() != null) {
+                out.println("<modelDescription>" +
+                        rootDevice.getModelDescription() + "</modelDescription>");
+            }
+            out.println("<modelName>" +
+                    rootDevice.getModelName() + "</modelName>");
+            if (rootDevice.getModelNumber() != null) {
+                out.println("<modelNumber>" +
+                        rootDevice.getModelNumber() + "</modelNumber>");
+            }
+            if (rootDevice.getModelUrl() != null) {
+                out.println("<modelURL>" +
+                        rootDevice.getModelUrl() + "</modelURL>");
+            }
+            if (rootDevice.getSerialNumber() != null) {
+                out.println("<serialNumber>" +
+                        rootDevice.getSerialNumber() + "</serialNumber>");
+            }
+            out.println("<UDN>" +
+                    "uuid:" + rootDevice.getUuid() + "</UDN>");
             for (IService service : rootDevice.getServices()) {
                 // TODO
             }
-            out.println(formatTag("presentationURL",
-                    rootDevice.getPresentationUrl().toString(), true));
+            if (rootDevice.getPresentationUrl() != null) {
+                out.println("<presentationURL>" +
+                        rootDevice.getPresentationUrl() + "</presentationURL>");
+            }
             out.println("</device>");
             out.println("</root>");
         } finally {            
@@ -109,5 +123,15 @@ public class DescriptionServlet extends AbstractHandler {
             return "<" + tag + "/>";
         }
         return "<" + tag + ">" + value + "</" + tag + ">";
+    }
+
+    private String formatTag(String tag, Object value, boolean optional) {
+        if (optional && (value == null || value.toString().isEmpty())) {
+            return "";
+        }
+        if (value == null || value.toString().isEmpty()) {
+            return "<" + tag + "/>";
+        }
+        return "<" + tag + ">" + value.toString() + "</" + tag + ">";
     }
 }
