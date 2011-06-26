@@ -57,63 +57,127 @@ public abstract class AbstractDevice implements IDevice {
         return majorVersion;
     }
 
+    public void setMajorVersion(int majorVersion) {
+        this.majorVersion = majorVersion;
+    }
+
     public int getMinorVersion() {
         return minorVersion;
+    }
+
+    public void setMinorVersion(int minorVersion) {
+        this.minorVersion = minorVersion;
     }
 
     public String getUniformResourceName() {
         return uniformResourceName;
     }
 
+    public void setUniformResourceName(String uniformResourceName) {
+        this.uniformResourceName = uniformResourceName;
+    }
+
     public String getFriendlyName() {
         return friendlyName;
+    }
+
+    public void setFriendlyName(String friendlyName) {
+        this.friendlyName = friendlyName;
     }
 
     public String getManufacturer() {
         return manufacturer;
     }
 
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
     public URL getManufacturerUrl() {
         return manufacturerUrl;
+    }
+
+    public void setManufacturerUrl(URL manufacturerUrl) {
+        this.manufacturerUrl = manufacturerUrl;
     }
 
     public String getModelDescription() {
         return modelDescription;
     }
 
+    public void setModelDescription(String modelDescription) {
+        this.modelDescription = modelDescription;
+    }
+
     public String getModelName() {
         return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
     public String getModelNumber() {
         return modelNumber;
     }
 
+    public void setModelNumber(String modelNumber) {
+        this.modelNumber = modelNumber;
+    }
+
     public URL getModelUrl() {
         return modelUrl;
+    }
+
+    public void setModelUrl(URL modelUrl) {
+        this.modelUrl = modelUrl;
     }
 
     public String getSerialNumber() {
         return serialNumber;
     }
 
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
     public UUID getUuid() {
         return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getUniversalProductCode() {
         return universalProductCode;
     }
 
+    public void setUniversalProductCode(String universalProductCode) {
+        this.universalProductCode = universalProductCode;
+    }
+
     public Iterable<IService> getServices() {
         return services;
+    }
+
+    public boolean addService(IService service) {
+        return services.add(service);
     }
 
     public Iterable<IDevice> getEmbeddedDevices() {
         return embeddedDevices;
     }
 
+    public boolean addEmbeddedDevice(IDevice device) {
+        return embeddedDevices.add(device);
+    }
+
     public URL getPresentationUrl() {
         return presentationUrl;
+    }
+
+    public void setPresentationUrl(URL presentationUrl) {
+        this.presentationUrl = presentationUrl;
     }
 }

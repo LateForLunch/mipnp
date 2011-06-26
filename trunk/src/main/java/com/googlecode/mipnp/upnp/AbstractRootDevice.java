@@ -42,11 +42,23 @@ public abstract class AbstractRootDevice extends AbstractDevice implements IRoot
         return bootId;
     }
 
+    public void setBootId(int bootId) {
+        this.bootId = bootId;
+    }
+
     public int getConfigId() {
         return configId;
     }
 
+    public void setConfigId(int configId) {
+        this.configId = configId;
+    }
+
     public URL getDescriptionUrl() {
         return descriptionUrl;
+    }
+
+    public void setDescriptionUrl(URL descriptionUrl) {
+        this.descriptionUrl = descriptionUrl;
     }
 }
