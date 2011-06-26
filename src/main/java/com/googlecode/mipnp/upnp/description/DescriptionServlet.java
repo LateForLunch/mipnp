@@ -22,14 +22,14 @@
  */
 package com.googlecode.mipnp.upnp.description;
 
+import com.googlecode.mipnp.upnp.IRootDevice;
+import com.googlecode.mipnp.upnp.IService;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Scanner;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 /**
@@ -40,7 +40,10 @@ public class DescriptionServlet extends AbstractHandler {
 
     private static final String FILE = "/description.xml";
 
-    public DescriptionServlet() {
+    private IRootDevice rootDevice;
+
+    public DescriptionServlet(IRootDevice rootDevice) {
+        this.rootDevice = rootDevice;
     }
 
     public void handle(String target, Request baseRequest,
@@ -57,9 +60,54 @@ public class DescriptionServlet extends AbstractHandler {
         try {
             out.println("<?xml version=\"1.0\"?>");
             out.println("<root xmlns=\"urn:schemas-upnp-org:device-1-0\">");
+            out.println("<specVersion>");
+            out.println(formatTag("major", "" + rootDevice.getMajorVersion()));
+            out.println(formatTag("minor", "" + rootDevice.getMinorVersion()));
+            out.println("</specVersion>");
+            out.println("<device>");
+            out.println(formatTag("deviceType",
+                    rootDevice.getUniformResourceName()));
+            out.println(formatTag("friendlyName",
+                    rootDevice.getFriendlyName()));
+            out.println(formatTag("manufacturer",
+                    rootDevice.getManufacturer(), true));
+            out.println(formatTag("manufacturerURL",
+                    rootDevice.getManufacturerUrl().toString(), true));
+            out.println(formatTag("modelDescription",
+                    rootDevice.getModelDescription(), true));
+            out.println(formatTag("modelName",
+                    rootDevice.getModelName()));
+            out.println(formatTag("modelNumber",
+                    rootDevice.getModelNumber(), true));
+            out.println(formatTag("modelURL",
+                    rootDevice.getModelUrl().toString(), true));
+            out.println(formatTag("serialNumber",
+                    rootDevice.getSerialNumber(), true));
+            out.println(formatTag("UDN",
+                    "uuid:" + rootDevice.getUuid()));
+            for (IService service : rootDevice.getServices()) {
+                // TODO
+            }
+            out.println(formatTag("presentationURL",
+                    rootDevice.getPresentationUrl().toString(), true));
+            out.println("</device>");
             out.println("</root>");
         } finally {            
             out.close();
         }
+    }
+
+    private String formatTag(String tag, String value) {
+        return formatTag(tag, value, false);
+    }
+
+    private String formatTag(String tag, String value, boolean optional) {
+        if (optional && (value == null || value.isEmpty())) {
+            return "";
+        }
+        if (value == null || value.isEmpty()) {
+            return "<" + tag + "/>";
+        }
+        return "<" + tag + ">" + value + "</" + tag + ">";
     }
 }
