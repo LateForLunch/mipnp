@@ -35,7 +35,6 @@ public abstract class AbstractRootDevice extends AbstractDevice implements IRoot
     private URL descriptionUrl;
 
     public AbstractRootDevice() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int getBootId() {

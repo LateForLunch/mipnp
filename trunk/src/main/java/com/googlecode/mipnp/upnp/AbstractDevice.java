@@ -23,6 +23,7 @@
 package com.googlecode.mipnp.upnp;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,7 +51,8 @@ public abstract class AbstractDevice implements IDevice {
     private URL presentationUrl;
 
     public AbstractDevice() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.services = new ArrayList<IService>();
+        this.embeddedDevices = new ArrayList<IDevice>();
     }
 
     public int getMajorVersion() {
