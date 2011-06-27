@@ -27,18 +27,15 @@ import com.googlecode.mipnp.upnp.IService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class DescriptionServlet extends AbstractHandler {
-
-    private static final String FILE = "/description.xml";
+public class DescriptionServlet extends HttpServlet {
 
     private IRootDevice rootDevice;
 
@@ -46,23 +43,19 @@ public class DescriptionServlet extends AbstractHandler {
         this.rootDevice = rootDevice;
     }
 
-    public void handle(String target, Request baseRequest,
-            HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        if (!request.getRequestURI().equalsIgnoreCase(FILE)) {
-            return;
-        }
         response.setContentType("text/xml;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        baseRequest.setHandled(true);
         PrintWriter out = response.getWriter();
         try {
             out.println("<?xml version=\"1.0\"?>");
             out.println("<root xmlns=\"urn:schemas-upnp-org:device-1-0\">");
             out.println("<specVersion>");
-            out.println(formatTag("major", "" + rootDevice.getMajorVersion()));
-            out.println(formatTag("minor", "" + rootDevice.getMinorVersion()));
+            out.println("<major>" + rootDevice.getMajorVersion() + "</major>");
+            out.println("<minor>" + rootDevice.getMinorVersion() + "</minor>");
             out.println("</specVersion>");
             out.println("<device>");
             out.println("<deviceType>" +
@@ -109,29 +102,5 @@ public class DescriptionServlet extends AbstractHandler {
         } finally {            
             out.close();
         }
-    }
-
-    private String formatTag(String tag, String value) {
-        return formatTag(tag, value, false);
-    }
-
-    private String formatTag(String tag, String value, boolean optional) {
-        if (optional && (value == null || value.isEmpty())) {
-            return "";
-        }
-        if (value == null || value.isEmpty()) {
-            return "<" + tag + "/>";
-        }
-        return "<" + tag + ">" + value + "</" + tag + ">";
-    }
-
-    private String formatTag(String tag, Object value, boolean optional) {
-        if (optional && (value == null || value.toString().isEmpty())) {
-            return "";
-        }
-        if (value == null || value.toString().isEmpty()) {
-            return "<" + tag + "/>";
-        }
-        return "<" + tag + ">" + value.toString() + "</" + tag + ">";
     }
 }
