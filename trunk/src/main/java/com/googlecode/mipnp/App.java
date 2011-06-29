@@ -17,10 +17,16 @@
  */
 package com.googlecode.mipnp;
 
+import com.googlecode.mipnp.test.TimeServerImpl;
 import com.googlecode.mipnp.upnp.IRootDevice;
 import com.googlecode.mipnp.upnp.description.DescriptionServlet;
 import com.googlecode.mipnp.upnp.mediaserver.MediaServer;
 import java.util.Scanner;
+import javax.servlet.Servlet;
+import javax.xml.ws.Endpoint;
+import org.apache.cxf.Bus;
+import org.apache.cxf.BusFactory;
+import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -32,33 +38,62 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class App {
 
     public static void main(String[] args) {
-        IRootDevice rootDevice = new MediaServer();
+        String busFactory =
+                System.getProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME);
+        System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
+                "org.apache.cxf.bus.CXFBusFactory");
 
-        Server server = new Server(8080);
-        ServletContextHandler context =
-                new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-
-        context.addServlet(new ServletHolder(
-                new DescriptionServlet(rootDevice)), "/description.xml");
+        Server server = null;
 
         try {
+            IRootDevice rootDevice = new MediaServer();
+
+            server = new Server(8080);
+            ServletContextHandler context =
+                    new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            server.setHandler(context);
+
+            Servlet descriptionServlet = new DescriptionServlet(rootDevice);
+            context.addServlet(
+                    new ServletHolder(descriptionServlet), "/description.xml");
+
+            CXFNonSpringServlet cxf = new CXFNonSpringServlet();
+            ServletHolder servletHolder = new ServletHolder(cxf);
+            servletHolder.setName("soap");
+            servletHolder.setForcedPath("soap");
+            context.addServlet(servletHolder, "/soap/*");
+
             server.start();
+
+            Bus bus = cxf.getBus();
+            BusFactory.setDefaultBus(bus);
+
+            TimeServerImpl ts = new TimeServerImpl();
+            Endpoint.publish("/ts", ts);
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Press 'q' to stop.");
+            while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
+                System.out.println("Unknown command.\nPress 'q' to stop.\n");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.exit(1);
-        }
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Press 'q' to stop.");
-        while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
-            System.out.println("Unknown command.\nPress 'q' to stop.\n");
-        }
-        try {
-            server.stop();
-            server.join();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } finally {
+            if (server != null) {
+                try {
+                    server.stop();
+                    server.join();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (busFactory != null) {
+                System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
+                        busFactory);
+            } else {
+                System.clearProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME);
+            }
         }
     }
 }
