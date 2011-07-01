@@ -22,6 +22,8 @@
  */
 package com.googlecode.mipnp.upnp;
 
+import java.net.URI;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
@@ -29,13 +31,51 @@ package com.googlecode.mipnp.upnp;
 public interface IService {
 
     /**
-     * Returns the Uniform Resource Name (URN) of the service.
+     * Returns the Uniform Resource Name (URN) of the service as a URI.<br/>
+     * This is also known as the service type in the description XML.<br/>
      * <br/>
-     * See http://www.ietf.org/rfc/rfc2141.txt for more information about URNs.
+     * Format:<br/>
+     * "urn:schemas-upnp-org:service:<i>serviceType</i>:<i>ver</i>"<br/>
+     * or<br/>
+     * "urn:<i>domain-name</i>:service:<i>serviceType</i>:<i>ver</i>"
      * @return the Uniform Resource Name of the service
      */
-    String getURN();
+    String getUniformResourceName();
 
-    public String getServiceType();
-    public String getServiceId();
+    /**
+     * Returns the service identifier as a URI.<br/>
+     * This value must be unique within a device description.<br/>
+     * <br/>
+     * Format:<br/>
+     * "urn:upnp-org:serviceId:<i>serviceID</i>"<br/>
+     * or<br/>
+     * "urn:<i>domain-name</i>:serviceId:<i>serviceID</i>"
+     * @return the identifier of the service
+     */
+    String getIdentifier();
+
+    /**
+     * Returns the service description URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.
+     * @return the relative description URI of the service
+     */
+    URI getDescriptionUri();
+
+    /**
+     * Returns the service control URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.
+     * @return the relative control URI of the service
+     */
+    URI getControlUri();
+
+    /**
+     * Returns the service eventing URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.<br/>
+     * Must be unique within the device.
+     * @return the relative eventing URI of the service
+     */
+    URI getEventUri();
 }

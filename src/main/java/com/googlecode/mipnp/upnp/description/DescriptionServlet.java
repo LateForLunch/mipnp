@@ -22,6 +22,7 @@
  */
 package com.googlecode.mipnp.upnp.description;
 
+import com.googlecode.mipnp.upnp.IDevice;
 import com.googlecode.mipnp.upnp.IRootDevice;
 import com.googlecode.mipnp.upnp.IService;
 import java.io.IOException;
@@ -57,50 +58,89 @@ public class DescriptionServlet extends HttpServlet {
             out.println("<major>" + rootDevice.getMajorVersion() + "</major>");
             out.println("<minor>" + rootDevice.getMinorVersion() + "</minor>");
             out.println("</specVersion>");
-            out.println("<device>");
-            out.println("<deviceType>" +
-                    rootDevice.getUniformResourceName() + "</deviceType>");
-            out.println("<friendlyName>" +
-                    rootDevice.getFriendlyName() + "</friendlyName>");
-            if (rootDevice.getManufacturer() != null) {
-                out.println("<manufacturer>" +
-                        rootDevice.getManufacturer() + "</manufacturer>");
-            }
-            if (rootDevice.getManufacturerUrl() != null) {
-                out.println("<manufacturerURL>" +
-                        rootDevice.getManufacturerUrl() + "</manufacturerURL>");
-            }
-            if (rootDevice.getModelDescription() != null) {
-                out.println("<modelDescription>" +
-                        rootDevice.getModelDescription() + "</modelDescription>");
-            }
-            out.println("<modelName>" +
-                    rootDevice.getModelName() + "</modelName>");
-            if (rootDevice.getModelNumber() != null) {
-                out.println("<modelNumber>" +
-                        rootDevice.getModelNumber() + "</modelNumber>");
-            }
-            if (rootDevice.getModelUrl() != null) {
-                out.println("<modelURL>" +
-                        rootDevice.getModelUrl() + "</modelURL>");
-            }
-            if (rootDevice.getSerialNumber() != null) {
-                out.println("<serialNumber>" +
-                        rootDevice.getSerialNumber() + "</serialNumber>");
-            }
-            out.println("<UDN>" +
-                    "uuid:" + rootDevice.getUuid() + "</UDN>");
-            for (IService service : rootDevice.getServices()) {
-                // TODO
-            }
-            if (rootDevice.getPresentationUrl() != null) {
-                out.println("<presentationURL>" +
-                        rootDevice.getPresentationUrl() + "</presentationURL>");
-            }
-            out.println("</device>");
+            printDevice(out, rootDevice);
             out.println("</root>");
         } finally {            
             out.close();
         }
+    }
+
+    private void printDevice(PrintWriter out, IDevice device) {
+        out.println("<device>");
+        out.println("<deviceType>" +
+                device.getUniformResourceName() + "</deviceType>");
+        out.println("<friendlyName>" +
+                device.getFriendlyName() + "</friendlyName>");
+        if (device.getManufacturer() != null) {
+            out.println("<manufacturer>" +
+                    device.getManufacturer() + "</manufacturer>");
+        }
+        if (device.getManufacturerUrl() != null) {
+            out.println("<manufacturerURL>" +
+                    device.getManufacturerUrl() + "</manufacturerURL>");
+        }
+        if (device.getModelDescription() != null) {
+            out.println("<modelDescription>" +
+                    device.getModelDescription() + "</modelDescription>");
+        }
+        out.println("<modelName>" +
+                device.getModelName() + "</modelName>");
+        if (device.getModelNumber() != null) {
+            out.println("<modelNumber>" +
+                    device.getModelNumber() + "</modelNumber>");
+        }
+        if (device.getModelUrl() != null) {
+            out.println("<modelURL>" +
+                    device.getModelUrl() + "</modelURL>");
+        }
+        if (device.getSerialNumber() != null) {
+            out.println("<serialNumber>" +
+                    device.getSerialNumber() + "</serialNumber>");
+        }
+        out.println("<UDN>" +
+                "uuid:" + device.getUuid() + "</UDN>");
+        if (device.getUniversalProductCode() != null) {
+            out.println("<UPC>" +
+                    device.getUniversalProductCode() + "</UPC>");
+        }
+
+        // Services
+        if (device.getServices().size() > 0) {
+            out.println("<serviceList>");
+            for (IService service : device.getServices()) {
+                printService(out, service);
+            }
+            out.println("</serviceList>");
+        }
+
+        // Embedded devices
+        if (device.getEmbeddedDevices().size() > 0) {
+            out.println("<deviceList>");
+            for (IDevice embedded : device.getEmbeddedDevices()) {
+                printDevice(out, embedded);
+            }
+            out.println("</deviceList>");
+        }
+
+        if (device.getPresentationUrl() != null) {
+            out.println("<presentationURL>" +
+                    device.getPresentationUrl() + "</presentationURL>");
+        }
+        out.println("</device>");
+    }
+
+    private void printService(PrintWriter out, IService service) {
+        out.println("<service>");
+        out.println("<serviceType>" +
+                service.getUniformResourceName() + "</serviceType>");
+        out.println("<serviceId>" +
+                service.getIdentifier() + "</serviceId>");
+        out.println("<SCPDURL>" +
+                service.getDescriptionUri() + "</SCPDURL>");
+        out.println("<controlURL>" +
+                service.getControlUri() + "</controlURL>");
+        out.println("<eventSubURL>" +
+                service.getEventUri() + "</eventSubURL>");
+        out.println("</service>");
     }
 }

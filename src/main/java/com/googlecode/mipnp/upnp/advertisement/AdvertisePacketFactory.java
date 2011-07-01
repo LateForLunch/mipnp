@@ -69,8 +69,8 @@ class AdvertisePacketFactory implements SsdpConstants {
         // Services
         for (IService service : rootDevice.getServices()) {
             set.add(createAlive(advertisementDuration,
-                    rootDevice.getDescriptionUrl(), service.getURN(),
-                    "uuid:" + rootDevice.getUuid() + "::" + service.getURN(),
+                    rootDevice.getDescriptionUrl(), service.getUniformResourceName(),
+                    "uuid:" + rootDevice.getUuid() + "::" + service.getUniformResourceName(),
                     rootDevice.getBootId(), rootDevice.getConfigId()));
         }
         // Embedded Devices
@@ -86,8 +86,8 @@ class AdvertisePacketFactory implements SsdpConstants {
             // Services
             for (IService service : embDev.getServices()) {
                 set.add(createAlive(advertisementDuration,
-                        rootDevice.getDescriptionUrl(), service.getURN(),
-                        "uuid:" + embDev.getUuid() + "::" + service.getURN(),
+                        rootDevice.getDescriptionUrl(), service.getUniformResourceName(),
+                        "uuid:" + embDev.getUuid() + "::" + service.getUniformResourceName(),
                         rootDevice.getBootId(), rootDevice.getConfigId()));
             }
         }
@@ -126,7 +126,7 @@ class AdvertisePacketFactory implements SsdpConstants {
         request.setHeader("NTS", "ssdp:alive");
         request.setHeader("SERVER",
                 ServerTools.getOsName() + "/" + ServerTools.getOsVersion() +
-                " UPnP/1.1 MiPnP/0.1"); // TODO: MiPnP version
+                " UPnP/1.1 MiPnP/1.0"); // TODO: MiPnP version
         request.setHeader("USN", uniqueServiceName);
         request.setHeader("BOOTID.UPNP.ORG", String.valueOf(bootId));
         request.setHeader("CONFIGID.UPNP.ORG", String.valueOf(configId));
