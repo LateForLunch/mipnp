@@ -23,8 +23,6 @@
 package com.googlecode.mipnp.upnp.mediaserver;
 
 import com.googlecode.mipnp.upnp.AbstractRootDevice;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.UUID;
 
 /**
@@ -48,5 +46,9 @@ public class MediaServer extends AbstractRootDevice {
         setUuid(UUID.randomUUID());
         setUniversalProductCode(null);
         setPresentationUrl(null);
+
+        addService(new ConnectionManager());
+        addService(new ContentDirectory());
+        addService(new MediaReceiverRegistrar());
     }
 }

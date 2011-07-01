@@ -159,7 +159,7 @@ public abstract class AbstractDevice implements IDevice {
         this.universalProductCode = universalProductCode;
     }
 
-    public Iterable<IService> getServices() {
+    public List<IService> getServices() {
         return services;
     }
 
@@ -167,7 +167,7 @@ public abstract class AbstractDevice implements IDevice {
         return services.add(service);
     }
 
-    public Iterable<IDevice> getEmbeddedDevices() {
+    public List<IDevice> getEmbeddedDevices() {
         return embeddedDevices;
     }
 

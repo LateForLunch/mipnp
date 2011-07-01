@@ -23,6 +23,7 @@
 package com.googlecode.mipnp.upnp;
 
 import java.net.URL;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,7 +44,7 @@ public interface IDevice {
      */
     int getMinorVersion();
 
-    // URLBase
+    // TODO: URLBase
 
     /**
      * Returns the Uniform Resource Name (URN) of the device.<br/>
@@ -142,13 +143,13 @@ public interface IDevice {
      * Returns the services of this device.
      * @return the services of this device
      */
-    Iterable<IService> getServices();
+    List<IService> getServices();
 
     /**
      * Returns the embedded devices of this device.
      * @return the embedded devices of this device
      */
-    Iterable<IDevice> getEmbeddedDevices();
+    List<IDevice> getEmbeddedDevices();
 
     /**
      * Returns the presentation URL of the device.<br/>
