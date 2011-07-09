@@ -60,7 +60,7 @@ public class DescriptionServlet extends HttpServlet {
             out.println("</specVersion>");
             printDevice(out, rootDevice);
             out.println("</root>");
-        } finally {            
+        } finally {
             out.close();
         }
     }

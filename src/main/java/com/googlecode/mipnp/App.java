@@ -17,6 +17,7 @@
  */
 package com.googlecode.mipnp;
 
+import com.googlecode.mipnp.test.TestServlet;
 import com.googlecode.mipnp.test.TimeServerImpl;
 import com.googlecode.mipnp.upnp.IRootDevice;
 import com.googlecode.mipnp.upnp.description.DescriptionServlet;
@@ -49,6 +50,7 @@ public class App {
             IRootDevice rootDevice = new MediaServer();
 
             server = new Server(8080);
+            server.setSendServerVersion(false);
             ServletContextHandler context =
                     new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
@@ -57,6 +59,9 @@ public class App {
             Servlet descriptionServlet = new DescriptionServlet(rootDevice);
             context.addServlet(
                     new ServletHolder(descriptionServlet), "/description.xml");
+
+            Servlet testServlet = new TestServlet();
+            context.addServlet(new ServletHolder(testServlet), "/test");
 
             CXFNonSpringServlet cxf = new CXFNonSpringServlet();
             ServletHolder servletHolder = new ServletHolder(cxf);
