@@ -18,26 +18,71 @@
 
 /*
  * ContentDirectory.java
- * Created on Jun 30, 2011, 3:53:50 PM
+ * Created on Jul 1, 2011, 2:32:34 PM
  */
 package com.googlecode.mipnp.upnp.mediaserver;
 
-import com.googlecode.mipnp.upnp.AbstractService;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebService;
+import javax.xml.ws.Holder;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class ContentDirectory extends AbstractService {
+@WebService(name="ContentDirectory")
+public interface ContentDirectory {
 
-    public ContentDirectory() {
-        super("upnp.org", "ContentDirectory", "ContentDirectory", "1");
-//        try {
-//            setDescriptionUri(new URI("/contentdirectory.xml"));
-//            setControlUri(new URI("/contentdirectory/control"));
-//            setEventUri(new URI("/contentdirectory/event"));
-//        } catch (URISyntaxException ex) {
-//            // This should not happen
-//        }
-    }
+    @WebMethod(operationName="Browse")
+    void browse(
+            @WebParam(name="ObjectID")
+            String objectId,
+            @WebParam(name="BrowseFlag")
+            String browseFlag,
+            @WebParam(name="Filter")
+            String filter,
+            @WebParam(name="StartingIndex")
+            int startingIndex,
+            @WebParam(name="RequestedCount")
+            int requestedCount,
+            @WebParam(name="SortCriteria")
+            String sortCriteria,
+            @WebParam(name="Result", mode=WebParam.Mode.OUT)
+            Holder<String> result,
+            @WebParam(name="NumberReturned", mode=WebParam.Mode.OUT)
+            Holder<Integer> numberReturned,
+            @WebParam(name="TotalMatches", mode=WebParam.Mode.OUT)
+            Holder<Integer> totalMatches,
+            @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
+            Holder<Integer> updateId);
+
+    @WebMethod(operationName="DestroyObject")
+    void destroyObject(
+            @WebParam(name="ObjectID")
+            String objectId);
+
+    @WebMethod(operationName="GetSystemUpdateID")
+    void getSystemUpdateId(
+            @WebParam(name="Id", mode=WebParam.Mode.OUT)
+            Holder<Integer> id);
+
+    @WebMethod(operationName="GetSearchCapabilities")
+    void getSearchCapabilities(
+            @WebParam(name="SearchCaps", mode=WebParam.Mode.OUT)
+            Holder<String> searchCaps);
+
+    @WebMethod(operationName="GetSortCapabilities")
+    void getSortCapabilities(
+            @WebParam(name="SortCaps", mode=WebParam.Mode.OUT)
+            Holder<String> sortCaps);
+
+    @WebMethod(operationName="UpdateObject")
+    void updateObject(
+            @WebParam(name="ObjectID")
+            String objectId,
+            @WebParam(name="CurrentTagValue")
+            String currentTagValue,
+            @WebParam(name="NewTagValue")
+            String newTagValue);
 }

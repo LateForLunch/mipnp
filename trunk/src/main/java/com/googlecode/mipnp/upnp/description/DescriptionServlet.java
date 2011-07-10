@@ -25,6 +25,7 @@ package com.googlecode.mipnp.upnp.description;
 import com.googlecode.mipnp.upnp.Device;
 import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.Service;
+import com.googlecode.mipnp.upnp.UpnpTools;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -55,8 +56,8 @@ public class DescriptionServlet extends HttpServlet {
             out.println("<?xml version=\"1.0\"?>");
             out.println("<root xmlns=\"urn:schemas-upnp-org:device-1-0\">");
             out.println("<specVersion>");
-            out.println("<major>" + rootDevice.getMajorVersion() + "</major>");
-            out.println("<minor>" + rootDevice.getMinorVersion() + "</minor>");
+            out.println("<major>" + rootDevice.getMajorUpnpVersion() + "</major>");
+            out.println("<minor>" + rootDevice.getMinorUpnpVersion() + "</minor>");
             out.println("</specVersion>");
             printDevice(out, rootDevice);
             out.println("</root>");
@@ -68,7 +69,7 @@ public class DescriptionServlet extends HttpServlet {
     private void printDevice(PrintWriter out, Device device) {
         out.println("<device>");
         out.println("<deviceType>" +
-                device.getUniformResourceName() + "</deviceType>");
+                UpnpTools.getTypeAsUrn(device) + "</deviceType>");
         out.println("<friendlyName>" +
                 device.getFriendlyName() + "</friendlyName>");
         if (device.getManufacturer() != null) {
@@ -131,17 +132,10 @@ public class DescriptionServlet extends HttpServlet {
 
     private void printService(PrintWriter out, Service service) {
         out.println("<service>");
-        String type = "urn:";
-        if (service.getVendorDomainName().equals("upnp-org")) {
-            type += "schemas-";
-        }
-        type += service.getVendorDomainName().replace('.', '-');
-        type += ":service:" + service.getType() + ":" + service.getVersion();
-        out.println("<serviceType>" + type + "</serviceType>");
-        String id = "urn:";
-        id += service.getVendorDomainName().replace('.', '-');
-        id += ":serviceId:" + service.getId();
-        out.println("<serviceId>" + id + "</serviceId>");
+        out.println("<serviceType>" +
+                UpnpTools.getTypeAsUrn(service) + "</serviceType>");
+        out.println("<serviceId>" +
+                UpnpTools.getIdAsUrn(service) + "</serviceId>");
         // TODO:
 //        out.println("<SCPDURL>" +
 //                service.getDescriptionUri() + "</SCPDURL>");

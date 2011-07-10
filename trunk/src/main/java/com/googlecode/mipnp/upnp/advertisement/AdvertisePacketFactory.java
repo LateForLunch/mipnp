@@ -28,6 +28,7 @@ import com.googlecode.mipnp.tools.ServerTools;
 import com.googlecode.mipnp.upnp.Device;
 import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.Service;
+import com.googlecode.mipnp.upnp.UpnpTools;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -62,18 +63,14 @@ class AdvertisePacketFactory implements SsdpConstants {
                 rootDevice.getDescriptionUrl(), "uuid:" + rootDevice.getUuid(),
                 "uuid:" + rootDevice.getUuid(),
                 rootDevice.getBootId(), rootDevice.getConfigId()));
+        String type = UpnpTools.getTypeAsUrn(rootDevice);
         set.add(createAlive(advertisementDuration,
-                rootDevice.getDescriptionUrl(), rootDevice.getUniformResourceName(),
-                "uuid:" + rootDevice.getUuid() + "::" + rootDevice.getUniformResourceName(),
+                rootDevice.getDescriptionUrl(), type,
+                "uuid:" + rootDevice.getUuid() + "::" + type,
                 rootDevice.getBootId(), rootDevice.getConfigId()));
         // Services
         for (Service service : rootDevice.getServices()) {
-            String type = "urn:";
-            if (service.getVendorDomainName().equals("upnp-org")) {
-                type += "schemas-";
-            }
-            type += service.getVendorDomainName().replace('.', '-');
-            type += ":service:" + service.getType() + ":" + service.getVersion();
+            type = UpnpTools.getTypeAsUrn(service);
             set.add(createAlive(advertisementDuration,
                     rootDevice.getDescriptionUrl(), type,
                     "uuid:" + rootDevice.getUuid() + "::" + type,
@@ -85,18 +82,14 @@ class AdvertisePacketFactory implements SsdpConstants {
                     rootDevice.getDescriptionUrl(), "uuid:" + embDev.getUuid(),
                     "uuid:" + embDev.getUuid(),
                     rootDevice.getBootId(), rootDevice.getConfigId()));
+            type = UpnpTools.getTypeAsUrn(embDev);
             set.add(createAlive(advertisementDuration,
-                    rootDevice.getDescriptionUrl(), embDev.getUniformResourceName(),
-                    "uuid:" + embDev.getUuid() + "::" + embDev.getUniformResourceName(),
+                    rootDevice.getDescriptionUrl(), type,
+                    "uuid:" + embDev.getUuid() + "::" + type,
                     rootDevice.getBootId(), rootDevice.getConfigId()));
             // Services
             for (Service service : embDev.getServices()) {
-                String type = "urn:";
-                if (service.getVendorDomainName().equals("upnp-org")) {
-                    type += "schemas-";
-                }
-                type += service.getVendorDomainName().replace('.', '-');
-                type += ":service:" + service.getType() + ":" + service.getVersion();
+                type = UpnpTools.getTypeAsUrn(service);
                 set.add(createAlive(advertisementDuration,
                         rootDevice.getDescriptionUrl(), type,
                         "uuid:" + embDev.getUuid() + "::" + type,

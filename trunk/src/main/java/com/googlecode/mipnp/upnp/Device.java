@@ -33,30 +33,36 @@ import java.util.UUID;
 public interface Device {
 
     /**
-     * Returns the major version of the device.
-     * @return the major version of the device.
+     * Returns the major version of the UPnP Device Architecture.
+     * @return the major version of the UPnP Device Architecture
      */
-    int getMajorVersion();
+    int getMajorUpnpVersion();
 
     /**
-     * Returns the minor version of the device.
-     * @return the minor version of the device.
+     * Returns the minor version of the UPnP Device Architecture.
+     * @return the minor version of the UPnP Device Architecture
      */
-    int getMinorVersion();
+    int getMinorUpnpVersion();
 
     // TODO: URLBase
 
     /**
-     * Returns the Uniform Resource Name (URN) of the device.<br/>
-     * This is also known as the device type in the description XML.<br/>
-     * <br/>
-     * Format:<br/>
-     * "urn:schemas-upnp-org:device:<i>deviceType</i>:<i>ver</i>"<br/>
-     * or<br/>
-     * "urn:<i>domain-name</i>:device:<i>deviceType</i>:<i>ver</i>"
-     * @return the Uniform Resource Name of the device
+     * Returns the vendor domain name of the device.
+     * @return the vendor domain name of the device
      */
-    String getUniformResourceName();
+    String getVendorDomainName();
+
+    /**
+     * Returns the type of the device.
+     * @return the type of the device
+     */
+    String getType();
+
+    /**
+     * Returns the version of the device.
+     * @return the version of the device
+     */
+    String getVersion();
 
     /**
      * Returns the friendly name of the device.<br/>
@@ -140,14 +146,14 @@ public interface Device {
     // TODO: iconList
 
     /**
-     * Returns the services of this device.
-     * @return the services of this device
+     * Returns the services of the device.
+     * @return the services of the device
      */
     List<Service> getServices();
 
     /**
-     * Returns the embedded devices of this device.
-     * @return the embedded devices of this device
+     * Returns the embedded devices of the device.
+     * @return the embedded devices of the device
      */
     List<Device> getEmbeddedDevices();
 

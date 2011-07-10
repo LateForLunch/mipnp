@@ -17,7 +17,7 @@
  */
 
 /*
- * Server.java
+ * UpnpServer.java
  * Created on Jul 10, 2011, 11:07:54 AM
  */
 package com.googlecode.mipnp.upnp;

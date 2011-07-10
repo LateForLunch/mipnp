@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class AbstractService implements Service {
+public abstract class AbstractService implements Service {
 
     private String vendorDomainName;
     private String type;
