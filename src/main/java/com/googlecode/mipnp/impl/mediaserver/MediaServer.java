@@ -23,6 +23,8 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.AbstractRootDevice;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 /**
@@ -49,8 +51,21 @@ public class MediaServer extends AbstractRootDevice {
         setUniversalProductCode(null);
         setPresentationUrl(null);
 
-        addService(new ConnectionManagerImpl());
-        addService(new ContentDirectoryImpl());
-        addService(new MediaReceiverRegistrarImpl());
+        try {
+            addService(new ConnectionManagerImpl(
+                    new URI("/connectionmanager.xml"),
+                    new URI("/connectionmanager/control"),
+                    new URI("/connectionmanager/event")));
+            addService(new ContentDirectoryImpl(
+                    new URI("/contentdirectory.xml"),
+                    new URI("/contentdirectory/control"),
+                    new URI("/contentdirectory/event")));
+            addService(new MediaReceiverRegistrarImpl(
+                    new URI("/mediareceiverregistrar.xml"),
+                    new URI("/mediareceiverregistrar/control"),
+                    new URI("/mediareceiverregistrar/event")));
+        } catch (URISyntaxException ex) {
+            // This should not happen
+        }
     }
 }

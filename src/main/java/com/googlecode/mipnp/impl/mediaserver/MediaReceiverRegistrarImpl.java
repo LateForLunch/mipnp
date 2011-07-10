@@ -23,6 +23,7 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.AbstractService;
+import java.net.URI;
 
 /**
  *
@@ -30,17 +31,13 @@ import com.googlecode.mipnp.upnp.AbstractService;
  */
 class MediaReceiverRegistrarImpl extends AbstractService {
 
-    public MediaReceiverRegistrarImpl() {
-        super("microsoft.com", "X_MS_MediaReceiverRegistrar", "X_MS_MediaReceiverRegistrar", "1");
+    public MediaReceiverRegistrarImpl(
+            URI descriptionUri, URI controlUri, URI eventUri) {
+        super("microsoft.com", "X_MS_MediaReceiverRegistrar",
+                "X_MS_MediaReceiverRegistrar", "1",
+                descriptionUri, controlUri, eventUri);
         // TODO: check urn -> urn:microsoft.com should be urn:microsoft-com
 //        setUniformResourceName("urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1");
 //        setIdentifier("urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
-//        try {
-//            setDescriptionUri(new URI("/mediareceiverregistrar.xml"));
-//            setControlUri(new URI("/mediareceiverregistrar/control"));
-//            setEventUri(new URI("/mediareceiverregistrar/event"));
-//        } catch (URISyntaxException ex) {
-//            // This should not happen
-//        }
     }
 }

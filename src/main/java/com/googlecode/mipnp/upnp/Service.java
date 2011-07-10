@@ -22,6 +22,7 @@
  */
 package com.googlecode.mipnp.upnp;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -54,31 +55,6 @@ public interface Service {
      */
 //    String getIdentifier();
 
-    /*
-     * Returns the service description URI.<br/>
-     * This must be relative to the URL at which
-     * the device description is located.
-     * @return the relative description URI of the service
-     */
-//    URI getDescriptionUri();
-
-    /*
-     * Returns the service control URI.<br/>
-     * This must be relative to the URL at which
-     * the device description is located.
-     * @return the relative control URI of the service
-     */
-//    URI getControlUri();
-
-    /*
-     * Returns the service eventing URI.<br/>
-     * This must be relative to the URL at which
-     * the device description is located.<br/>
-     * Must be unique within the device.
-     * @return the relative eventing URI of the service
-     */
-//    URI getEventUri();
-
     /**
      * Returns the vendor domain name of the service.
      * @return the vendor domain name of the service
@@ -102,6 +78,31 @@ public interface Service {
      * @return the version of the service
      */
     String getVersion();
+
+    /**
+     * Returns the service description URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.
+     * @return the relative description URI of the service
+     */
+    URI getDescriptionUri();
+
+    /**
+     * Returns the service control URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.
+     * @return the relative control URI of the service
+     */
+    URI getControlUri();
+
+    /**
+     * Returns the service eventing URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.<br/>
+     * Must be unique within the device.
+     * @return the relative eventing URI of the service
+     */
+    URI getEventUri();
 
     /**
      * Returns the actions of the service.

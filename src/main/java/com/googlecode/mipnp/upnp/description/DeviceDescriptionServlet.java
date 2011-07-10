@@ -17,7 +17,7 @@
  */
 
 /*
- * DescriptionServlet.java
+ * DeviceDescriptionServlet.java
  * Created on Jun 26, 2011, 2:46:48 PM
  */
 package com.googlecode.mipnp.upnp.description;
@@ -37,11 +37,11 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class DescriptionServlet extends HttpServlet {
+public class DeviceDescriptionServlet extends HttpServlet {
 
     private RootDevice rootDevice;
 
-    public DescriptionServlet(RootDevice rootDevice) {
+    public DeviceDescriptionServlet(RootDevice rootDevice) {
         this.rootDevice = rootDevice;
     }
 
@@ -136,13 +136,12 @@ public class DescriptionServlet extends HttpServlet {
                 UpnpTools.getTypeAsUrn(service) + "</serviceType>");
         out.println("<serviceId>" +
                 UpnpTools.getIdAsUrn(service) + "</serviceId>");
-        // TODO:
-//        out.println("<SCPDURL>" +
-//                service.getDescriptionUri() + "</SCPDURL>");
-//        out.println("<controlURL>" +
-//                service.getControlUri() + "</controlURL>");
-//        out.println("<eventSubURL>" +
-//                service.getEventUri() + "</eventSubURL>");
-//        out.println("</service>");
+        out.println("<SCPDURL>" +
+                service.getDescriptionUri() + "</SCPDURL>");
+        out.println("<controlURL>" +
+                service.getControlUri() + "</controlURL>");
+        out.println("<eventSubURL>" +
+                service.getEventUri() + "</eventSubURL>");
+        out.println("</service>");
     }
 }

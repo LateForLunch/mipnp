@@ -23,7 +23,8 @@
 package com.googlecode.mipnp.upnp;
 
 import com.googlecode.mipnp.test.TimeServerImpl;
-import com.googlecode.mipnp.upnp.description.DescriptionServlet;
+import com.googlecode.mipnp.upnp.description.DeviceDescriptionServlet;
+import com.googlecode.mipnp.upnp.description.ServiceDescriptionServlet;
 import javax.servlet.Servlet;
 import javax.xml.ws.Endpoint;
 import org.apache.cxf.Bus;
@@ -51,9 +52,17 @@ public class UpnpServer {
         context.setContextPath("/");
         server.setHandler(context);
 
-        Servlet descriptionServlet = new DescriptionServlet(rootDevice);
+        Servlet descriptionServlet = new DeviceDescriptionServlet(rootDevice);
         context.addServlet(
                 new ServletHolder(descriptionServlet), "/description.xml");
+
+        for (Service service : rootDevice.getServices()) {
+            context.addServlet(new ServletHolder(
+                    new ServiceDescriptionServlet(rootDevice, service)),
+                    service.getDescriptionUri().toASCIIString());
+        }
+
+        // TODO: ServiceDescriptionServlet for services from embedded devices
 
         CXFNonSpringServlet cxf = new CXFNonSpringServlet();
         ServletHolder servletHolder = new ServletHolder(cxf);

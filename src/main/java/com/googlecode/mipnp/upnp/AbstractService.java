@@ -22,6 +22,7 @@
  */
 package com.googlecode.mipnp.upnp;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,21 +30,28 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public abstract class AbstractService implements Service {
+public class AbstractService implements Service {
 
     private String vendorDomainName;
     private String type;
     private String id;
     private String version;
+    private URI descriptionUri;
+    private URI controlUri;
+    private URI eventUri;
     private List<Action> actions;
 
     public AbstractService(
-            String vendorDomainName, String type, String id, String version) {
+            String vendorDomainName, String type, String id, String version,
+            URI descriptionUri, URI controlUri, URI eventUri) {
 
         this.vendorDomainName = vendorDomainName;
         this.type = type;
         this.id = id;
         this.version = version;
+        this.descriptionUri = descriptionUri;
+        this.controlUri = controlUri;
+        this.eventUri = eventUri;
         this.actions = new ArrayList<Action>();
     }
 
@@ -51,16 +59,56 @@ public abstract class AbstractService implements Service {
         return vendorDomainName;
     }
 
+    public void setVendorDomainName(String vendorDomainName) {
+        this.vendorDomainName = vendorDomainName;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getVersion() {
         return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public URI getDescriptionUri() {
+        return descriptionUri;
+    }
+
+    public void setDescriptionUri(URI descriptionUri) {
+        this.descriptionUri = descriptionUri;
+    }
+
+    public URI getControlUri() {
+        return controlUri;
+    }
+
+    public void setControlUri(URI controlUri) {
+        this.controlUri = controlUri;
+    }
+
+    public URI getEventUri() {
+        return eventUri;
+    }
+
+    public void setEventUri(URI eventUri) {
+        this.eventUri = eventUri;
     }
 
     public List<Action> getActions() {

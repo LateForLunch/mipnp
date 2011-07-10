@@ -23,6 +23,7 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.AbstractService;
+import java.net.URI;
 
 /**
  *
@@ -30,8 +31,11 @@ import com.googlecode.mipnp.upnp.AbstractService;
  */
 class ConnectionManagerImpl extends AbstractService {
 
-    public ConnectionManagerImpl() {
-        super("upnp.org", "ConnectionManager", "ConnectionManager", "1");
+    public ConnectionManagerImpl(
+            URI descriptionUri, URI controlUri, URI eventUri) {
+
+        super("upnp.org", "ConnectionManager", "ConnectionManager", "1",
+                descriptionUri, controlUri, eventUri);
 //        try {
 //            setDescriptionUri(new URI("/connectionmanager.xml"));
 //            setControlUri(new URI("/connectionmanager/control"));

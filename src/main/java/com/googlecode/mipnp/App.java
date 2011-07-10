@@ -39,6 +39,7 @@ public class App {
         try {
             RootDevice rootDevice = new MediaServer();
             server = new UpnpServer(rootDevice, 8080);
+            server.start();
 
             Scanner scanner = new Scanner(System.in);
             System.out.println("Press 'q' to stop.");
