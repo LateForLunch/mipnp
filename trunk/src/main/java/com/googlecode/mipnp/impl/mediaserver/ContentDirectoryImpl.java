@@ -23,6 +23,7 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.AbstractService;
+import java.net.URI;
 
 /**
  *
@@ -30,14 +31,9 @@ import com.googlecode.mipnp.upnp.AbstractService;
  */
 class ContentDirectoryImpl extends AbstractService {
 
-    public ContentDirectoryImpl() {
-        super("upnp.org", "ContentDirectory", "ContentDirectory", "1");
-//        try {
-//            setDescriptionUri(new URI("/contentdirectory.xml"));
-//            setControlUri(new URI("/contentdirectory/control"));
-//            setEventUri(new URI("/contentdirectory/event"));
-//        } catch (URISyntaxException ex) {
-//            // This should not happen
-//        }
+    public ContentDirectoryImpl(
+            URI descriptionUri, URI controlUri, URI eventUri) {
+        super("upnp.org", "ContentDirectory", "ContentDirectory", "1",
+                descriptionUri, controlUri, eventUri);
     }
 }
