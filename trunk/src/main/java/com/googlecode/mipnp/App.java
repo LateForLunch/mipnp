@@ -19,7 +19,7 @@ package com.googlecode.mipnp;
 
 import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.UpnpServer;
-import com.googlecode.mipnp.upnp.mediaserver.MediaServer;
+import com.googlecode.mipnp.impl.mediaserver.MediaServer;
 import java.util.Scanner;
 import org.apache.cxf.BusFactory;
 
