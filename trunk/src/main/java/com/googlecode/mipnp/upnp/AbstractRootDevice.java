@@ -28,7 +28,7 @@ import java.net.URL;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public abstract class AbstractRootDevice extends AbstractDevice implements IRootDevice {
+public abstract class AbstractRootDevice extends AbstractDevice implements RootDevice {
 
     private int bootId;
     private int configId;

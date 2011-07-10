@@ -17,7 +17,7 @@
  */
 
 /*
- * IRootDevice.java
+ * RootDevice.java
  * Created on Jun 24, 2011, 5:30:55 PM
  */
 package com.googlecode.mipnp.upnp;
@@ -28,7 +28,7 @@ import java.net.URL;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface IRootDevice extends IDevice {
+public interface RootDevice extends Device {
 
     /**
      * Returns the boot identifier.<br/>

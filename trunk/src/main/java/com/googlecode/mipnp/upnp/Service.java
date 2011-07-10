@@ -17,20 +17,20 @@
  */
 
 /*
- * IService.java
+ * Service.java
  * Created on Jun 20, 2011, 3:10:41 PM
  */
 package com.googlecode.mipnp.upnp;
 
-import java.net.URI;
+import java.util.List;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface IService {
+public interface Service {
 
-    /**
+    /*
      * Returns the Uniform Resource Name (URN) of the service as a URI.<br/>
      * This is also known as the service type in the description XML.<br/>
      * <br/>
@@ -40,9 +40,9 @@ public interface IService {
      * "urn:<i>domain-name</i>:service:<i>serviceType</i>:<i>ver</i>"
      * @return the Uniform Resource Name of the service
      */
-    String getUniformResourceName();
+//    String getUniformResourceName();
 
-    /**
+    /*
      * Returns the service identifier as a URI.<br/>
      * This value must be unique within a device description.<br/>
      * <br/>
@@ -52,30 +52,40 @@ public interface IService {
      * "urn:<i>domain-name</i>:serviceId:<i>serviceID</i>"
      * @return the identifier of the service
      */
-    String getIdentifier();
+//    String getIdentifier();
 
-    /**
+    /*
      * Returns the service description URI.<br/>
      * This must be relative to the URL at which
      * the device description is located.
      * @return the relative description URI of the service
      */
-    URI getDescriptionUri();
+//    URI getDescriptionUri();
 
-    /**
+    /*
      * Returns the service control URI.<br/>
      * This must be relative to the URL at which
      * the device description is located.
      * @return the relative control URI of the service
      */
-    URI getControlUri();
+//    URI getControlUri();
 
-    /**
+    /*
      * Returns the service eventing URI.<br/>
      * This must be relative to the URL at which
      * the device description is located.<br/>
      * Must be unique within the device.
      * @return the relative eventing URI of the service
      */
-    URI getEventUri();
+//    URI getEventUri();
+
+    String getVendorDomainName();
+
+    String getType();
+
+    String getId();
+
+    String getVersion();
+
+    List<Action> getActions();
 }

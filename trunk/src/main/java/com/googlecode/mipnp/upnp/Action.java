@@ -17,23 +17,16 @@
  */
 
 /*
- * UPnPAction.java
- * Created on Jul 7, 2011, 12:46:43 PM
+ * Action.java
+ * Created on Jul 10, 2011, 11:16:41 AM
  */
 package com.googlecode.mipnp.upnp;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * 
+ *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface UPnPAction {
+public interface Action {
 
-    String name();
+    String getName();
 }
