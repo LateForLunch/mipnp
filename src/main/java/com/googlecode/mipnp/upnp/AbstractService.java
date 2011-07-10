@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class AbstractService implements Service {
+public abstract class AbstractService implements Service {
 
     private String vendorDomainName;
     private String type;
@@ -40,6 +40,7 @@ public class AbstractService implements Service {
     private URI controlUri;
     private URI eventUri;
     private List<Action> actions;
+    private List<StateVariable> stateVariables;
 
     public AbstractService(
             String vendorDomainName, String type, String id, String version,
@@ -53,6 +54,7 @@ public class AbstractService implements Service {
         this.controlUri = controlUri;
         this.eventUri = eventUri;
         this.actions = new ArrayList<Action>();
+        this.stateVariables = new ArrayList<StateVariable>();
     }
 
     public String getVendorDomainName() {
@@ -121,5 +123,17 @@ public class AbstractService implements Service {
 
     public boolean removeAction(Action action) {
         return actions.remove(action);
+    }
+
+    public List<StateVariable> getStateVariables() {
+        return stateVariables;
+    }
+
+    public boolean addStateVariable(StateVariable stateVariable) {
+        return stateVariables.add(stateVariable);
+    }
+
+    public boolean removeStateVariable(StateVariable stateVariable) {
+        return stateVariables.remove(stateVariable);
     }
 }

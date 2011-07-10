@@ -109,4 +109,10 @@ public interface Service {
      * @return the actions of the service
      */
     List<Action> getActions();
+
+    /**
+     * Returns the state variables of the service.
+     * @return the state variables of the service
+     */
+    List<StateVariable> getStateVariables();
 }

@@ -69,17 +69,52 @@ public interface StateVariable<T> {
         }
     }
 
+    /**
+     * Returns the name of the state variable.
+     * @return the name of the state variable
+     */
     String getName();
 
+    /**
+     * Returns the data type of the state variable.
+     * @return the data type of the state variable
+     */
     DataType getDataType();
 
+    /**
+     * Returns the value of the state variable.
+     * @return the value of the state variable
+     */
+    T getValue();
+
+    /**
+     * Returns the default value of the state variable or 
+     * null if the state variable does not have a default value.
+     * @return the default value or null
+     */
     T getDefaultValue();
 
-    List<T> getAllowedValues();
+    /**
+     * Returns a list of allowed values or null if the state variable 
+     * does not have restrictions on allowed values.<br/>
+     * Allowed values may only be used with the string type.
+     * @return a list of allowed values or null
+     */
+    List<String> getAllowedValues();
 
     // TODO: allowedValueRange
 
+    /**
+     * Returns true if event messages must be generated when 
+     * the value of this state variable changes.
+     * @return true if event messages must be generated when 
+     * the value of this state variable changes
+     */
     boolean hasToSendEvents();
 
+    /**
+     * Returns true if event messages must be delivered using multicast eventing.
+     * @return true if event messages must be delivered using multicast eventing
+     */
     boolean hasToMulticast();
 }
