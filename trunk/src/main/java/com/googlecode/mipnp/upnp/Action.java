@@ -22,11 +22,23 @@
  */
 package com.googlecode.mipnp.upnp;
 
+import java.util.List;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public interface Action {
 
+    /**
+     * Returns the name of the action.
+     * @return the name of the action
+     */
     String getName();
+
+    /**
+     * Returns the parameters of the action.
+     * @return the parameters of the action
+     */
+    List<Parameter> getParameters();
 }

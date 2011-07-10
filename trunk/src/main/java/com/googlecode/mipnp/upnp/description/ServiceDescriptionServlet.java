@@ -23,8 +23,10 @@
 package com.googlecode.mipnp.upnp.description;
 
 import com.googlecode.mipnp.upnp.Action;
+import com.googlecode.mipnp.upnp.Parameter;
 import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.Service;
+import com.googlecode.mipnp.upnp.StateVariable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -67,10 +69,48 @@ public class ServiceDescriptionServlet extends HttpServlet {
                     out.println("<action>");
                     out.println("<name>" + action.getName() + "</name>");
                     // TODO: argumentList
+                    if (action.getParameters().size() > 0) {
+                        out.println("<argumentList>");
+                        for (Parameter param : action.getParameters()) {
+                            out.println("<argument>");
+                            out.println("<name>" + param.getName() + "</name>");
+                            out.println("<direction>" +
+                                    param.getDirection() + "</direction>");
+                            out.println("<relatedStateVariable>" +
+                                    param.getRelatedStateVariable().getName() +
+                                    "</relatedStateVariable>");
+                            out.println("</argument>");
+                        }
+                        out.println("</argumentList>");
+                    }
                     out.println("</action>");
                 }
                 out.println("</actionList>");
             }
+            out.println("<serviceStateTable>");
+            for (StateVariable<?> var : service.getStateVariables()) {
+                String sendEvents = var.hasToSendEvents() ? "yes" : "no";
+                String multicast = var.hasToMulticast() ? "yes" : "no";
+                out.println("<stateVariable "
+                        + "sendEvents=\"" + sendEvents + "\" "
+                        + "multicast=\""+ multicast + "\">");
+                out.println("<name>" + var.getName() + "</name>");
+                out.println("<dataType>" + var.getDataType() + "</dataType>");
+                if (var.getDefaultValue() != null) {
+                    out.println("<defaultValue>" +
+                            var.getDefaultValue() + "</defaultValue>");
+                }
+                if (var.getAllowedValues() != null && var.getAllowedValues().size() > 0) {
+                    out.println("<allowedValueList>");
+                    for (String s : var.getAllowedValues()) {
+                        out.println("<allowedValue>" + s + "</allowedValue>");
+                    }
+                    out.println("</allowedValueList>");
+                }
+                // TODO: allowedValueRange
+                out.println("</stateVariable>");
+            }
+            out.println("</serviceStateTable>");
             out.println("</scpd>");
         } finally {
             out.close();

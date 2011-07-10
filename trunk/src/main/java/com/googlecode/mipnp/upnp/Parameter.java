@@ -38,7 +38,21 @@ public interface Parameter {
         }
     }
 
+    /**
+     * Returns the name of the parameter.
+     * @return the name of the parameter
+     */
     String getName();
 
+    /**
+     * Returns the direction of the parameter.
+     * @return the direction of the parameter
+     */
     Mode getDirection();
+
+    /**
+     * Returns the related state variable of the parameter.<br/>
+     * @return the related state variable of the parameter
+     */
+    StateVariable getRelatedStateVariable();
 }
