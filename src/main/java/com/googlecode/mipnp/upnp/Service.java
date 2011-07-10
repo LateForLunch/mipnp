@@ -79,13 +79,33 @@ public interface Service {
      */
 //    URI getEventUri();
 
+    /**
+     * Returns the vendor domain name of the service.
+     * @return the vendor domain name of the service
+     */
     String getVendorDomainName();
 
+    /**
+     * Returns the type of the service.
+     * @return the type of the service
+     */
     String getType();
 
+    /**
+     * Returns the identifier of the service.
+     * @return the identifier of the service
+     */
     String getId();
 
+    /**
+     * Returns the version of the service.
+     * @return the version of the service
+     */
     String getVersion();
 
+    /**
+     * Returns the actions of the service.
+     * @return the actions of the service
+     */
     List<Action> getActions();
 }

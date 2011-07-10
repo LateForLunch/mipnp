@@ -18,26 +18,50 @@
 
 /*
  * ConnectionManager.java
- * Created on Jun 30, 2011, 3:36:22 PM
+ * Created on Jul 1, 2011, 1:36:31 PM
  */
 package com.googlecode.mipnp.upnp.mediaserver;
 
-import com.googlecode.mipnp.upnp.AbstractService;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebService;
+import javax.xml.ws.Holder;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class ConnectionManager extends AbstractService {
+@WebService(name="ConnectionManager")
+public interface ConnectionManager {
 
-    public ConnectionManager() {
-        super("upnp.org", "ConnectionManager", "ConnectionManager", "1");
-//        try {
-//            setDescriptionUri(new URI("/connectionmanager.xml"));
-//            setControlUri(new URI("/connectionmanager/control"));
-//            setEventUri(new URI("/connectionmanager/event"));
-//        } catch (URISyntaxException ex) {
-//            // This should not happen
-//        }
-    }
+    @WebMethod(operationName="GetCurrentConnectionInfo")
+    void getCurrentConnectionInfo(
+            @WebParam(name="ConnectionID")
+            int connectionId,
+            @WebParam(name="RcsID", mode=WebParam.Mode.OUT)
+            Holder<Integer> rcsId,
+            @WebParam(name="AVTransportID", mode=WebParam.Mode.OUT)
+            Holder<Integer> avTransportId,
+            @WebParam(name="ProtocolInfo", mode=WebParam.Mode.OUT)
+            Holder<String> protocolInfo,
+            @WebParam(name="PeerConnectionManager", mode=WebParam.Mode.OUT)
+            Holder<String> peerConnectionManager,
+            @WebParam(name="PeerConnectionID", mode=WebParam.Mode.OUT)
+            Holder<Integer> peerConnectionId,
+            @WebParam(name="Direction", mode=WebParam.Mode.OUT)
+            Holder<String> direction,
+            @WebParam(name="Status", mode=WebParam.Mode.OUT)
+            Holder<String> status);
+
+    @WebMethod(operationName="GetProtocolInfo")
+    void getProtocolInfo(
+            @WebParam(name="Source", mode=WebParam.Mode.OUT)
+            Holder<String> source,
+            @WebParam(name="Sink", mode=WebParam.Mode.OUT)
+            Holder<String> sink);
+
+    @WebMethod(operationName="GetCurrentConnectionIDs")
+    void getCurrentConnectionIDs(
+            @WebParam(name="ConnectionIDs", mode=WebParam.Mode.OUT)
+            Holder<String> connectionIds);
 }

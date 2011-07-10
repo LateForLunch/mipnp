@@ -32,9 +32,11 @@ import java.util.UUID;
 public class MediaServer extends AbstractRootDevice {
 
     public MediaServer() {
-        setMajorVersion(1);
-        setMinorVersion(1);
-        setUniformResourceName("urn:schemas-upnp-org:device:MediaServer:1");
+        setMajorUpnpVersion(1);
+        setMinorUpnpVersion(1);
+        setVendorDomainName("upnp.org");
+        setType("MediaServer");
+        setVersion("1");
         setFriendlyName("MiPnP: 1");
         setManufacturer(null);
         setManufacturerUrl(null);
@@ -47,8 +49,8 @@ public class MediaServer extends AbstractRootDevice {
         setUniversalProductCode(null);
         setPresentationUrl(null);
 
-        addService(new ConnectionManager());
-        addService(new ContentDirectory());
-        addService(new MediaReceiverRegistrar());
+        addService(new ConnectionManagerImpl());
+        addService(new ContentDirectoryImpl());
+        addService(new MediaReceiverRegistrarImpl());
     }
 }

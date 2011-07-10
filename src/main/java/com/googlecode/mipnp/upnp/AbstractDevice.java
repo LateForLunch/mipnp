@@ -33,9 +33,11 @@ import java.util.UUID;
  */
 public abstract class AbstractDevice implements Device {
 
-    private int majorVersion;
-    private int minorVersion;
-    private String uniformResourceName;
+    private int majorUpnpVersion;
+    private int minorUpnpVersion;
+    private String vendorDomainName;
+    private String type;
+    private String version;
     private String friendlyName;
     private String manufacturer;
     private URL manufacturerUrl;
@@ -55,28 +57,44 @@ public abstract class AbstractDevice implements Device {
         this.embeddedDevices = new ArrayList<Device>();
     }
 
-    public int getMajorVersion() {
-        return majorVersion;
+    public int getMajorUpnpVersion() {
+        return majorUpnpVersion;
     }
 
-    public void setMajorVersion(int majorVersion) {
-        this.majorVersion = majorVersion;
+    public void setMajorUpnpVersion(int majorUpnpVersion) {
+        this.majorUpnpVersion = majorUpnpVersion;
     }
 
-    public int getMinorVersion() {
-        return minorVersion;
+    public int getMinorUpnpVersion() {
+        return minorUpnpVersion;
     }
 
-    public void setMinorVersion(int minorVersion) {
-        this.minorVersion = minorVersion;
+    public void setMinorUpnpVersion(int minorUpnpVersion) {
+        this.minorUpnpVersion = minorUpnpVersion;
     }
 
-    public String getUniformResourceName() {
-        return uniformResourceName;
+    public String getVendorDomainName() {
+        return vendorDomainName;
     }
 
-    public void setUniformResourceName(String uniformResourceName) {
-        this.uniformResourceName = uniformResourceName;
+    public void setVendorDomainName(String vendorDomainName) {
+        this.vendorDomainName = vendorDomainName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getFriendlyName() {
