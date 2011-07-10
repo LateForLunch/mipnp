@@ -31,7 +31,7 @@ import java.util.UUID;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public abstract class AbstractDevice implements IDevice {
+public abstract class AbstractDevice implements Device {
 
     private int majorVersion;
     private int minorVersion;
@@ -46,13 +46,13 @@ public abstract class AbstractDevice implements IDevice {
     private String serialNumber;
     private UUID uuid;
     private String universalProductCode;
-    private List<IService> services;
-    private List<IDevice> embeddedDevices;
+    private List<Service> services;
+    private List<Device> embeddedDevices;
     private URL presentationUrl;
 
     public AbstractDevice() {
-        this.services = new ArrayList<IService>();
-        this.embeddedDevices = new ArrayList<IDevice>();
+        this.services = new ArrayList<Service>();
+        this.embeddedDevices = new ArrayList<Device>();
     }
 
     public int getMajorVersion() {
@@ -159,19 +159,19 @@ public abstract class AbstractDevice implements IDevice {
         this.universalProductCode = universalProductCode;
     }
 
-    public List<IService> getServices() {
+    public List<Service> getServices() {
         return services;
     }
 
-    public boolean addService(IService service) {
+    public boolean addService(Service service) {
         return services.add(service);
     }
 
-    public List<IDevice> getEmbeddedDevices() {
+    public List<Device> getEmbeddedDevices() {
         return embeddedDevices;
     }
 
-    public boolean addEmbeddedDevice(IDevice device) {
+    public boolean addEmbeddedDevice(Device device) {
         return embeddedDevices.add(device);
     }
 

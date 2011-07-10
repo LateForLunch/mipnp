@@ -23,8 +23,6 @@
 package com.googlecode.mipnp.upnp.mediaserver;
 
 import com.googlecode.mipnp.upnp.AbstractService;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  *
@@ -33,14 +31,13 @@ import java.net.URISyntaxException;
 class ConnectionManager extends AbstractService {
 
     public ConnectionManager() {
-        setUniformResourceName("urn:schemas-upnp-org:service:ConnectionManager:1");
-        setIdentifier("urn:upnp-org:serviceId:ConnectionManager");
-        try {
-            setDescriptionUri(new URI("/connectionmanager.xml"));
-            setControlUri(new URI("/connectionmanager/control"));
-            setEventUri(new URI("/connectionmanager/event"));
-        } catch (URISyntaxException ex) {
-            // This should not happen
-        }
+        super("upnp.org", "ConnectionManager", "ConnectionManager", "1");
+//        try {
+//            setDescriptionUri(new URI("/connectionmanager.xml"));
+//            setControlUri(new URI("/connectionmanager/control"));
+//            setEventUri(new URI("/connectionmanager/event"));
+//        } catch (URISyntaxException ex) {
+//            // This should not happen
+//        }
     }
 }

@@ -22,9 +22,9 @@
  */
 package com.googlecode.mipnp.upnp.description;
 
-import com.googlecode.mipnp.upnp.IDevice;
-import com.googlecode.mipnp.upnp.IRootDevice;
-import com.googlecode.mipnp.upnp.IService;
+import com.googlecode.mipnp.upnp.Device;
+import com.googlecode.mipnp.upnp.RootDevice;
+import com.googlecode.mipnp.upnp.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -38,9 +38,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class DescriptionServlet extends HttpServlet {
 
-    private IRootDevice rootDevice;
+    private RootDevice rootDevice;
 
-    public DescriptionServlet(IRootDevice rootDevice) {
+    public DescriptionServlet(RootDevice rootDevice) {
         this.rootDevice = rootDevice;
     }
 
@@ -65,7 +65,7 @@ public class DescriptionServlet extends HttpServlet {
         }
     }
 
-    private void printDevice(PrintWriter out, IDevice device) {
+    private void printDevice(PrintWriter out, Device device) {
         out.println("<device>");
         out.println("<deviceType>" +
                 device.getUniformResourceName() + "</deviceType>");
@@ -107,7 +107,7 @@ public class DescriptionServlet extends HttpServlet {
         // Services
         if (device.getServices().size() > 0) {
             out.println("<serviceList>");
-            for (IService service : device.getServices()) {
+            for (Service service : device.getServices()) {
                 printService(out, service);
             }
             out.println("</serviceList>");
@@ -116,7 +116,7 @@ public class DescriptionServlet extends HttpServlet {
         // Embedded devices
         if (device.getEmbeddedDevices().size() > 0) {
             out.println("<deviceList>");
-            for (IDevice embedded : device.getEmbeddedDevices()) {
+            for (Device embedded : device.getEmbeddedDevices()) {
                 printDevice(out, embedded);
             }
             out.println("</deviceList>");
@@ -129,18 +129,26 @@ public class DescriptionServlet extends HttpServlet {
         out.println("</device>");
     }
 
-    private void printService(PrintWriter out, IService service) {
+    private void printService(PrintWriter out, Service service) {
         out.println("<service>");
-        out.println("<serviceType>" +
-                service.getUniformResourceName() + "</serviceType>");
-        out.println("<serviceId>" +
-                service.getIdentifier() + "</serviceId>");
-        out.println("<SCPDURL>" +
-                service.getDescriptionUri() + "</SCPDURL>");
-        out.println("<controlURL>" +
-                service.getControlUri() + "</controlURL>");
-        out.println("<eventSubURL>" +
-                service.getEventUri() + "</eventSubURL>");
-        out.println("</service>");
+        String type = "urn:";
+        if (service.getVendorDomainName().equals("upnp-org")) {
+            type += "schemas-";
+        }
+        type += service.getVendorDomainName().replace('.', '-');
+        type += ":service:" + service.getType() + ":" + service.getVersion();
+        out.println("<serviceType>" + type + "</serviceType>");
+        String id = "urn:";
+        id += service.getVendorDomainName().replace('.', '-');
+        id += ":serviceId:" + service.getId();
+        out.println("<serviceId>" + id + "</serviceId>");
+        // TODO:
+//        out.println("<SCPDURL>" +
+//                service.getDescriptionUri() + "</SCPDURL>");
+//        out.println("<controlURL>" +
+//                service.getControlUri() + "</controlURL>");
+//        out.println("<eventSubURL>" +
+//                service.getEventUri() + "</eventSubURL>");
+//        out.println("</service>");
     }
 }

@@ -17,7 +17,7 @@
  */
 
 /*
- * IDevice.java
+ * Device.java
  * Created on Jun 21, 2011, 2:00:15 PM
  */
 package com.googlecode.mipnp.upnp;
@@ -30,7 +30,7 @@ import java.util.UUID;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface IDevice {
+public interface Device {
 
     /**
      * Returns the major version of the device.
@@ -143,13 +143,13 @@ public interface IDevice {
      * Returns the services of this device.
      * @return the services of this device
      */
-    List<IService> getServices();
+    List<Service> getServices();
 
     /**
      * Returns the embedded devices of this device.
      * @return the embedded devices of this device
      */
-    List<IDevice> getEmbeddedDevices();
+    List<Device> getEmbeddedDevices();
 
     /**
      * Returns the presentation URL of the device.<br/>

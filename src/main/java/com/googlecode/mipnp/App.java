@@ -17,20 +17,11 @@
  */
 package com.googlecode.mipnp;
 
-import com.googlecode.mipnp.test.TestServlet;
-import com.googlecode.mipnp.test.TimeServerImpl;
-import com.googlecode.mipnp.upnp.IRootDevice;
-import com.googlecode.mipnp.upnp.description.DescriptionServlet;
+import com.googlecode.mipnp.upnp.RootDevice;
+import com.googlecode.mipnp.upnp.UpnpServer;
 import com.googlecode.mipnp.upnp.mediaserver.MediaServer;
 import java.util.Scanner;
-import javax.servlet.Servlet;
-import javax.xml.ws.Endpoint;
-import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
-import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  *
@@ -44,38 +35,10 @@ public class App {
         System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
                 "org.apache.cxf.bus.CXFBusFactory");
 
-        Server server = null;
-
+        UpnpServer server = null;
         try {
-            IRootDevice rootDevice = new MediaServer();
-
-            server = new Server(8080);
-            server.setSendServerVersion(false);
-            ServletContextHandler context =
-                    new ServletContextHandler(ServletContextHandler.SESSIONS);
-            context.setContextPath("/");
-            server.setHandler(context);
-
-            Servlet descriptionServlet = new DescriptionServlet(rootDevice);
-            context.addServlet(
-                    new ServletHolder(descriptionServlet), "/description.xml");
-
-            Servlet testServlet = new TestServlet();
-            context.addServlet(new ServletHolder(testServlet), "/test");
-
-            CXFNonSpringServlet cxf = new CXFNonSpringServlet();
-            ServletHolder servletHolder = new ServletHolder(cxf);
-            servletHolder.setName("soap");
-            servletHolder.setForcedPath("soap");
-            context.addServlet(servletHolder, "/soap/*");
-
-            server.start();
-
-            Bus bus = cxf.getBus();
-            BusFactory.setDefaultBus(bus);
-
-            TimeServerImpl ts = new TimeServerImpl();
-            Endpoint.publish("/ts", ts);
+            RootDevice rootDevice = new MediaServer();
+            server = new UpnpServer(rootDevice, 8080);
 
             Scanner scanner = new Scanner(System.in);
             System.out.println("Press 'q' to stop.");

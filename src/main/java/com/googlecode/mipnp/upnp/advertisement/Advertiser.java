@@ -24,7 +24,7 @@ package com.googlecode.mipnp.upnp.advertisement;
 
 import com.googlecode.mipnp.ssdp.SsdpConstants;
 import com.googlecode.mipnp.tools.NetworkInterfaceTools;
-import com.googlecode.mipnp.upnp.IRootDevice;
+import com.googlecode.mipnp.upnp.RootDevice;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -42,7 +42,7 @@ import java.util.Scanner;
  */
 public class Advertiser implements SsdpConstants {
 
-    private IRootDevice rootDevice;
+    private RootDevice rootDevice;
     private MulticastSocket mcastSocket;
     private DatagramSocket ucastSocket;
     private Thread mcastSearchHandler;
@@ -52,7 +52,7 @@ public class Advertiser implements SsdpConstants {
     private NetworkInterface nic;
     private Thread mcastAdvertiserThread;
 
-    public Advertiser(IRootDevice rootDevice, NetworkInterface nic)
+    public Advertiser(RootDevice rootDevice, NetworkInterface nic)
             throws UnknownHostException, SocketException {
 
         this.rootDevice = rootDevice;

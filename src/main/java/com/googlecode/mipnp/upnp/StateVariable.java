@@ -18,15 +18,17 @@
 
 /*
  * StateVariable.java
- * Created on Jul 9, 2011, 1:38:57 PM
+ * Created on Jul 10, 2011, 11:22:13 AM
  */
 package com.googlecode.mipnp.upnp;
+
+import java.util.List;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class StateVariable<T> {
+public interface StateVariable<T> {
 
     public enum DataType {
         UI1,
@@ -67,63 +69,17 @@ public class StateVariable<T> {
         }
     }
 
-//    TODO: private static final EventSender...
+    String getName();
 
-    private String name;
-    private DataType dataType;
-    private T value;
-    private boolean sendEvents;
-    private boolean multicast;
+    DataType getDataType();
 
-    public StateVariable(String name, DataType dataType, T value) {
-        this(name, dataType, value, true, false);
-    }
+    T getDefaultValue();
 
-    public StateVariable(String name, DataType dataType, T value,
-            boolean sendEvents, boolean multicast) {
+    List<T> getAllowedValues();
 
-        this.name = name;
-        this.dataType = dataType;
-        this.value = value;
-        this.sendEvents = sendEvents;
-        this.multicast = multicast;
-    }
+    // TODO: allowedValueRange
 
-    public String getName() {
-        return name;
-    }
+    boolean hasToSendEvents();
 
-    public DataType getDataType() {
-        return dataType;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-        if (getSendEvents() || getMulticast()) {
-            // TODO: eventSender.unicast...
-        }
-        if (getMulticast()) {
-            // TODO: eventSender.multicast...
-        }
-    }
-
-    public boolean getSendEvents() {
-        return sendEvents;
-    }
-
-    public void setSendEvents(boolean sendEvents) {
-        this.sendEvents = sendEvents;
-    }
-
-    public boolean getMulticast() {
-        return multicast;
-    }
-
-    public void setMulticast(boolean multicast) {
-        this.multicast = multicast;
-    }
+    boolean hasToMulticast();
 }

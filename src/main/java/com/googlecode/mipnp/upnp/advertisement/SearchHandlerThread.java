@@ -25,7 +25,7 @@ package com.googlecode.mipnp.upnp.advertisement;
 import com.googlecode.mipnp.http.MalformedHttpPacketException;
 import com.googlecode.mipnp.ssdp.SsdpConstants;
 import com.googlecode.mipnp.ssdp.SsdpRequest;
-import com.googlecode.mipnp.upnp.IRootDevice;
+import com.googlecode.mipnp.upnp.RootDevice;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -38,10 +38,10 @@ import java.net.SocketException;
  */
 class SearchHandlerThread implements Runnable, SsdpConstants {
 
-    private IRootDevice rootDevice;
+    private RootDevice rootDevice;
     private DatagramSocket socket;
 
-    public SearchHandlerThread(IRootDevice rootDevice, DatagramSocket socket) {
+    public SearchHandlerThread(RootDevice rootDevice, DatagramSocket socket) {
         this.rootDevice = rootDevice;
         this.socket = socket;
     }

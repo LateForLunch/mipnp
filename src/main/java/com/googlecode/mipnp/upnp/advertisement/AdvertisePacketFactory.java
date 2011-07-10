@@ -25,9 +25,9 @@ package com.googlecode.mipnp.upnp.advertisement;
 import com.googlecode.mipnp.ssdp.SsdpConstants;
 import com.googlecode.mipnp.ssdp.SsdpRequest;
 import com.googlecode.mipnp.tools.ServerTools;
-import com.googlecode.mipnp.upnp.IDevice;
-import com.googlecode.mipnp.upnp.IRootDevice;
-import com.googlecode.mipnp.upnp.IService;
+import com.googlecode.mipnp.upnp.Device;
+import com.googlecode.mipnp.upnp.RootDevice;
+import com.googlecode.mipnp.upnp.Service;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -50,7 +50,7 @@ class AdvertisePacketFactory implements SsdpConstants {
      * @return a list of {@link SsdpRequest} objects
      */
     public static List<SsdpRequest> createAliveSet(
-            IRootDevice rootDevice, int advertisementDuration) {
+            RootDevice rootDevice, int advertisementDuration) {
 
         List<SsdpRequest> set = new ArrayList<SsdpRequest>();
         // Root device
@@ -67,14 +67,20 @@ class AdvertisePacketFactory implements SsdpConstants {
                 "uuid:" + rootDevice.getUuid() + "::" + rootDevice.getUniformResourceName(),
                 rootDevice.getBootId(), rootDevice.getConfigId()));
         // Services
-        for (IService service : rootDevice.getServices()) {
+        for (Service service : rootDevice.getServices()) {
+            String type = "urn:";
+            if (service.getVendorDomainName().equals("upnp-org")) {
+                type += "schemas-";
+            }
+            type += service.getVendorDomainName().replace('.', '-');
+            type += ":service:" + service.getType() + ":" + service.getVersion();
             set.add(createAlive(advertisementDuration,
-                    rootDevice.getDescriptionUrl(), service.getUniformResourceName(),
-                    "uuid:" + rootDevice.getUuid() + "::" + service.getUniformResourceName(),
+                    rootDevice.getDescriptionUrl(), type,
+                    "uuid:" + rootDevice.getUuid() + "::" + type,
                     rootDevice.getBootId(), rootDevice.getConfigId()));
         }
         // Embedded Devices
-        for (IDevice embDev : rootDevice.getEmbeddedDevices()) {
+        for (Device embDev : rootDevice.getEmbeddedDevices()) {
             set.add(createAlive(advertisementDuration,
                     rootDevice.getDescriptionUrl(), "uuid:" + embDev.getUuid(),
                     "uuid:" + embDev.getUuid(),
@@ -84,10 +90,16 @@ class AdvertisePacketFactory implements SsdpConstants {
                     "uuid:" + embDev.getUuid() + "::" + embDev.getUniformResourceName(),
                     rootDevice.getBootId(), rootDevice.getConfigId()));
             // Services
-            for (IService service : embDev.getServices()) {
+            for (Service service : embDev.getServices()) {
+                String type = "urn:";
+                if (service.getVendorDomainName().equals("upnp-org")) {
+                    type += "schemas-";
+                }
+                type += service.getVendorDomainName().replace('.', '-');
+                type += ":service:" + service.getType() + ":" + service.getVersion();
                 set.add(createAlive(advertisementDuration,
-                        rootDevice.getDescriptionUrl(), service.getUniformResourceName(),
-                        "uuid:" + embDev.getUuid() + "::" + service.getUniformResourceName(),
+                        rootDevice.getDescriptionUrl(), type,
+                        "uuid:" + embDev.getUuid() + "::" + type,
                         rootDevice.getBootId(), rootDevice.getConfigId()));
             }
         }

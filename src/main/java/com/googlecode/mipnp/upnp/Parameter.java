@@ -17,8 +17,8 @@
  */
 
 /*
- * UPnPParam.java
- * Created on Jul 7, 2011, 12:58:36 PM
+ * Parameter.java
+ * Created on Jul 10, 2011, 11:19:51 AM
  */
 package com.googlecode.mipnp.upnp;
 
@@ -26,7 +26,7 @@ package com.googlecode.mipnp.upnp;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public @interface UPnPParam {
+public interface Parameter {
 
     public enum Mode {
         IN,
@@ -38,7 +38,7 @@ public @interface UPnPParam {
         }
     }
 
-    String name();
+    String getName();
 
-    Mode direction();
+    Mode getDirection();
 }
