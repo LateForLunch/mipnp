@@ -37,7 +37,7 @@ public interface MediaReceiverRegistrar {
     @WebMethod(operationName="IsAuthorized")
     void isAuthorized(
             @WebParam(name="DeviceID")
-            String deviceID,
+            String deviceId,
             @WebParam(name="Result", mode=WebParam.Mode.OUT)
             Holder<Integer> result);
 
@@ -51,7 +51,7 @@ public interface MediaReceiverRegistrar {
     @WebMethod(operationName="IsValidated")
     void isValidated(
             @WebParam(name="DeviceID")
-            String deviceID,
+            String deviceId,
             @WebParam(name="Result", mode=WebParam.Mode.OUT)
             Holder<Integer> result);
 }

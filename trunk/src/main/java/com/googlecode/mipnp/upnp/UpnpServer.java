@@ -25,12 +25,15 @@ package com.googlecode.mipnp.upnp;
 import com.googlecode.mipnp.test.TimeServerImpl;
 import com.googlecode.mipnp.upnp.description.DeviceDescriptionServlet;
 import com.googlecode.mipnp.upnp.description.ServiceDescriptionServlet;
+import java.util.EnumSet;
 import javax.servlet.Servlet;
 import javax.xml.ws.Endpoint;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
+import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -46,10 +49,14 @@ public class UpnpServer {
     public UpnpServer(RootDevice rootDevice, int httpPort) {
         this.rootDevice = rootDevice;
         this.server = new Server(httpPort);
-        server.setSendServerVersion(false);
+//        server.setSendServerVersion(false);
         ServletContextHandler context =
                 new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
+//        EnumSet<DispatcherType> set = EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR);
+        EnumSet<DispatcherType> set = EnumSet.allOf(DispatcherType.class);
+        context.addFilter(
+                new FilterHolder(new HeaderFilter(rootDevice)), "/*", set);
         server.setHandler(context);
 
         Servlet descriptionServlet = new DeviceDescriptionServlet(rootDevice);

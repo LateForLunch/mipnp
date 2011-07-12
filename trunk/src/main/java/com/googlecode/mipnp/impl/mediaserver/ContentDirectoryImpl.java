@@ -22,18 +22,59 @@
  */
 package com.googlecode.mipnp.impl.mediaserver;
 
-import com.googlecode.mipnp.upnp.AbstractService;
+import com.googlecode.mipnp.upnp.ServiceImpl;
 import java.net.URI;
+import javax.xml.ws.Holder;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class ContentDirectoryImpl extends AbstractService {
+class ContentDirectoryImpl extends ServiceImpl implements ContentDirectory {
 
     public ContentDirectoryImpl(
             URI descriptionUri, URI controlUri, URI eventUri) {
+
         super("upnp.org", "ContentDirectory", "ContentDirectory", "1",
                 descriptionUri, controlUri, eventUri);
+    }
+
+    public void browse(
+            String objectId,
+            String browseFlag,
+            String filter,
+            int startingIndex,
+            int requestedCount,
+            String sortCriteria,
+            Holder<String> result,
+            Holder<Integer> numberReturned,
+            Holder<Integer> totalMatches,
+            Holder<Integer> updateId) {
+
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void destroyObject(String objectId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void getSystemUpdateId(Holder<Integer> id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void getSearchCapabilities(Holder<String> searchCaps) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void getSortCapabilities(Holder<String> sortCaps) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void updateObject(
+            String objectId,
+            String currentTagValue,
+            String newTagValue) {
+
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
