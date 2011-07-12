@@ -88,7 +88,7 @@ public class ServiceDescriptionServlet extends HttpServlet {
                 out.println("</actionList>");
             }
             out.println("<serviceStateTable>");
-            for (StateVariable<?> var : service.getStateVariables()) {
+            for (StateVariable var : service.getStateVariables()) {
                 String sendEvents = var.hasToSendEvents() ? "yes" : "no";
                 String multicast = var.hasToMulticast() ? "yes" : "no";
                 out.println("<stateVariable "

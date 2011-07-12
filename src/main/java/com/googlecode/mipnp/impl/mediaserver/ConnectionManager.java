@@ -34,6 +34,18 @@ import javax.xml.ws.Holder;
 @WebService(name="ConnectionManager")
 public interface ConnectionManager {
 
+    @WebMethod(operationName="GetProtocolInfo")
+    void getProtocolInfo(
+            @WebParam(name="Source", mode=WebParam.Mode.OUT)
+            Holder<String> source,
+            @WebParam(name="Sink", mode=WebParam.Mode.OUT)
+            Holder<String> sink);
+
+    @WebMethod(operationName="GetCurrentConnectionIDs")
+    void getCurrentConnectionIDs(
+            @WebParam(name="ConnectionIDs", mode=WebParam.Mode.OUT)
+            Holder<String> connectionIds);
+
     @WebMethod(operationName="GetCurrentConnectionInfo")
     void getCurrentConnectionInfo(
             @WebParam(name="ConnectionID")
@@ -52,16 +64,4 @@ public interface ConnectionManager {
             Holder<String> direction,
             @WebParam(name="Status", mode=WebParam.Mode.OUT)
             Holder<String> status);
-
-    @WebMethod(operationName="GetProtocolInfo")
-    void getProtocolInfo(
-            @WebParam(name="Source", mode=WebParam.Mode.OUT)
-            Holder<String> source,
-            @WebParam(name="Sink", mode=WebParam.Mode.OUT)
-            Holder<String> sink);
-
-    @WebMethod(operationName="GetCurrentConnectionIDs")
-    void getCurrentConnectionIDs(
-            @WebParam(name="ConnectionIDs", mode=WebParam.Mode.OUT)
-            Holder<String> connectionIds);
 }

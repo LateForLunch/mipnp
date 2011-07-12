@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface StateVariable<T> {
+public interface StateVariable/*<T>*/ {
 
     public enum DataType {
         UI1,
@@ -81,18 +81,19 @@ public interface StateVariable<T> {
      */
     DataType getDataType();
 
-    /**
+    /*
      * Returns the value of the state variable.
      * @return the value of the state variable
      */
-    T getValue();
+//    T getValue();
 
     /**
-     * Returns the default value of the state variable or 
+     * Returns the default value of the state variable as a String or 
      * null if the state variable does not have a default value.
      * @return the default value or null
      */
-    T getDefaultValue();
+    String getDefaultValue();
+//    T getDefaultValue();
 
     /**
      * Returns a list of allowed values or null if the state variable 

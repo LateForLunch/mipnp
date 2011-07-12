@@ -17,7 +17,7 @@
  */
 
 /*
- * AbstractService.java
+ * ServiceImpl.java
  * Created on Jun 30, 2011, 3:54:43 PM
  */
 package com.googlecode.mipnp.upnp;
@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public abstract class AbstractService implements Service {
+public class ServiceImpl implements Service {
 
     private String vendorDomainName;
     private String type;
@@ -42,7 +42,7 @@ public abstract class AbstractService implements Service {
     private List<Action> actions;
     private List<StateVariable> stateVariables;
 
-    public AbstractService(
+    public ServiceImpl(
             String vendorDomainName, String type, String id, String version,
             URI descriptionUri, URI controlUri, URI eventUri) {
 

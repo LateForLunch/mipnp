@@ -22,22 +22,39 @@
  */
 package com.googlecode.mipnp.impl.mediaserver;
 
-import com.googlecode.mipnp.upnp.AbstractService;
+import com.googlecode.mipnp.upnp.ServiceImpl;
 import java.net.URI;
+import javax.xml.ws.Holder;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class MediaReceiverRegistrarImpl extends AbstractService {
+class MediaReceiverRegistrarImpl extends ServiceImpl implements MediaReceiverRegistrar {
 
     public MediaReceiverRegistrarImpl(
             URI descriptionUri, URI controlUri, URI eventUri) {
+
         super("microsoft.com", "X_MS_MediaReceiverRegistrar",
                 "X_MS_MediaReceiverRegistrar", "1",
                 descriptionUri, controlUri, eventUri);
         // TODO: check urn -> urn:microsoft.com should be urn:microsoft-com
 //        setUniformResourceName("urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1");
 //        setIdentifier("urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
+    }
+
+    public void isAuthorized(String deviceId, Holder<Integer> result) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void registerDevice(
+            byte[] registrationReqMsg,
+            Holder<byte[]> registrationRespMsg) {
+
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void isValidated(String deviceId, Holder<Integer> result) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
