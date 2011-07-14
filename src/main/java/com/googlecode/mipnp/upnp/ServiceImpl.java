@@ -22,9 +22,16 @@
  */
 package com.googlecode.mipnp.upnp;
 
+import com.googlecode.mipnp.upnp.xml.ServiceDescriptionParser;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -55,6 +62,21 @@ public class ServiceImpl implements Service {
         this.eventUri = eventUri;
         this.actions = new ArrayList<Action>();
         this.stateVariables = new ArrayList<StateVariable>();
+    }
+
+    public void parseDescription(File descriptionFile)
+            throws FileNotFoundException, ParserConfigurationException,
+            SAXException, IOException {
+
+        ServiceDescriptionParser parser = new ServiceDescriptionParser(this);
+        parser.parse(descriptionFile);
+    }
+
+    public void parseDescription(InputStream is)
+            throws ParserConfigurationException, SAXException, IOException {
+
+        ServiceDescriptionParser parser = new ServiceDescriptionParser(this);
+        parser.parse(is);
     }
 
     public String getVendorDomainName() {
@@ -135,5 +157,14 @@ public class ServiceImpl implements Service {
 
     public boolean removeStateVariable(StateVariable stateVariable) {
         return stateVariables.remove(stateVariable);
+    }
+
+    public StateVariable getStateVariable(String name) {
+        for (StateVariable var : stateVariables) {
+            if (var.getName().equals(name)) {
+                return var;
+            }
+        }
+        return null;
     }
 }

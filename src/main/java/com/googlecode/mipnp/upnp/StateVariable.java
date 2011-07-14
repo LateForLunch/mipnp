@@ -81,11 +81,12 @@ public interface StateVariable/*<T>*/ {
      */
     DataType getDataType();
 
-    /*
-     * Returns the value of the state variable.
+    /**
+     * Returns the value of the state variable as a String.
      * @return the value of the state variable
      */
 //    T getValue();
+    String getValue();
 
     /**
      * Returns the default value of the state variable as a String or 

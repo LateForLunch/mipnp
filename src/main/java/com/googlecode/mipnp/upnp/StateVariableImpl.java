@@ -35,6 +35,7 @@ public class StateVariableImpl implements StateVariable {
     private String name;
     private DataType dataType;
 //    private T value;
+    private String value;
 //    private T defaultValue;
     private String defaultValue;
     private List<String> allowedValues;
@@ -75,6 +76,15 @@ public class StateVariableImpl implements StateVariable {
 
     public DataType getDataType() {
         return dataType;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+        // TODO: send events
     }
 
     public String getDefaultValue() {

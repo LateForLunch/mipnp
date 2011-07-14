@@ -54,4 +54,13 @@ public class ActionImpl implements Action {
     public boolean removeParameter(Parameter parameter) {
         return parameters.remove(parameter);
     }
+
+    public Parameter getParameter(String name) {
+        for (Parameter param : parameters) {
+            if (param.getName().equals(name)) {
+                return param;
+            }
+        }
+        return null;
+    }
 }
