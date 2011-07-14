@@ -55,6 +55,37 @@ public class ServiceDescriptionServlet extends HttpServlet {
         response.setContentType("text/xml;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
+//        try {
+//            StreamResult streamResult = new StreamResult(out);
+//            SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+//            TransformerHandler th = tf.newTransformerHandler();
+//            Transformer serializer = th.getTransformer();
+//            serializer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
+//            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+//            th.setResult(streamResult);
+//            th.startDocument();
+//
+//            AttributesImpl atts = new AttributesImpl();
+//            atts.addAttribute("", "", "xmlns", "", "urn:schemas-upnp-org:service-1-0");
+//            atts.addAttribute("", "", "configId", "", "" + rootDevice.getConfigId());
+//            th.startElement("", "", "scpd", atts);
+//            atts.clear();
+//            th.startElement("", "", "specVersion", atts);
+//            th.startElement("", "", "major", atts);
+//            th.endElement("", "", "major");
+//            String major = String.valueOf(rootDevice.getMajorUpnpVersion());
+//            th.characters(major.toCharArray(), 0, major.length());
+//            th.startElement("", "", "minor", atts);
+//            String minor = String.valueOf(rootDevice.getMinorUpnpVersion());
+//            th.characters(minor.toCharArray(), 0, minor.length());
+//            th.endElement("", "", "minor");
+//            th.endElement("", "", "specVersion");
+//            // ...
+//            th.endElement("", "", "scpd");
+//            th.endDocument();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
         try {
             out.println("<?xml version=\"1.0\"?>");
             out.println("<scpd xmlns=\"urn:schemas-upnp-org:service-1-0\" "

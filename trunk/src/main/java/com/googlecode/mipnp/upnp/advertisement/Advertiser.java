@@ -23,7 +23,6 @@
 package com.googlecode.mipnp.upnp.advertisement;
 
 import com.googlecode.mipnp.ssdp.SsdpConstants;
-import com.googlecode.mipnp.tools.NetworkInterfaceTools;
 import com.googlecode.mipnp.upnp.RootDevice;
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -34,7 +33,6 @@ import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 /**
  * 
@@ -49,26 +47,42 @@ public class Advertiser implements SsdpConstants {
     private Thread ucastSearchHandler;
     private SocketAddress mcastAddr;
     private SocketAddress ucastAddr;
-    private NetworkInterface nic;
+    private NetworkInterface networkInterface;
     private Thread mcastAdvertiserThread;
 
-    public Advertiser(RootDevice rootDevice, NetworkInterface nic)
-            throws UnknownHostException, SocketException {
+    /**
+     * Creates a new Advertiser.
+     * @param rootDevice the root device this advertiser is for
+     * @param bindaddr the local address to bind to
+     * @param networkInterface the network interface to use for multicast advertisement
+     */
+    public Advertiser(
+            RootDevice rootDevice,
+            InetAddress bindaddr,
+            NetworkInterface networkInterface) {
 
         this.rootDevice = rootDevice;
-        this.nic = nic;
-        InetAddress mcastInetAddr =
-                InetAddress.getByName(SSDP_DEFAULT_MULTICAST_ADDRESS);
+        this.networkInterface = networkInterface;
+        InetAddress mcastInetAddr = null;
+        try {
+            mcastInetAddr = InetAddress.getByName(SSDP_DEFAULT_MULTICAST_ADDRESS);
+        } catch (UnknownHostException ex) {
+            // This should not happen
+        }
         this.mcastAddr = new InetSocketAddress(mcastInetAddr, SSDP_DEFAULT_PORT);
-        InetAddress ucastInetAddress = NetworkInterfaceTools.interfaceToIp(nic);
-        this.ucastAddr = new InetSocketAddress(ucastInetAddress, SSDP_DEFAULT_PORT);
+        this.ucastAddr = new InetSocketAddress(bindaddr, SSDP_DEFAULT_PORT);
     }
 
+    /**
+     * Start advertising.
+     * @throws SocketException if one of the sockets could not be opened, or could not bind.
+     * @throws IOException if an I/O exception occurs
+     */
     public void start() throws SocketException, IOException {
         this.mcastSocket = new MulticastSocket(mcastAddr);
         mcastSocket.setReuseAddress(true);
         mcastSocket.setTimeToLive(SSDP_DEFAULT_TTL);
-        mcastSocket.joinGroup(mcastAddr, nic);
+        mcastSocket.joinGroup(mcastAddr, networkInterface);
         this.ucastSocket = new DatagramSocket(ucastAddr);
 
         this.mcastSearchHandler = new Thread(
@@ -88,9 +102,26 @@ public class Advertiser implements SsdpConstants {
         mcastAdvertiserThread.start();
     }
 
-    public void stop() throws IOException {
+    /**
+     * Stop advertising.
+     */
+    public void stop() {
+        if (ucastSocket != null) {
+            ucastSocket.close();
+            try {
+                ucastSearchHandler.join();
+            } catch (InterruptedException ex) {
+                // This should not happen
+            }
+            ucastSocket = null;
+            ucastSearchHandler = null;
+        }
         if (mcastSocket != null) {
-            mcastSocket.leaveGroup(mcastAddr, nic);
+            try {
+                mcastSocket.leaveGroup(mcastAddr, networkInterface);
+            } catch (IOException ex) {
+                // Ignore
+            }
             mcastSocket.close();
             mcastAdvertiserThread.interrupt();
             try {
@@ -102,47 +133,6 @@ public class Advertiser implements SsdpConstants {
             mcastSocket = null;
             mcastSearchHandler = null;
             mcastAdvertiserThread = null;
-        }
-        if (ucastSocket != null) {
-            ucastSocket.close();
-            try {
-                ucastSearchHandler.join();
-            } catch (InterruptedException ex) {
-                // This should not happen
-            }
-            ucastSocket = null;
-            ucastSearchHandler = null;
-        }
-    }
-
-    public static void main(String[] args) {
-        String s_nic = "eth0";
-        NetworkInterface nic = null;
-        try {
-            nic = NetworkInterface.getByName(s_nic);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-        }
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Press 'q' to stop.\nCreating SSDP listener...");
-        Advertiser advertiser = null;
-        try {
-            advertiser = new Advertiser(null, nic);
-            advertiser.start();
-        } catch (IOException ex) {
-            System.out.println(" FAILED\n");
-            ex.printStackTrace();
-            System.exit(1);
-        }
-        System.out.println(" OK\n");
-        while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
-            System.out.println("Unknown command.\nPress 'q' to stop.\n");
-        }
-        try {
-            advertiser.stop();
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 }

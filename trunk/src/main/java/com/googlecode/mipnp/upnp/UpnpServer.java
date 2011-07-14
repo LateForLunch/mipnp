@@ -44,12 +44,11 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class UpnpServer {
 
     private RootDevice rootDevice;
-    private Server server;
+    private Server httpServer;
 
     public UpnpServer(RootDevice rootDevice, int httpPort) {
         this.rootDevice = rootDevice;
-        this.server = new Server(httpPort);
-//        server.setSendServerVersion(false);
+        this.httpServer = new Server(httpPort);
         ServletContextHandler context =
                 new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
@@ -57,7 +56,7 @@ public class UpnpServer {
         EnumSet<DispatcherType> set = EnumSet.allOf(DispatcherType.class);
         context.addFilter(
                 new FilterHolder(new HeaderFilter(rootDevice)), "/*", set);
-        server.setHandler(context);
+        httpServer.setHandler(context);
 
         Servlet descriptionServlet = new DeviceDescriptionServlet(rootDevice);
         context.addServlet(
@@ -82,7 +81,7 @@ public class UpnpServer {
     }
 
     public void start() throws Exception {
-        server.start();
+        httpServer.start();
 
         // TODO: publish web services
         TimeServerImpl ts = new TimeServerImpl();
@@ -90,10 +89,10 @@ public class UpnpServer {
     }
 
     public void stop() throws Exception {
-        server.stop();
+        httpServer.stop();
     }
 
     public void join() throws InterruptedException {
-        server.join();
+        httpServer.join();
     }
 }
