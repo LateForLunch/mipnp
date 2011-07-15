@@ -23,8 +23,14 @@
 package com.googlecode.mipnp.upnp;
 
 import com.googlecode.mipnp.test.TimeServerImpl;
+import com.googlecode.mipnp.upnp.advertisement.Advertiser;
 import com.googlecode.mipnp.upnp.description.DeviceDescriptionServlet;
 import com.googlecode.mipnp.upnp.description.ServiceDescriptionServlet;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.URL;
 import java.util.EnumSet;
 import javax.servlet.Servlet;
 import javax.xml.ws.Endpoint;
@@ -43,12 +49,64 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 public class UpnpServer {
 
-    private RootDevice rootDevice;
-    private Server httpServer;
+    private static final String DEVICE_DESC_FILE = "/description.xml";
 
-    public UpnpServer(RootDevice rootDevice, int httpPort) {
+    private RootDevice rootDevice;
+    private InetAddress bindAddr;
+
+    private Server httpServer;
+    private Advertiser advertiser;
+
+    public UpnpServer(
+            RootDevice rootDevice,
+            InetAddress bindAddr)
+            throws SocketException {
+
         this.rootDevice = rootDevice;
-        this.httpServer = new Server(httpPort);
+        this.bindAddr = bindAddr;
+
+        initHttpServer();
+        initAdvertiser();
+    }
+
+    public void start() throws Exception {
+        httpServer.start();
+
+        // TODO: publish web services
+        TimeServerImpl ts = new TimeServerImpl();
+        Endpoint.publish("/ts", ts);
+
+        URL deviceDescUrl = new URL(
+                "http",
+                getHttpHost(),
+                getHttpPort(),
+                DEVICE_DESC_FILE);
+
+        rootDevice.setDescriptionUrl(deviceDescUrl);
+
+        advertiser.start();
+    }
+
+    public void stop() throws Exception {
+        advertiser.stop();
+        httpServer.stop();
+    }
+
+    public void join() throws InterruptedException {
+        httpServer.join();
+    }
+
+    public String getHttpHost() {
+        return httpServer.getConnectors()[0].getHost();
+    }
+
+    public int getHttpPort() {
+        return httpServer.getConnectors()[0].getLocalPort();
+    }
+
+    private void initHttpServer() {
+        InetSocketAddress httpBindAddr = new InetSocketAddress(bindAddr, 0);
+        this.httpServer = new Server(httpBindAddr);
         ServletContextHandler context =
                 new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
@@ -60,7 +118,8 @@ public class UpnpServer {
 
         Servlet descriptionServlet = new DeviceDescriptionServlet(rootDevice);
         context.addServlet(
-                new ServletHolder(descriptionServlet), "/description.xml");
+                new ServletHolder(descriptionServlet),
+                DEVICE_DESC_FILE);
 
         for (Service service : rootDevice.getServices()) {
             context.addServlet(new ServletHolder(
@@ -80,19 +139,8 @@ public class UpnpServer {
         BusFactory.setDefaultBus(bus);
     }
 
-    public void start() throws Exception {
-        httpServer.start();
-
-        // TODO: publish web services
-        TimeServerImpl ts = new TimeServerImpl();
-        Endpoint.publish("/ts", ts);
-    }
-
-    public void stop() throws Exception {
-        httpServer.stop();
-    }
-
-    public void join() throws InterruptedException {
-        httpServer.join();
+    private void initAdvertiser() throws SocketException {
+        NetworkInterface ni = NetworkInterface.getByInetAddress(bindAddr);
+        this.advertiser = new Advertiser(rootDevice, bindAddr, ni);
     }
 }

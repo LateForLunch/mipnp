@@ -27,8 +27,10 @@ import com.googlecode.mipnp.ssdp.SsdpRequest;
 import com.googlecode.mipnp.upnp.RootDevice;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Random;
 
@@ -43,12 +45,20 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
     private static final int SET_SLEEP_MILLIS = 200;
 
     private RootDevice rootDevice;
-    private DatagramSocket socket;
+    private MulticastSocket socket;
+    private InetAddress mcastAddr;
+    private int mcastPort;
     private Random random;
 
-    public MulticastAdvertiserThread(RootDevice rootDevice, DatagramSocket socket) {
+    public MulticastAdvertiserThread(RootDevice rootDevice, MulticastSocket socket) {
         this.rootDevice = rootDevice;
         this.socket = socket;
+        try {
+            this.mcastAddr = InetAddress.getByName(SSDP_DEFAULT_MULTICAST_ADDRESS);
+        } catch (UnknownHostException ex) {
+            // This should not happen
+        }
+        this.mcastPort = SSDP_DEFAULT_PORT;
         this.random = new Random();
     }
 
@@ -59,7 +69,7 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
                 sendAliveSet(ADVERTISEMENT_DURATION);
                 sleep = ADVERTISEMENT_DURATION / 2;
                 sleep -= random.nextInt(ADVERTISEMENT_DURATION / 10);
-                Thread.sleep(sleep);
+                Thread.sleep(sleep * 1000);
             } catch (SocketException ex) {
                 ex.printStackTrace(); // TODO
             } catch (IOException ex) {
@@ -80,7 +90,7 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
                 byte[] data = request.getBytes();
                 DatagramPacket packet = new DatagramPacket(
                         data, 0, data.length,
-                        socket.getInetAddress(), socket.getPort());
+                        mcastAddr, mcastPort);
                 socket.send(packet);
             }
             Thread.sleep(random.nextInt(SET_SLEEP_MILLIS));
