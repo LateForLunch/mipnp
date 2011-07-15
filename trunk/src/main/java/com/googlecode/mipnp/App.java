@@ -20,6 +20,7 @@ package com.googlecode.mipnp;
 import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import com.googlecode.mipnp.impl.mediaserver.MediaServer;
+import com.googlecode.mipnp.tools.InetTools;
 import java.util.Scanner;
 import org.apache.cxf.BusFactory;
 
@@ -38,8 +39,17 @@ public class App {
         UpnpServer server = null;
         try {
             RootDevice rootDevice = new MediaServer();
-            server = new UpnpServer(rootDevice, 8080);
+//            InetSocketAddress addr =
+//                    new InetSocketAddress(InetTools.getLocalHost(), 0);
+            server = new UpnpServer(rootDevice, InetTools.getLocalHost());
             server.start();
+
+            System.out.println();
+            System.out.println("MiPnP started");
+            System.out.printf(
+                    " - HTTP server listening on: %s:%d\n",
+                    server.getHttpHost(), server.getHttpPort());
+            System.out.println();
 
             Scanner scanner = new Scanner(System.in);
             System.out.println("Press 'q' to stop.");

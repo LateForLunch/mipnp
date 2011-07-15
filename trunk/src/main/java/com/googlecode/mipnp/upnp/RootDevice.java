@@ -49,7 +49,14 @@ public interface RootDevice extends Device {
     /**
      * Returns a URL that points to the XML file that contains the description
      * of the root device, it's embedded devices and all the services.
-     * @return 
+     * @return a URL that points to the root device description
      */
     URL getDescriptionUrl();
+
+    /**
+     * Sets the URL that points to the XML file that contains the description
+     * of the root device, it's embedded devices and all the services.
+     * @param descriptionUrl the URL that points to the root device description
+     */
+    void setDescriptionUrl(URL descriptionUrl);
 }
