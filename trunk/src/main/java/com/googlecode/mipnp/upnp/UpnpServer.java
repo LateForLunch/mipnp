@@ -78,7 +78,7 @@ public class UpnpServer {
 
         URL deviceDescUrl = new URL(
                 "http",
-                getHttpHost(),
+                bindAddr.getHostAddress(),
                 getHttpPort(),
                 DEVICE_DESC_FILE);
 
@@ -96,8 +96,8 @@ public class UpnpServer {
         httpServer.join();
     }
 
-    public String getHttpHost() {
-        return httpServer.getConnectors()[0].getHost();
+    public InetAddress getHttpAddress() {
+        return bindAddr;
     }
 
     public int getHttpPort() {
@@ -141,6 +141,7 @@ public class UpnpServer {
 
     private void initAdvertiser() throws SocketException {
         NetworkInterface ni = NetworkInterface.getByInetAddress(bindAddr);
+        System.out.println("NetworkInterface: " + ni.getName());
         this.advertiser = new Advertiser(rootDevice, bindAddr, ni);
     }
 }

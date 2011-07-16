@@ -89,7 +89,7 @@ class MulticastAdvertiserThread implements Runnable, SsdpConstants {
             for (SsdpRequest request : requests) {
                 byte[] data = request.getBytes();
                 DatagramPacket packet = new DatagramPacket(
-                        data, 0, data.length,
+                        data, data.length,
                         mcastAddr, mcastPort);
                 socket.send(packet);
             }

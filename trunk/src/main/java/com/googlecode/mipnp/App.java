@@ -39,8 +39,6 @@ public class App {
         UpnpServer server = null;
         try {
             RootDevice rootDevice = new MediaServer();
-//            InetSocketAddress addr =
-//                    new InetSocketAddress(InetTools.getLocalHost(), 0);
             server = new UpnpServer(rootDevice, InetTools.getLocalHost());
             server.start();
 
@@ -48,7 +46,7 @@ public class App {
             System.out.println("MiPnP started");
             System.out.printf(
                     " - HTTP server listening on: %s:%d\n",
-                    server.getHttpHost(), server.getHttpPort());
+                    server.getHttpAddress().getHostAddress(), server.getHttpPort());
             System.out.println();
 
             Scanner scanner = new Scanner(System.in);
