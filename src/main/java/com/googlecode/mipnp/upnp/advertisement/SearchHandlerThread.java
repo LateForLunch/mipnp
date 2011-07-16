@@ -29,7 +29,7 @@ import com.googlecode.mipnp.upnp.RootDevice;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.net.MulticastSocket;
 import java.net.SocketException;
 
 /**
@@ -39,9 +39,9 @@ import java.net.SocketException;
 class SearchHandlerThread implements Runnable, SsdpConstants {
 
     private RootDevice rootDevice;
-    private DatagramSocket socket;
+    private MulticastSocket socket;
 
-    public SearchHandlerThread(RootDevice rootDevice, DatagramSocket socket) {
+    public SearchHandlerThread(RootDevice rootDevice, MulticastSocket socket) {
         this.rootDevice = rootDevice;
         this.socket = socket;
     }
@@ -52,15 +52,16 @@ class SearchHandlerThread implements Runnable, SsdpConstants {
             DatagramPacket recv = new DatagramPacket(buf, buf.length);
             try {
                 socket.receive(recv);
+                System.out.println("SsdpRequest received");
                 ByteArrayInputStream bais =
                         new ByteArrayInputStream(
                         recv.getData(), recv.getOffset(), recv.getLength());
                 SsdpRequest request = new SsdpRequest(bais);
                 // TODO: handle request
-                System.out.println("SsdpRequest received");
             } catch (MalformedHttpPacketException ex) {
-                // Ignore
-            } catch (SocketException ex) { // Socket closed
+                // Ignore packet
+            } catch (SocketException ex) {
+                // Socket closed
                 return;
             } catch (IOException ex) {
                 ex.printStackTrace(); // TODO
