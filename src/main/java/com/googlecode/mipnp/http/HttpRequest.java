@@ -124,13 +124,13 @@ public class HttpRequest extends HttpPacket {
         URI req = null;
         try {
             req = URI.create(split[1]);
-            String hostHeader = getHeader(HEADER_HOST);
-            if (!req.equals(URI.create("*")) && hostHeader != null) {
-                if (!hostHeader.startsWith("http://")) {
-                    hostHeader = "http://".concat(hostHeader);
-                }
-                req = URI.create(hostHeader).resolve(req);
-            }
+//            String hostHeader = getHeader(HEADER_HOST);
+//            if (!req.equals(URI.create("*")) && hostHeader != null) {
+//                if (!hostHeader.startsWith("http://")) {
+//                    hostHeader = "http://".concat(hostHeader);
+//                }
+//                req = URI.create(hostHeader).resolve(req);
+//            }
         } catch (IllegalArgumentException ex) {
             throw new MalformedHttpPacketException();
         }

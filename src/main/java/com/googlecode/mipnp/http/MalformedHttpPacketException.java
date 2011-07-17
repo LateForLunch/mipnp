@@ -31,7 +31,7 @@ import java.io.IOException;
 public class MalformedHttpPacketException extends IOException {
 
     public MalformedHttpPacketException() {
-        super("Illegal HTTP Packet");
+        super("Malformed HTTP Packet");
     }
 
     public MalformedHttpPacketException(String message) {
