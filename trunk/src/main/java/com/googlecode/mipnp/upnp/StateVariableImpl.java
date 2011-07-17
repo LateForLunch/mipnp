@@ -34,11 +34,12 @@ public class StateVariableImpl implements StateVariable {
 
     private String name;
     private DataType dataType;
-//    private T value;
     private String value;
-//    private T defaultValue;
     private String defaultValue;
     private List<String> allowedValues;
+    private String allowedRangeMin;
+    private String allowedRangeMax;
+    private String allowedRangeStep;
     private boolean sendEvents;
     private boolean multicast;
 
@@ -91,6 +92,10 @@ public class StateVariableImpl implements StateVariable {
         return defaultValue;
     }
 
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     public List<String> getAllowedValues() {
         return allowedValues;
     }
@@ -101,6 +106,30 @@ public class StateVariableImpl implements StateVariable {
 
     public boolean removeAllowedValue(String value) {
         return allowedValues.remove(value);
+    }
+
+    public String getAllowedRangeMin() {
+        return allowedRangeMin;
+    }
+
+    public void setAllowedRangeMin(String allowedRangeMin) {
+        this.allowedRangeMin = allowedRangeMin;
+    }
+
+    public String getAllowedRangeMax() {
+        return allowedRangeMax;
+    }
+
+    public void setAllowedRangeMax(String allowedRangeMax) {
+        this.allowedRangeMax = allowedRangeMax;
+    }
+
+    public String getAllowedRangeStep() {
+        return allowedRangeStep;
+    }
+
+    public void setAllowedRangeStep(String allowedRangeStep) {
+        this.allowedRangeStep = allowedRangeStep;
     }
 
     public boolean hasToSendEvents() {

@@ -58,8 +58,10 @@ class SearchHandlerThread implements Runnable, SsdpConstants {
                         new ByteArrayInputStream(
                         recv.getData(), recv.getOffset(), recv.getLength());
                 SsdpRequest request = new SsdpRequest(bais);
-                // TODO: handle request
-                System.out.println("SsdpRequest received");
+                if (request.isMsearch()) {
+                    // TODO: handle request
+                    System.out.println("M-SEARCH received");
+                }
             } catch (MalformedHttpPacketException ex) {
                 // Ignore packet
             } catch (SocketException ex) {

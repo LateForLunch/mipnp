@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface StateVariable/*<T>*/ {
+public interface StateVariable {
 
     public enum DataType {
         UI1,
@@ -85,7 +85,6 @@ public interface StateVariable/*<T>*/ {
      * Returns the value of the state variable as a String.
      * @return the value of the state variable
      */
-//    T getValue();
     String getValue();
 
     /**
@@ -94,17 +93,46 @@ public interface StateVariable/*<T>*/ {
      * @return the default value or null
      */
     String getDefaultValue();
-//    T getDefaultValue();
 
     /**
-     * Returns a list of allowed values or null if the state variable 
+     * Returns a list of allowed values or an empty list if the state variable 
      * does not have restrictions on allowed values.<br/>
+     * <br/>
      * Allowed values may only be used with the string type.
-     * @return a list of allowed values or null
+     * @return a list of allowed values
      */
     List<String> getAllowedValues();
 
-    // TODO: allowedValueRange
+    /**
+     * Returns the minimum of the allowed range as a String or null
+     * if the state variable does not have restrictions on range.<br/>
+     * <br/>
+     * An allowed value range may only be used with numeric types
+     * (i.e. integers and floats).
+     * @return the minimum of the allowed range of null
+     */
+    String getAllowedRangeMin();
+
+    /**
+     * Returns the maximum of the allowed range as a String or null
+     * if the state variable does not have restrictions on range.<br/>
+     * <br/>
+     * An allowed value range may only be used with numeric types
+     * (i.e. integers and floats).
+     * @return the maximum of the allowed range of null
+     */
+    String getAllowedRangeMax();
+
+    /**
+     * Returns the steps the state variable takes between the
+     * minimum and maximum range as a String or null if the state variable
+     * does not have restrictions on steps.<br/>
+     * <br/>
+     * An allowed value range may only be used with numeric types
+     * (i.e. integers and floats).
+     * @return the steps the state variable takes or null
+     */
+    String getAllowedRangeStep();
 
     /**
      * Returns true if event messages must be generated when 
