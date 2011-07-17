@@ -59,6 +59,11 @@ public class ServiceDescriptionParser {
     private static final String ARGUMENT = "ARGUMENT";
     private static final String DIRECTION = "direction";
     private static final String RELATED_STATE_VAR = "relatedStateVariable";
+    private static final String DEFAULT_VALUE = "defaultValue";
+    private static final String ALLOWED_VALUE = "allowedValue";
+    private static final String MINIMUM = "minimum";
+    private static final String MAXIMUM = "maximum";
+    private static final String STEP = "step";
 
     private ServiceImpl target;
 
@@ -96,19 +101,19 @@ public class ServiceDescriptionParser {
     private void parseStateVars(Document doc) {
         NodeList varlist = doc.getElementsByTagName(STATE_VAR);
         for (int i = 0; i < varlist.getLength(); i++) {
-            Element statevar = (Element) varlist.item(i);
+            Element stateVarElement = (Element) varlist.item(i);
 
             boolean sendEvents = true;
-            if (statevar.getAttribute(SEND_EVENTS).equals("no")) {
+            if (stateVarElement.getAttribute(SEND_EVENTS).equals("no")) {
                 sendEvents = false;
             }
             boolean multicast = false;
-            if (statevar.getAttribute(MULTICAST).equals("yes")) {
+            if (stateVarElement.getAttribute(MULTICAST).equals("yes")) {
                 sendEvents = true;
             }
 
-            String name = getTextValue(statevar, NAME);
-            String dataTypeStr = getTextValue(statevar, DATA_TYPE);
+            String name = getTextValue(stateVarElement, NAME);
+            String dataTypeStr = getTextValue(stateVarElement, DATA_TYPE);
             dataTypeStr = dataTypeStr.toUpperCase().replace('.', '_');
             if (dataTypeStr.equals("DATETIME")) {
                 dataTypeStr = "DATE_TIME";
@@ -118,10 +123,21 @@ public class ServiceDescriptionParser {
             StateVariable.DataType dataType =
                     StateVariable.DataType.valueOf(dataTypeStr);
 
-            // TODO: defaultValue, allowedValues
-
-            StateVariable stateVar = new StateVariableImpl(
+            StateVariableImpl stateVar = new StateVariableImpl(
                     name, dataType, sendEvents, multicast);
+
+            stateVar.setDefaultValue(getTextValue(stateVarElement, DEFAULT_VALUE));
+
+            NodeList allowedVals =
+                    stateVarElement.getElementsByTagName(ALLOWED_VALUE);
+            for (int j = 0; j < allowedVals.getLength(); j++) {
+                Node allowedVal = allowedVals.item(j);
+                stateVar.addAllowedValue(allowedVal.getNodeValue());
+            }
+
+            stateVar.setAllowedRangeMin(getTextValue(stateVarElement, MINIMUM));
+            stateVar.setAllowedRangeMax(getTextValue(stateVarElement, MAXIMUM));
+            stateVar.setAllowedRangeStep(getTextValue(stateVarElement, STEP));
 
             target.addStateVariable(stateVar);
         }
@@ -161,7 +177,7 @@ public class ServiceDescriptionParser {
     }
 
     private String getTextValue(Element el, String tagName) {
-        String value = "";
+        String value = null;
         NodeList list = el.getElementsByTagName(tagName);
         if (list != null && list.getLength() > 0) {
             Node node = list.item(0);
