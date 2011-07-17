@@ -34,7 +34,8 @@ public interface SsdpConstants extends HttpConstants {
     public static final int SSDP_DEFAULT_PORT = 1900;
     public static final int SSDP_DEFAULT_TTL = 2;
 
-    public static final int SSDP_DEFAULT_BUF_SIZE = 1024;
+    public static final int SSDP_SEARCH_MIN_WAIT = 1000;
+    public static final int SSDP_SEARCH_MAX_WAIT = 5000;
 
     public static final String METHOD_NOTIFY = "NOTIFY";
     public static final String METHOD_M_SEARCH = "M-SEARCH";

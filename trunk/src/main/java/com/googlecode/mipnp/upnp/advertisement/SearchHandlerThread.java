@@ -38,6 +38,8 @@ import java.net.SocketException;
  */
 class SearchHandlerThread implements Runnable, SsdpConstants {
 
+    private static final int BUF_SIZE = 512;
+
     private RootDevice rootDevice;
     private MulticastSocket socket;
 
@@ -48,16 +50,16 @@ class SearchHandlerThread implements Runnable, SsdpConstants {
 
     public void run() {
         while (!Thread.interrupted()) {
-            byte[] buf = new byte[SSDP_DEFAULT_BUF_SIZE];
+            byte[] buf = new byte[BUF_SIZE];
             DatagramPacket recv = new DatagramPacket(buf, buf.length);
             try {
                 socket.receive(recv);
-                System.out.println("SsdpRequest received");
                 ByteArrayInputStream bais =
                         new ByteArrayInputStream(
                         recv.getData(), recv.getOffset(), recv.getLength());
                 SsdpRequest request = new SsdpRequest(bais);
                 // TODO: handle request
+                System.out.println("SsdpRequest received");
             } catch (MalformedHttpPacketException ex) {
                 // Ignore packet
             } catch (SocketException ex) {

@@ -113,7 +113,7 @@ public class UpnpServer {
 //        EnumSet<DispatcherType> set = EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR);
         EnumSet<DispatcherType> set = EnumSet.allOf(DispatcherType.class);
         context.addFilter(
-                new FilterHolder(new HeaderFilter(rootDevice)), "/*", set);
+                new FilterHolder(new ServerHeaderFilter(rootDevice)), "/*", set);
         httpServer.setHandler(context);
 
         Servlet descriptionServlet = new DeviceDescriptionServlet(rootDevice);

@@ -17,7 +17,7 @@
  */
 
 /*
- * HeaderFilter.java
+ * ServerHeaderFilter.java
  * Created on Jul 12, 2011, 10:46:50 AM
  */
 package com.googlecode.mipnp.upnp;
@@ -36,11 +36,11 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class HeaderFilter implements Filter {
+class ServerHeaderFilter implements Filter {
 
     private String server;
 
-    public HeaderFilter(RootDevice rootDevice) {
+    public ServerHeaderFilter(RootDevice rootDevice) {
         this.server = ServerTools.getOsName() + "/" + ServerTools.getOsVersion();
         server += " UPnP/" + rootDevice.getMajorUpnpVersion() + ".";
         server += rootDevice.getMinorUpnpVersion();
