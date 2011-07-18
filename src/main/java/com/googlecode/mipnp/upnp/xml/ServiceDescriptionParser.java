@@ -131,7 +131,7 @@ public class ServiceDescriptionParser {
             NodeList allowedVals =
                     stateVarElement.getElementsByTagName(ALLOWED_VALUE);
             for (int j = 0; j < allowedVals.getLength(); j++) {
-                Node allowedVal = allowedVals.item(j);
+                Node allowedVal = allowedVals.item(j).getFirstChild();
                 stateVar.addAllowedValue(allowedVal.getNodeValue());
             }
 
