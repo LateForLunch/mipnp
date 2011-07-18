@@ -56,7 +56,7 @@ public class ServiceDescriptionParser {
     private static final String DATA_TYPE = "dataType";
     private static final String SEND_EVENTS = "sendEvents";
     private static final String MULTICAST = "multicast";
-    private static final String ARGUMENT = "ARGUMENT";
+    private static final String ARGUMENT = "argument";
     private static final String DIRECTION = "direction";
     private static final String RELATED_STATE_VAR = "relatedStateVariable";
     private static final String DEFAULT_VALUE = "defaultValue";
@@ -109,7 +109,7 @@ public class ServiceDescriptionParser {
             }
             boolean multicast = false;
             if (stateVarElement.getAttribute(MULTICAST).equals("yes")) {
-                sendEvents = true;
+                multicast = true;
             }
 
             String name = getTextValue(stateVarElement, NAME);
@@ -150,8 +150,8 @@ public class ServiceDescriptionParser {
 
             String name = getTextValue(actionElement, NAME);
             ActionImpl action = new ActionImpl(name);
-            NodeList argList = actionElement.getElementsByTagName(ARGUMENT);
-            for (Parameter param : parseParams(argList)) {
+
+            for (Parameter param : parseParams(actionElement)) {
                 action.addParameter(param);
             }
 
@@ -159,8 +159,10 @@ public class ServiceDescriptionParser {
         }
     }
 
-    private List<Parameter> parseParams(NodeList argList) {
+    private List<Parameter> parseParams(Element action) {
         List<Parameter> params = new ArrayList<Parameter>();
+        NodeList argList = action.getElementsByTagName(ARGUMENT);
+
         for (int i = 0; i < argList.getLength(); i++) {
             Element paramElement = (Element) argList.item(i);
 

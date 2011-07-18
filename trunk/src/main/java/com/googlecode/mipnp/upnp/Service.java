@@ -31,30 +31,6 @@ import java.util.List;
  */
 public interface Service {
 
-    /*
-     * Returns the Uniform Resource Name (URN) of the service as a URI.<br/>
-     * This is also known as the service type in the description XML.<br/>
-     * <br/>
-     * Format:<br/>
-     * "urn:schemas-upnp-org:service:<i>serviceType</i>:<i>ver</i>"<br/>
-     * or<br/>
-     * "urn:<i>domain-name</i>:service:<i>serviceType</i>:<i>ver</i>"
-     * @return the Uniform Resource Name of the service
-     */
-//    String getUniformResourceName();
-
-    /*
-     * Returns the service identifier as a URI.<br/>
-     * This value must be unique within a device description.<br/>
-     * <br/>
-     * Format:<br/>
-     * "urn:upnp-org:serviceId:<i>serviceID</i>"<br/>
-     * or<br/>
-     * "urn:<i>domain-name</i>:serviceId:<i>serviceID</i>"
-     * @return the identifier of the service
-     */
-//    String getIdentifier();
-
     /**
      * Returns the vendor domain name of the service.
      * @return the vendor domain name of the service
