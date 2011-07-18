@@ -147,6 +147,15 @@ public class ServiceImpl implements Service {
         return actions.remove(action);
     }
 
+    public Action getAction(String name) {
+        for (Action action : actions) {
+            if (action.getName().equals(name)) {
+                return action;
+            }
+        }
+        return null;
+    }
+
     public List<StateVariable> getStateVariables() {
         return stateVariables;
     }
