@@ -54,16 +54,16 @@ public class MediaServer extends AbstractRootDevice {
         try {
             addService(new ConnectionManagerImpl(
                     new URI("/connectionmanager.xml"),
-                    new URI("/connectionmanager/control"),
-                    new URI("/connectionmanager/event")));
+                    new URI("/connectionmanager_control"),
+                    new URI("/connectionmanager_event")));
             addService(new ContentDirectoryImpl(
                     new URI("/contentdirectory.xml"),
-                    new URI("/contentdirectory/control"),
-                    new URI("/contentdirectory/event")));
+                    new URI("/contentdirectory_control"),
+                    new URI("/contentdirectory_event")));
             addService(new MediaReceiverRegistrarImpl(
                     new URI("/mediareceiverregistrar.xml"),
-                    new URI("/mediareceiverregistrar/control"),
-                    new URI("/mediareceiverregistrar/event")));
+                    new URI("/mediareceiverregistrar_control"),
+                    new URI("/mediareceiverregistrar_event")));
         } catch (URISyntaxException ex) {
             // This should not happen
         }

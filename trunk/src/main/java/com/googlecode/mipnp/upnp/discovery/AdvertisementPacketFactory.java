@@ -116,13 +116,13 @@ class AdvertisementPacketFactory implements SsdpConstants {
             int bootId, int configId) {
 
         SsdpRequest request = new SsdpRequest();
+        request.setVersion(HTTP_VERSION_1_1);
         request.setMethod(METHOD_NOTIFY);
         try {
             request.setRequestUri(new URI("*"));
         } catch (URISyntaxException ex) {
             // This should not happen
         }
-        request.setVersion(HTTP_VERSION_1_1);
         request.setHeader(HEADER_HOST,
                 SSDP_DEFAULT_MULTICAST_ADDRESS + ":" + SSDP_DEFAULT_PORT);
         request.setHeader("CACHE-CONTROL", "max-age=" + advertisementDuration);
