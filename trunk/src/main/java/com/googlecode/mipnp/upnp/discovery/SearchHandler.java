@@ -17,7 +17,7 @@
  */
 
 /*
- * SearchHandlerThread.java
+ * SearchHandler.java
  * Created on Jun 21, 2011, 5:26:10 PM
  */
 package com.googlecode.mipnp.upnp.discovery;
@@ -36,14 +36,14 @@ import java.net.SocketException;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class SearchHandlerThread implements Runnable, SsdpConstants {
+class SearchHandler implements Runnable, SsdpConstants {
 
     private static final int BUF_SIZE = 512;
 
     private RootDevice rootDevice;
     private MulticastSocket socket;
 
-    public SearchHandlerThread(RootDevice rootDevice, MulticastSocket socket) {
+    public SearchHandler(RootDevice rootDevice, MulticastSocket socket) {
         this.rootDevice = rootDevice;
         this.socket = socket;
     }

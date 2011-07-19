@@ -17,7 +17,7 @@
  */
 
 /*
- * AdvertiserThread.java
+ * Advertiser.java
  * Created on Jun 22, 2011, 5:25:10 PM
  */
 package com.googlecode.mipnp.upnp.discovery;
@@ -38,7 +38,7 @@ import java.util.Random;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class AdvertiserThread implements Runnable, SsdpConstants {
+class Advertiser implements Runnable, SsdpConstants {
 
     private static final int ADVERTISEMENT_DURATION = 1800;
     private static final int ADVERTISEMENT_REPEATS = 2;
@@ -50,7 +50,7 @@ class AdvertiserThread implements Runnable, SsdpConstants {
     private int mcastPort;
     private Random random;
 
-    public AdvertiserThread(RootDevice rootDevice, MulticastSocket socket) {
+    public Advertiser(RootDevice rootDevice, MulticastSocket socket) {
         this.rootDevice = rootDevice;
         this.socket = socket;
         try {
