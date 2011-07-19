@@ -23,7 +23,7 @@
 package com.googlecode.mipnp.upnp;
 
 import com.googlecode.mipnp.test.TimeServerImpl;
-import com.googlecode.mipnp.upnp.advertisement.Advertiser;
+import com.googlecode.mipnp.upnp.discovery.DiscoveryServer;
 import com.googlecode.mipnp.upnp.description.DeviceDescriptionServlet;
 import com.googlecode.mipnp.upnp.description.ServiceDescriptionServlet;
 import java.net.InetAddress;
@@ -55,7 +55,7 @@ public class UpnpServer {
     private InetAddress bindAddr;
 
     private Server httpServer;
-    private Advertiser advertiser;
+    private DiscoveryServer advertiser;
 
     public UpnpServer(
             RootDevice rootDevice,
@@ -142,6 +142,6 @@ public class UpnpServer {
     private void initAdvertiser() throws SocketException {
         NetworkInterface ni = NetworkInterface.getByInetAddress(bindAddr);
         System.out.println("NetworkInterface: " + ni.getName());
-        this.advertiser = new Advertiser(rootDevice, bindAddr, ni);
+        this.advertiser = new DiscoveryServer(rootDevice, bindAddr, ni);
     }
 }
