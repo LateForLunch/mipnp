@@ -82,11 +82,11 @@ public class DiscoveryServer implements SsdpConstants {
         socket.joinGroup(mcastAddr.getAddress());
 
         this.searchHandlerThread = new Thread(
-                new SearchHandlerThread(rootDevice, socket));
+                new SearchHandler(rootDevice, socket));
         searchHandlerThread.setName("Search Handler");
 
         this.advertiserThread = new Thread(
-                new AdvertiserThread(rootDevice, socket));
+                new Advertiser(rootDevice, socket));
         advertiserThread.setName("Multicast Advertiser");
 
         searchHandlerThread.start();
