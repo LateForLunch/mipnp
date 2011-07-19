@@ -72,9 +72,9 @@ public class UpnpServer {
     public void start() throws Exception {
         httpServer.start();
 
-        // TODO: publish web services
-        TimeServerImpl ts = new TimeServerImpl();
-        Endpoint.publish("/ts", ts);
+        for (Service service : rootDevice.getServices()) {
+            Endpoint.publish(service.getControlUri().toASCIIString(), service);
+        }
 
         URL deviceDescUrl = new URL(
                 "http",
@@ -133,7 +133,7 @@ public class UpnpServer {
         ServletHolder servletHolder = new ServletHolder(cxf);
         servletHolder.setName("soap");
         servletHolder.setForcedPath("soap");
-        context.addServlet(servletHolder, "/soap/*");
+        context.addServlet(servletHolder, "/*");
 
         Bus bus = cxf.getBus();
         BusFactory.setDefaultBus(bus);

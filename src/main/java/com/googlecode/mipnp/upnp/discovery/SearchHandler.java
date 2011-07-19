@@ -25,12 +25,15 @@ package com.googlecode.mipnp.upnp.discovery;
 import com.googlecode.mipnp.http.MalformedHttpPacketException;
 import com.googlecode.mipnp.ssdp.SsdpConstants;
 import com.googlecode.mipnp.ssdp.SsdpRequest;
+import com.googlecode.mipnp.ssdp.SsdpResponse;
 import com.googlecode.mipnp.upnp.RootDevice;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.util.List;
 
 /**
  *
@@ -39,6 +42,7 @@ import java.net.SocketException;
 class SearchHandler implements Runnable, SsdpConstants {
 
     private static final int BUF_SIZE = 512;
+    private static final int ADVERTISEMENT_DURATION = 1800;
 
     private RootDevice rootDevice;
     private MulticastSocket socket;
@@ -59,8 +63,25 @@ class SearchHandler implements Runnable, SsdpConstants {
                         recv.getData(), recv.getOffset(), recv.getLength());
                 SsdpRequest request = new SsdpRequest(bais);
                 if (request.isMsearch()) {
-                    // TODO: handle request
+                    String host = request.getHeader("HOST");
+                    String[] split = host.split(":");
+                    if (split.length != 2) {
+                        throw new MalformedHttpPacketException("malformed HOST header.");
+                    }
+                    InetAddress addr = InetAddress.getByName(split[0]);
+                    int port = Integer.parseInt(split[1]);
+                    // TODO: remove println if this is working
                     System.out.println("M-SEARCH received");
+                    List<SsdpResponse> responses =
+                            SearchPacketFactory.createSearchResponseSet(
+                            rootDevice, ADVERTISEMENT_DURATION, request);
+                    for (SsdpResponse resp : responses) {
+                        byte[] data = resp.getBytes();
+                        DatagramPacket packet = new DatagramPacket(
+                                data, data.length,
+                                addr, port);
+                        socket.send(packet);
+                    }
                 }
             } catch (MalformedHttpPacketException ex) {
                 // Ignore packet
@@ -68,6 +89,8 @@ class SearchHandler implements Runnable, SsdpConstants {
                 // Socket closed
                 return;
             } catch (IOException ex) {
+                ex.printStackTrace(); // TODO
+            } catch (NumberFormatException ex) {
                 ex.printStackTrace(); // TODO
             }
         }
