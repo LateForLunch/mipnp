@@ -63,36 +63,50 @@ class SearchHandler implements Runnable, SsdpConstants {
                         recv.getData(), recv.getOffset(), recv.getLength());
                 SsdpRequest request = new SsdpRequest(bais);
                 if (request.isMsearch()) {
-                    String host = request.getHeader("HOST");
-                    String[] split = host.split(":");
-                    if (split.length != 2) {
-                        throw new MalformedHttpPacketException("malformed HOST header.");
-                    }
-                    InetAddress addr = InetAddress.getByName(split[0]);
-                    int port = Integer.parseInt(split[1]);
-                    // TODO: remove println if this is working
+                    // TODO: remove println if everything seems to work
                     System.out.println("M-SEARCH received");
-                    List<SsdpResponse> responses =
-                            SearchPacketFactory.createSearchResponseSet(
-                            rootDevice, ADVERTISEMENT_DURATION, request);
-                    for (SsdpResponse resp : responses) {
-                        byte[] data = resp.getBytes();
-                        DatagramPacket packet = new DatagramPacket(
-                                data, data.length,
-                                addr, port);
-                        socket.send(packet);
-                    }
+                    handleRequest(request);
                 }
             } catch (MalformedHttpPacketException ex) {
                 // Ignore packet
+                ex.printStackTrace(); // TODO: remove line if everything seems to work
             } catch (SocketException ex) {
                 // Socket closed
                 return;
             } catch (IOException ex) {
                 ex.printStackTrace(); // TODO
-            } catch (NumberFormatException ex) {
-                ex.printStackTrace(); // TODO
             }
+        }
+    }
+
+    private void handleRequest(SsdpRequest request)
+            throws MalformedHttpPacketException, IOException {
+
+        String host = request.getHeader("HOST");
+        String[] split = host.split(":");
+        if (split.length != 2) {
+            throw new MalformedHttpPacketException("Malformed HOST header.");
+        }
+
+        InetAddress addr = null;
+        int port = -1;
+        try {
+            addr = InetAddress.getByName(split[0]);
+            port = Integer.parseInt(split[1]);
+        } catch (Exception ex) {
+            throw new MalformedHttpPacketException(
+                    "Can't parse address and/or port from HOST header.", ex);
+        }
+
+        List<SsdpResponse> responses =
+                SearchPacketFactory.createSearchResponseSet(
+                rootDevice, ADVERTISEMENT_DURATION, request);
+        for (SsdpResponse resp : responses) {
+            byte[] data = resp.getBytes();
+            DatagramPacket packet = new DatagramPacket(
+                    data, data.length,
+                    addr, port);
+            socket.send(packet);
         }
     }
 }

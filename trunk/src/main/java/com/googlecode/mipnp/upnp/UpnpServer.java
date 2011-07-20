@@ -22,7 +22,6 @@
  */
 package com.googlecode.mipnp.upnp;
 
-import com.googlecode.mipnp.test.TimeServerImpl;
 import com.googlecode.mipnp.upnp.discovery.DiscoveryServer;
 import com.googlecode.mipnp.upnp.description.DeviceDescriptionServlet;
 import com.googlecode.mipnp.upnp.description.ServiceDescriptionServlet;
@@ -49,7 +48,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 public class UpnpServer {
 
-    private static final String DEVICE_DESC_FILE = "/description.xml";
+    private static final String DEVICE_DESCRIPTION = "/description.xml";
 
     private RootDevice rootDevice;
     private InetAddress bindAddr;
@@ -80,7 +79,7 @@ public class UpnpServer {
                 "http",
                 bindAddr.getHostAddress(),
                 getHttpPort(),
-                DEVICE_DESC_FILE);
+                DEVICE_DESCRIPTION);
 
         rootDevice.setDescriptionUrl(deviceDescUrl);
 
@@ -119,7 +118,7 @@ public class UpnpServer {
         Servlet descriptionServlet = new DeviceDescriptionServlet(rootDevice);
         context.addServlet(
                 new ServletHolder(descriptionServlet),
-                DEVICE_DESC_FILE);
+                DEVICE_DESCRIPTION);
 
         for (Service service : rootDevice.getServices()) {
             context.addServlet(new ServletHolder(
