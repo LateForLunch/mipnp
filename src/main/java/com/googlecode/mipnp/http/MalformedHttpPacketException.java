@@ -37,4 +37,12 @@ public class MalformedHttpPacketException extends IOException {
     public MalformedHttpPacketException(String message) {
         super(message);
     }
+
+    public MalformedHttpPacketException(Throwable cause) {
+        super(cause);
+    }
+
+    public MalformedHttpPacketException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
