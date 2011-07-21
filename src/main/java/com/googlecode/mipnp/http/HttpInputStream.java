@@ -46,22 +46,23 @@ public class HttpInputStream extends FilterInputStream implements HttpConstants 
     public String readLine() throws IOException {
         byte[] buf = new byte[1];
         ByteArrayOutputStream line = new ByteArrayOutputStream();
+        boolean crFound = false;
 
         int read = read(buf);
         while (read > 0) {
-            if (buf[0] == CRb) {
-                read = read(buf);
-                if (read <= 0) { // No more data, CR was last char
-                    byte[] cr = new byte[] {CRb};
-                    line.write(cr);
+            if (crFound) {
+                if (buf[0] == LFb) {
+                    // CRLF found
                     break;
-                } else if (buf[0] == LFb) { // CRLF found
-                    break;
-                } else { // CR followed by some other char
-                    byte[] cr = new byte[] {CRb};
-                    line.write(cr);
+                } else {
+                    // CR followed by some other char
+                    line.write(CRb);
                     line.write(buf);
+                    crFound = false;
                 }
+            }
+            if (buf[0] == CRb) {
+                crFound = true;
             } else {
                 line.write(buf);
             }

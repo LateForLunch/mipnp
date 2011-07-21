@@ -100,6 +100,7 @@ public abstract class HttpPacket implements HttpConstants {
      * @return the previous field-value, or null if there was no field-value
      */
     public String setHeader(String fieldName, String fieldValue) {
+        fieldName = fieldName.toLowerCase();
         return headers.put(fieldName, fieldValue);
     }
 
@@ -110,6 +111,7 @@ public abstract class HttpPacket implements HttpConstants {
      * or null if there is no mapping for the field name
      */
     public String getHeader(String fieldName) {
+        fieldName = fieldName.toLowerCase();
         return headers.get(fieldName);
     }
 
@@ -129,6 +131,7 @@ public abstract class HttpPacket implements HttpConstants {
      * @return the previous field-value, or null if there was no mapping for the fieldname
      */
     public String removeHeader(String fieldName) {
+        fieldName = fieldName.toLowerCase();
         return headers.remove(fieldName);
     }
 

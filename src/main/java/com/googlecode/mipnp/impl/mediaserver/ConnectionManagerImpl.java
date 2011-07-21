@@ -23,7 +23,6 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.ServiceImpl;
-import java.net.URI;
 import javax.xml.ws.Holder;
 
 /**
@@ -33,10 +32,10 @@ import javax.xml.ws.Holder;
 class ConnectionManagerImpl extends ServiceImpl implements ConnectionManager {
 
     public ConnectionManagerImpl(
-            URI descriptionUri, URI controlUri, URI eventUri) {
+            /*URI descriptionUri, URI controlUri, URI eventUri*/) {
 
-        super("upnp.org", "ConnectionManager", "ConnectionManager", "1",
-                descriptionUri, controlUri, eventUri);
+        super("upnp.org", "ConnectionManager", "ConnectionManager", "1"/*,
+                descriptionUri, controlUri, eventUri*/);
     }
 
     public void getProtocolInfo(
