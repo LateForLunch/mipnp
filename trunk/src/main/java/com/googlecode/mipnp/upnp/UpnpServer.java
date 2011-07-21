@@ -29,6 +29,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EnumSet;
 import javax.servlet.Servlet;
@@ -49,6 +51,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class UpnpServer {
 
     private static final String DEVICE_DESCRIPTION = "/description.xml";
+    private static final String ACTION = "/action";
 
     private RootDevice rootDevice;
     private InetAddress bindAddr;
@@ -72,7 +75,10 @@ public class UpnpServer {
         httpServer.start();
 
         for (Service service : rootDevice.getServices()) {
-            Endpoint.publish(service.getControlUri().toASCIIString(), service);
+            URI serviceControlUri =
+                    new URI(ACTION + "/" + service.getId().toLowerCase());
+            service.setControlUri(serviceControlUri);
+            Endpoint.publish(serviceControlUri.toASCIIString(), service);
         }
 
         URL deviceDescUrl = new URL(
@@ -121,18 +127,30 @@ public class UpnpServer {
                 DEVICE_DESCRIPTION);
 
         for (Service service : rootDevice.getServices()) {
+            URI serviceDescUri = null;
+            try {
+                serviceDescUri =
+                        new URI("/" + service.getId().toLowerCase() + ".xml");
+            } catch (URISyntaxException ex) {
+                // TODO: check if this can happen
+                ex.printStackTrace();
+            }
+            service.setDescriptionUri(serviceDescUri);
             context.addServlet(new ServletHolder(
                     new ServiceDescriptionServlet(rootDevice, service)),
-                    service.getDescriptionUri().toASCIIString());
+                    serviceDescUri.toASCIIString());
         }
 
         // TODO: ServiceDescriptionServlet for services from embedded devices
 
         CXFNonSpringServlet cxf = new CXFNonSpringServlet();
         ServletHolder servletHolder = new ServletHolder(cxf);
-        servletHolder.setName("soap");
-        servletHolder.setForcedPath("soap");
-        context.addServlet(servletHolder, "/*");
+//        servletHolder.setName("soap");
+//        servletHolder.setForcedPath("soap");
+//        context.addServlet(servletHolder, "/*");
+        servletHolder.setName("action");
+        servletHolder.setForcedPath("action");
+        context.addServlet(servletHolder, ACTION + "/*");
 
         Bus bus = cxf.getBus();
         BusFactory.setDefaultBus(bus);

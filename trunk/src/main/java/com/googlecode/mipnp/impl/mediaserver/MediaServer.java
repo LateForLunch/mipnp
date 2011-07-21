@@ -23,8 +23,6 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.AbstractRootDevice;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 /**
@@ -51,21 +49,25 @@ public class MediaServer extends AbstractRootDevice {
         setUniversalProductCode(null);
         setPresentationUrl(null);
 
-        try {
-            addService(new ConnectionManagerImpl(
-                    new URI("/connectionmanager.xml"),
-                    new URI("/connectionmanager_control"),
-                    new URI("/connectionmanager_event")));
-            addService(new ContentDirectoryImpl(
-                    new URI("/contentdirectory.xml"),
-                    new URI("/contentdirectory_control"),
-                    new URI("/contentdirectory_event")));
-            addService(new MediaReceiverRegistrarImpl(
-                    new URI("/mediareceiverregistrar.xml"),
-                    new URI("/mediareceiverregistrar_control"),
-                    new URI("/mediareceiverregistrar_event")));
-        } catch (URISyntaxException ex) {
-            // This should not happen
-        }
+//        try {
+//            addService(new ConnectionManagerImpl(
+//                    new URI("/connectionmanager.xml"),
+//                    new URI("/connectionmanager_control"),
+//                    new URI("/connectionmanager_event")));
+//            addService(new ContentDirectoryImpl(
+//                    new URI("/contentdirectory.xml"),
+//                    new URI("/contentdirectory_control"),
+//                    new URI("/contentdirectory_event")));
+//            addService(new MediaReceiverRegistrarImpl(
+//                    new URI("/mediareceiverregistrar.xml"),
+//                    new URI("/mediareceiverregistrar_control"),
+//                    new URI("/mediareceiverregistrar_event")));
+//        } catch (URISyntaxException ex) {
+//            // This should not happen
+//        }
+
+        addService(new ConnectionManagerImpl());
+        addService(new ContentDirectoryImpl());
+        addService(new MediaReceiverRegistrarImpl());
     }
 }

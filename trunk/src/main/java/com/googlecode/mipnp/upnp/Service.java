@@ -64,6 +64,14 @@ public interface Service {
     URI getDescriptionUri();
 
     /**
+     * Sets the service description URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.
+     * @param descriptionUri the relative description URI of the service
+     */
+    void setDescriptionUri(URI descriptionUri);
+
+    /**
      * Returns the service control URI.<br/>
      * This must be relative to the URL at which
      * the device description is located.
@@ -72,13 +80,32 @@ public interface Service {
     URI getControlUri();
 
     /**
+     * Sets the service control URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.
+     * @param controlUri the relative control URI of the service
+     */
+    void setControlUri(URI controlUri);
+
+    /**
      * Returns the service eventing URI.<br/>
      * This must be relative to the URL at which
      * the device description is located.<br/>
-     * Must be unique within the device.
+     * Must be unique within the device;
+     * any two services must not have the same URI for eventing.
      * @return the relative eventing URI of the service
      */
     URI getEventUri();
+
+    /**
+     * Sets the service eventing URI.<br/>
+     * This must be relative to the URL at which
+     * the device description is located.<br/>
+     * Must be unique within the device;
+     * any two services must not have the same URI for eventing.
+     * @param eventUri the relative eventing URI of the service
+     */
+    void setEventUri(URI eventUri);
 
     /**
      * Returns the actions of the service.

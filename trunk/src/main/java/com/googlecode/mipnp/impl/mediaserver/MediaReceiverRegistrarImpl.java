@@ -23,7 +23,6 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.ServiceImpl;
-import java.net.URI;
 import javax.xml.ws.Holder;
 
 /**
@@ -33,11 +32,11 @@ import javax.xml.ws.Holder;
 class MediaReceiverRegistrarImpl extends ServiceImpl implements MediaReceiverRegistrar {
 
     public MediaReceiverRegistrarImpl(
-            URI descriptionUri, URI controlUri, URI eventUri) {
+            /*URI descriptionUri, URI controlUri, URI eventUri*/) {
 
         super("microsoft.com", "X_MS_MediaReceiverRegistrar",
-                "X_MS_MediaReceiverRegistrar", "1",
-                descriptionUri, controlUri, eventUri);
+                "X_MS_MediaReceiverRegistrar", "1"/*,
+                descriptionUri, controlUri, eventUri*/);
         // TODO: check urn -> urn:microsoft.com should be urn:microsoft-com
 //        setUniformResourceName("urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1");
 //        setIdentifier("urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");

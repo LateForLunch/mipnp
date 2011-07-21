@@ -39,8 +39,8 @@ public interface HttpConstants {
     public static final Charset HTTP_DEFAULT_CHARSET = Charset.forName(HTTP_DEFAULT_CHARSET_NAME);
     public static final String HTTP_DATE_PATTERN = "EEE, dd MMM yyyyy HH:mm:ss z";
 
-    public static final byte CRb = 10;
-    public static final byte LFb = 13;
+    public static final byte CRb = 13;
+    public static final byte LFb = 10;
     public static final byte[] CRLFb = {CRb, LFb};
     public static final char CR = '\r';
     public static final char LF = '\n';

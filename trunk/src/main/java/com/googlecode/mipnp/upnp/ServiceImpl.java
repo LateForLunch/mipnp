@@ -50,16 +50,16 @@ public class ServiceImpl implements Service {
     private List<StateVariable> stateVariables;
 
     public ServiceImpl(
-            String vendorDomainName, String type, String id, String version,
-            URI descriptionUri, URI controlUri, URI eventUri) {
+            String vendorDomainName, String type, String id, String version/*,
+            URI descriptionUri, URI controlUri, URI eventUri*/) {
 
         this.vendorDomainName = vendorDomainName;
         this.type = type;
         this.id = id;
         this.version = version;
-        this.descriptionUri = descriptionUri;
-        this.controlUri = controlUri;
-        this.eventUri = eventUri;
+//        this.descriptionUri = descriptionUri;
+//        this.controlUri = controlUri;
+//        this.eventUri = eventUri;
         this.actions = new ArrayList<Action>();
         this.stateVariables = new ArrayList<StateVariable>();
     }
