@@ -51,7 +51,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class UpnpServer {
 
     private static final String DEVICE_DESCRIPTION = "/description.xml";
-    private static final String ACTION = "/action";
+    private static final String CONTROL = "/control";
 
     private RootDevice rootDevice;
     private InetAddress bindAddr;
@@ -76,7 +76,7 @@ public class UpnpServer {
 
         for (Service service : rootDevice.getServices()) {
             URI serviceControlUri =
-                    new URI(ACTION + "/" + service.getId().toLowerCase());
+                    new URI(CONTROL + "/" + service.getId().toLowerCase());
             service.setControlUri(serviceControlUri);
             Endpoint.publish(serviceControlUri.toASCIIString(), service);
         }
@@ -150,7 +150,7 @@ public class UpnpServer {
 //        context.addServlet(servletHolder, "/*");
         servletHolder.setName("action");
         servletHolder.setForcedPath("action");
-        context.addServlet(servletHolder, ACTION + "/*");
+        context.addServlet(servletHolder, CONTROL + "/*");
 
         Bus bus = cxf.getBus();
         BusFactory.setDefaultBus(bus);

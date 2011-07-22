@@ -23,6 +23,7 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.ServiceImpl;
+import java.io.File;
 import javax.xml.ws.Holder;
 
 /**
@@ -31,11 +32,17 @@ import javax.xml.ws.Holder;
  */
 class ContentDirectoryImpl extends ServiceImpl implements ContentDirectory {
 
-    public ContentDirectoryImpl(
-            /*URI descriptionUri, URI controlUri, URI eventUri*/) {
+    private static final String XML_SERVICE_DESCRIPTION =
+            "src/main/resources/mediaserver/ContentDirectory-1.xml";
 
-        super("upnp.org", "ContentDirectory", "ContentDirectory", "1"/*,
-                descriptionUri, controlUri, eventUri*/);
+    public ContentDirectoryImpl() {
+        super("upnp.org", "ContentDirectory", "ContentDirectory", "1");
+        try {
+            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+        } catch (Exception ex) {
+            // This should not happen
+            ex.printStackTrace(); // TODO: remove line if everything seems alright
+        }
     }
 
     public void browse(

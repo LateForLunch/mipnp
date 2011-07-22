@@ -49,7 +49,6 @@ public abstract class HttpPacket implements HttpConstants {
     public HttpPacket() {
         this.version = HTTP_VERSION;
         this.headers = new HashMap<String, String>();
-        setContent(null);
     }
 
     public HttpPacket(InputStream inputStream)
