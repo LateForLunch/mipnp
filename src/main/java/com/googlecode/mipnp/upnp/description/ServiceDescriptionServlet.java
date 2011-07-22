@@ -99,7 +99,6 @@ public class ServiceDescriptionServlet extends HttpServlet {
                 for (Action action : service.getActions()) {
                     out.println("<action>");
                     out.println("<name>" + action.getName() + "</name>");
-                    // TODO: argumentList
                     if (action.getParameters().size() > 0) {
                         out.println("<argumentList>");
                         for (Parameter param : action.getParameters()) {
