@@ -60,46 +60,58 @@ class SearchPacketFactory implements SsdpConstants {
             String uuid = st.substring(5);
             if (uuid.equals(rootDevice.getUuid().toString())) {
                 resp.add(createSearchResponse(advertisementDuration,
-                        rootDevice.getDescriptionUrl(), st,
-                        st, rootDevice.getBootId(), rootDevice.getConfigId()));
+                        rootDevice.getDescriptionUrl(),
+                        "uuid:" + rootDevice.getUuid(),
+                        "uuid:" + rootDevice.getUuid(),
+                        rootDevice.getBootId(), rootDevice.getConfigId()));
                 return resp;
             }
             for (Device embDev : rootDevice.getEmbeddedDevices()) {
                 if (uuid.equals(embDev.getUuid().toString())) {
                     resp.add(createSearchResponse(advertisementDuration,
-                            rootDevice.getDescriptionUrl(), st,
-                            st, rootDevice.getBootId(), rootDevice.getConfigId()));
+                            rootDevice.getDescriptionUrl(),
+                            "uuid:" + embDev.getUuid(),
+                            "uuid:" + embDev.getUuid(),
+                            rootDevice.getBootId(), rootDevice.getConfigId()));
                     return resp;
                 }
             }
         } else if (st.startsWith("urn:")) {
             // TODO: check version
-            if (st.equals(UpnpTools.getTypeAsUrn(rootDevice))) {
+            String type = UpnpTools.getTypeAsUrn(rootDevice);
+            if (st.equals(type)) {
                 resp.add(createSearchResponse(advertisementDuration,
-                        rootDevice.getDescriptionUrl(), st,
-                        st, rootDevice.getBootId(), rootDevice.getConfigId()));
+                        rootDevice.getDescriptionUrl(), type,
+                        "uuid:" + rootDevice.getUuid() + "::" + type,
+                        rootDevice.getBootId(), rootDevice.getConfigId()));
                 return resp;
             }
             for (Service service : rootDevice.getServices()) {
-                if (st.equals(UpnpTools.getTypeAsUrn(service))) {
+                type = UpnpTools.getTypeAsUrn(service);
+                if (st.equals(type)) {
                     resp.add(createSearchResponse(advertisementDuration,
-                            rootDevice.getDescriptionUrl(), st,
-                            st, rootDevice.getBootId(), rootDevice.getConfigId()));
+                            rootDevice.getDescriptionUrl(), type,
+                            "uuid:" + rootDevice.getUuid() + "::" + type,
+                            rootDevice.getBootId(), rootDevice.getConfigId()));
                     return resp;
                 }
             }
             for (Device embDev : rootDevice.getEmbeddedDevices()) {
-                if (st.equals(UpnpTools.getTypeAsUrn(embDev))) {
+                type = UpnpTools.getTypeAsUrn(embDev);
+                if (st.equals(type)) {
                     resp.add(createSearchResponse(advertisementDuration,
-                            rootDevice.getDescriptionUrl(), st,
-                            st, rootDevice.getBootId(), rootDevice.getConfigId()));
+                            rootDevice.getDescriptionUrl(), type,
+                            "uuid:" + embDev.getUuid() + "::" + type,
+                            rootDevice.getBootId(), rootDevice.getConfigId()));
                     return resp;
                 }
                 for (Service service : embDev.getServices()) {
-                    if (st.equals(UpnpTools.getTypeAsUrn(service))) {
+                    type = UpnpTools.getTypeAsUrn(service);
+                    if (st.equals(type)) {
                         resp.add(createSearchResponse(advertisementDuration,
-                                rootDevice.getDescriptionUrl(), st,
-                                st, rootDevice.getBootId(), rootDevice.getConfigId()));
+                                rootDevice.getDescriptionUrl(), type,
+                                "uuid:" + embDev.getUuid() + "::" + type,
+                                rootDevice.getBootId(), rootDevice.getConfigId()));
                         return resp;
                     }
                 }
