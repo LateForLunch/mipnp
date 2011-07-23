@@ -96,7 +96,7 @@
                 </argument>
             </argumentList>
         </action>
-        <!--<action>
+        <action>
             <name>Search</name>
             <argumentList>
                 <argument>
@@ -150,7 +150,7 @@
                     <relatedStateVariable>A_ARG_TYPE_UpdateID</relatedStateVariable>
                 </argument>
             </argumentList>
-        </action>-->
+        </action>
         <!--<action>
             <name>CreateObject</name>
             <argumentList>
@@ -325,10 +325,10 @@
             <name>A_ARG_TYPE_Result</name>
             <dataType>string</dataType>
         </stateVariable>
-        <!--<stateVariable sendEvents="no">
+        <stateVariable sendEvents="no">
             <name>A_ARG_TYPE_SearchCriteria</name>
             <dataType>string</dataType>
-        </stateVariable>-->
+        </stateVariable>
         <stateVariable sendEvents="no">
             <name>A_ARG_TYPE_BrowseFlag</name>
             <dataType>string</dataType>

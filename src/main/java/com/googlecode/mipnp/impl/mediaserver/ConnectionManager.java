@@ -17,11 +17,13 @@
  */
 
 /*
- * ConnectionManager.java
- * Created on Jul 1, 2011, 1:36:31 PM
+ * ConnectionManagerImpl.java
+ * Created on Jun 30, 2011, 3:36:22 PM
  */
 package com.googlecode.mipnp.impl.mediaserver;
 
+import com.googlecode.mipnp.upnp.ServiceImpl;
+import java.io.File;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -31,23 +33,44 @@ import javax.xml.ws.Holder;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-@WebService(name="ConnectionManager")
-public interface ConnectionManager {
+@WebService(
+        portName="ConnectionManager",
+        targetNamespace="urn:schemas-upnp-org:service:ConnectionManager:1")
+public class ConnectionManager extends ServiceImpl {
+
+    private static final String XML_SERVICE_DESCRIPTION =
+            "src/main/resources/mediaserver/ConnectionManager-1.xml";
+
+    public ConnectionManager() {
+        super("upnp-org", "ConnectionManager", "ConnectionManager", 1);
+        try {
+            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+        } catch (Exception ex) {
+            // This should not happen
+            ex.printStackTrace(); // TODO: remove line if everything seems alright
+        }
+    }
 
     @WebMethod(operationName="GetProtocolInfo")
-    void getProtocolInfo(
+    public void getProtocolInfo(
             @WebParam(name="Source", mode=WebParam.Mode.OUT)
             Holder<String> source,
             @WebParam(name="Sink", mode=WebParam.Mode.OUT)
-            Holder<String> sink);
+            Holder<String> sink) {
+
+        System.out.println("TODO: implement ConnectionManager.getProtocolInfo"); // TODO
+    }
 
     @WebMethod(operationName="GetCurrentConnectionIDs")
-    void getCurrentConnectionIDs(
+    public void getCurrentConnectionIDs(
             @WebParam(name="ConnectionIDs", mode=WebParam.Mode.OUT)
-            Holder<String> connectionIds);
+            Holder<String> connectionIds) {
+
+        System.out.println("TODO: implement ConnectionManager.getCurrentConnectionIDs"); // TODO
+    }
 
     @WebMethod(operationName="GetCurrentConnectionInfo")
-    void getCurrentConnectionInfo(
+    public void getCurrentConnectionInfo(
             @WebParam(name="ConnectionID")
             int connectionId,
             @WebParam(name="RcsID", mode=WebParam.Mode.OUT)
@@ -63,5 +86,8 @@ public interface ConnectionManager {
             @WebParam(name="Direction", mode=WebParam.Mode.OUT)
             Holder<String> direction,
             @WebParam(name="Status", mode=WebParam.Mode.OUT)
-            Holder<String> status);
+            Holder<String> status) {
+
+        System.out.println("TODO: implement ConnectionManager.getCurrentConnectionInfo"); // TODO
+    }
 }

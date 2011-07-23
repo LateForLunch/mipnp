@@ -18,10 +18,11 @@
 
 /*
  * MediaReceiverRegistrar.java
- * Created on Jul 1, 2011, 2:50:48 PM
+ * Created on Jun 30, 2011, 4:00:45 PM
  */
 package com.googlecode.mipnp.impl.mediaserver;
 
+import com.googlecode.mipnp.upnp.ServiceImpl;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -31,27 +32,46 @@ import javax.xml.ws.Holder;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-@WebService(name="X_MS_MediaReceiverRegistrar")
-public interface MediaReceiverRegistrar {
+@WebService(
+        portName="X_MS_MediaReceiverRegistrar",
+        targetNamespace="urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1")
+public class MediaReceiverRegistrar extends ServiceImpl {
+
+    public MediaReceiverRegistrar() {
+        super("microsoft.com", "X_MS_MediaReceiverRegistrar",
+                "X_MS_MediaReceiverRegistrar", 1);
+        // TODO: check urn -> urn:microsoft.com should be urn:microsoft-com
+//        setUniformResourceName("urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1");
+//        setIdentifier("urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
+    }
 
     @WebMethod(operationName="IsAuthorized")
-    void isAuthorized(
+    public void isAuthorized(
             @WebParam(name="DeviceID")
             String deviceId,
             @WebParam(name="Result", mode=WebParam.Mode.OUT)
-            Holder<Integer> result);
+            Holder<Integer> result) {
+
+        System.out.println("TODO: implement MediaReceiverRegistrar.isAuthorized"); // TODO
+    }
 
     @WebMethod(operationName="RegisterDevice")
-    void registerDevice(
+    public void registerDevice(
             @WebParam(name="RegistrationReqMsg")
             byte[] registrationReqMsg,
             @WebParam(name="RegistrationRespMsg", mode=WebParam.Mode.OUT)
-            Holder<byte[]> registrationRespMsg);
+            Holder<byte[]> registrationRespMsg) {
+
+        System.out.println("TODO: implement MediaReceiverRegistrar.registerDevice"); // TODO
+    }
 
     @WebMethod(operationName="IsValidated")
-    void isValidated(
+    public void isValidated(
             @WebParam(name="DeviceID")
             String deviceId,
             @WebParam(name="Result", mode=WebParam.Mode.OUT)
-            Holder<Integer> result);
+            Holder<Integer> result) {
+
+        System.out.println("TODO: implement MediaReceiverRegistrar.isValidated"); // TODO
+    }
 }
