@@ -23,12 +23,16 @@
 package com.googlecode.mipnp.impl.mediaserver;
 
 import com.googlecode.mipnp.upnp.ServiceImpl;
+import javax.jws.WebService;
 import javax.xml.ws.Holder;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
+@WebService(
+        endpointInterface="com.googlecode.mipnp.impl.mediaserver.MediaReceiverRegistrar",
+        targetNamespace="urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1")
 class MediaReceiverRegistrarImpl extends ServiceImpl implements MediaReceiverRegistrar {
 
     public MediaReceiverRegistrarImpl() {
@@ -40,6 +44,7 @@ class MediaReceiverRegistrarImpl extends ServiceImpl implements MediaReceiverReg
     }
 
     public void isAuthorized(String deviceId, Holder<Integer> result) {
+        System.out.println("MediaReceiverRegistrar.isAuthorized called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -47,10 +52,12 @@ class MediaReceiverRegistrarImpl extends ServiceImpl implements MediaReceiverReg
             byte[] registrationReqMsg,
             Holder<byte[]> registrationRespMsg) {
 
+        System.out.println("MediaReceiverRegistrar.registerDevice called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void isValidated(String deviceId, Holder<Integer> result) {
+        System.out.println("MediaReceiverRegistrar.isValidated called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

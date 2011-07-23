@@ -57,22 +57,27 @@ class ContentDirectoryImpl extends ServiceImpl implements ContentDirectory {
             Holder<Integer> totalMatches,
             Holder<Integer> updateId) {
 
+        System.out.println("ContentDirectory.browse called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void destroyObject(String objectId) {
+        System.out.println("ContentDirectory.destroyObject called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void getSystemUpdateId(Holder<Integer> id) {
+        System.out.println("ContentDirectory.getSystemUpdateId called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void getSearchCapabilities(Holder<String> searchCaps) {
+        System.out.println("ContentDirectory.getSearchCapabilities called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void getSortCapabilities(Holder<String> sortCaps) {
+        System.out.println("ContentDirectory.getSortCapabilities called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -81,6 +86,7 @@ class ContentDirectoryImpl extends ServiceImpl implements ContentDirectory {
             String currentTagValue,
             String newTagValue) {
 
+        System.out.println("ContentDirectory.updateObject called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

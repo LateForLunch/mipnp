@@ -49,10 +49,12 @@ class ConnectionManagerImpl extends ServiceImpl implements ConnectionManager {
             Holder<String> source,
             Holder<String> sink) {
 
+        System.out.println("ConnectionManager.getProtocolInfo called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void getCurrentConnectionIDs(Holder<String> connectionIds) {
+        System.out.println("ConnectionManager.getCurrentConnectionIDs called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -66,6 +68,7 @@ class ConnectionManagerImpl extends ServiceImpl implements ConnectionManager {
             Holder<String> direction,
             Holder<String> status) {
 
+        System.out.println("ConnectionManager.getCurrentConnectionInfo called");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
