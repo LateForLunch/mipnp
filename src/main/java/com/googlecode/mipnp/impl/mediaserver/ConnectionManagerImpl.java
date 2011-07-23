@@ -36,7 +36,7 @@ class ConnectionManagerImpl extends ServiceImpl implements ConnectionManager {
             "src/main/resources/mediaserver/ConnectionManager-1.xml";
 
     public ConnectionManagerImpl() {
-        super("upnp.org", "ConnectionManager", "ConnectionManager", 1);
+        super("upnp-org", "ConnectionManager", "ConnectionManager", 1);
         try {
             parseDescription(new File(XML_SERVICE_DESCRIPTION));
         } catch (Exception ex) {
