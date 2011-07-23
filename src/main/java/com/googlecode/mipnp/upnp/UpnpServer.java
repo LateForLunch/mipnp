@@ -75,10 +75,12 @@ public class UpnpServer {
         httpServer.start();
 
         for (Service service : rootDevice.getServices()) {
-            URI serviceControlUri =
+            URI fullServiceControlUri =
                     new URI(CONTROL + "/" + service.getId().toLowerCase());
-            service.setControlUri(serviceControlUri);
-            Endpoint.publish(serviceControlUri.toASCIIString(), service);
+            URI partialServiceControlUri =
+                    new URI("/" + service.getId().toLowerCase());
+            service.setControlUri(fullServiceControlUri);
+            Endpoint.publish(partialServiceControlUri.toASCIIString(), service);
         }
 
         URL deviceDescUrl = new URL(
