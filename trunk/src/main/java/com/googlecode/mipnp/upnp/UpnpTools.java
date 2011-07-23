@@ -93,14 +93,14 @@ public class UpnpTools {
             String type, int version, boolean schemas) {
 
         String urn = "urn:";
-        if (schemas && vendor.equals("upnp.org")) {
+        if (schemas && vendor.equals("upnp-org")) {
             urn += "schemas-";
         }
 
         // TODO: replace . with - or let the programmer decide whether to follow this rule
-        urn += vendor.replace('.', '-');
+//        urn += vendor.replace('.', '-');
         // or
-//        urn += vendor;
+        urn += vendor;
 
         urn += ":" + urnType + ":" + type + ":" + version;
         return urn;
