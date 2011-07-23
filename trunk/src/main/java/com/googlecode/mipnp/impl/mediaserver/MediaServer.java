@@ -36,11 +36,11 @@ public class MediaServer extends AbstractRootDevice {
         setMinorUpnpVersion(1);
         setVendorDomainName("upnp.org");
         setType("MediaServer");
-        setVersion("1");
+        setVersion(1);
         setFriendlyName("MiPnP: 1");
         setManufacturer(null);
         setManufacturerUrl(null);
-        setModelDescription("MiPnP : UPnP Media Server");
+        setModelDescription("MiPnP: UPnP Media Server");
         setModelName("Windows Media Connect Compatible (MiPnP)");
         setModelNumber("1.0");
         setModelUrl(null);
@@ -48,23 +48,6 @@ public class MediaServer extends AbstractRootDevice {
         setUuid(UUID.randomUUID());
         setUniversalProductCode(null);
         setPresentationUrl(null);
-
-//        try {
-//            addService(new ConnectionManagerImpl(
-//                    new URI("/connectionmanager.xml"),
-//                    new URI("/connectionmanager_control"),
-//                    new URI("/connectionmanager_event")));
-//            addService(new ContentDirectoryImpl(
-//                    new URI("/contentdirectory.xml"),
-//                    new URI("/contentdirectory_control"),
-//                    new URI("/contentdirectory_event")));
-//            addService(new MediaReceiverRegistrarImpl(
-//                    new URI("/mediareceiverregistrar.xml"),
-//                    new URI("/mediareceiverregistrar_control"),
-//                    new URI("/mediareceiverregistrar_event")));
-//        } catch (URISyntaxException ex) {
-//            // This should not happen
-//        }
 
         addService(new ConnectionManagerImpl());
         addService(new ContentDirectoryImpl());

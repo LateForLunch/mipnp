@@ -97,7 +97,7 @@ public class ServiceDescriptionParserTest extends TestCase {
 
         byte[] bytes = SERVICE_DESC_1.getBytes();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        ServiceImpl service = new ServiceImpl("", "", "", "");
+        ServiceImpl service = new ServiceImpl("", "", "", 0);
         ServiceDescriptionParser parser = new ServiceDescriptionParser(service);
 
         parser.parse(bais);

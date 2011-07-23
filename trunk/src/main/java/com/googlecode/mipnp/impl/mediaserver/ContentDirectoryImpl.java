@@ -36,7 +36,7 @@ class ContentDirectoryImpl extends ServiceImpl implements ContentDirectory {
             "src/main/resources/mediaserver/ContentDirectory-1.xml";
 
     public ContentDirectoryImpl() {
-        super("upnp.org", "ContentDirectory", "ContentDirectory", "1");
+        super("upnp.org", "ContentDirectory", "ContentDirectory", 1);
         try {
             parseDescription(new File(XML_SERVICE_DESCRIPTION));
         } catch (Exception ex) {

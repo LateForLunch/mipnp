@@ -90,7 +90,7 @@ public class UpnpTools {
      * @return the type of the device or service as a Uniform Resource Name (URN)
      */
     private static String getTypeAsUrn(String urnType, String vendor,
-            String type, String version, boolean schemas) {
+            String type, int version, boolean schemas) {
 
         String urn = "urn:";
         if (schemas && vendor.equals("upnp.org")) {
