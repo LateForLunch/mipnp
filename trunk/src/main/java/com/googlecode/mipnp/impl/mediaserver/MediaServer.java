@@ -49,8 +49,8 @@ public class MediaServer extends AbstractRootDevice {
         setUniversalProductCode(null);
         setPresentationUrl(null);
 
-        addService(new ConnectionManagerImpl());
-        addService(new ContentDirectoryImpl());
-        addService(new MediaReceiverRegistrarImpl());
+        addService(new ConnectionManager());
+        addService(new ContentDirectory());
+        addService(new MediaReceiverRegistrar());
     }
 }
