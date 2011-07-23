@@ -31,12 +31,9 @@ import javax.xml.ws.Holder;
  */
 class MediaReceiverRegistrarImpl extends ServiceImpl implements MediaReceiverRegistrar {
 
-    public MediaReceiverRegistrarImpl(
-            /*URI descriptionUri, URI controlUri, URI eventUri*/) {
-
+    public MediaReceiverRegistrarImpl() {
         super("microsoft.com", "X_MS_MediaReceiverRegistrar",
-                "X_MS_MediaReceiverRegistrar", "1"/*,
-                descriptionUri, controlUri, eventUri*/);
+                "X_MS_MediaReceiverRegistrar", 1);
         // TODO: check urn -> urn:microsoft.com should be urn:microsoft-com
 //        setUniformResourceName("urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1");
 //        setIdentifier("urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");

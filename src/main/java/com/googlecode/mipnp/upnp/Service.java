@@ -53,7 +53,8 @@ public interface Service {
      * Returns the version of the service.
      * @return the version of the service
      */
-    String getVersion();
+//    String getVersion();
+    int getVersion();
 
     /**
      * Returns the service description URI.<br/>

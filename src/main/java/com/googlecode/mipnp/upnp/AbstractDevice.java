@@ -37,7 +37,8 @@ public abstract class AbstractDevice implements Device {
     private int minorUpnpVersion;
     private String vendorDomainName;
     private String type;
-    private String version;
+//    private String version;
+    private int version;
     private String friendlyName;
     private String manufacturer;
     private URL manufacturerUrl;
@@ -89,11 +90,11 @@ public abstract class AbstractDevice implements Device {
         this.type = type;
     }
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 

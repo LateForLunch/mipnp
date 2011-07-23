@@ -62,7 +62,8 @@ public interface Device {
      * Returns the version of the device.
      * @return the version of the device
      */
-    String getVersion();
+//    String getVersion();
+    int getVersion();
 
     /**
      * Returns the friendly name of the device.<br/>

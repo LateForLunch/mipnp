@@ -42,7 +42,8 @@ public class ServiceImpl implements Service {
     private String vendorDomainName;
     private String type;
     private String id;
-    private String version;
+//    private String version;
+    private int version;
     private URI descriptionUri;
     private URI controlUri;
     private URI eventUri;
@@ -50,16 +51,12 @@ public class ServiceImpl implements Service {
     private List<StateVariable> stateVariables;
 
     public ServiceImpl(
-            String vendorDomainName, String type, String id, String version/*,
-            URI descriptionUri, URI controlUri, URI eventUri*/) {
+            String vendorDomainName, String type, String id, int version) {
 
         this.vendorDomainName = vendorDomainName;
         this.type = type;
         this.id = id;
         this.version = version;
-//        this.descriptionUri = descriptionUri;
-//        this.controlUri = controlUri;
-//        this.eventUri = eventUri;
         this.actions = new ArrayList<Action>();
         this.stateVariables = new ArrayList<StateVariable>();
     }
@@ -103,11 +100,11 @@ public class ServiceImpl implements Service {
         this.id = id;
     }
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 
