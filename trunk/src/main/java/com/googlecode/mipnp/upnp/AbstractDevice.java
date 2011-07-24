@@ -33,11 +33,12 @@ import java.util.UUID;
  */
 public abstract class AbstractDevice implements Device {
 
+    private static final String UPNP_VENDOR_DOMAIN_NAME = "upnp.org";
+
     private int majorUpnpVersion;
     private int minorUpnpVersion;
     private String vendorDomainName;
     private String type;
-//    private String version;
     private int version;
     private String friendlyName;
     private String manufacturer;
@@ -96,6 +97,17 @@ public abstract class AbstractDevice implements Device {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public String getTypeAsUrn() {
+        String urn = "urn:";
+        if (getVendorDomainName().equals(UPNP_VENDOR_DOMAIN_NAME)) {
+            urn += "schemas-upnp-org";
+        } else {
+            urn += getVendorDomainName().replace('.', '-');
+        }
+        urn += ":device:" + getType() + ":" + getVersion();
+        return urn;
     }
 
     public String getFriendlyName() {

@@ -78,7 +78,7 @@ class SearchPacketFactory implements SsdpConstants {
             }
         } else if (st.startsWith("urn:")) {
             // TODO: check version
-            String type = UpnpTools.getTypeAsUrn(rootDevice);
+            String type = rootDevice.getTypeAsUrn();
             if (st.equals(type)) {
                 resp.add(createSearchResponse(advertisementDuration,
                         rootDevice.getDescriptionUrl(), type,
@@ -87,7 +87,7 @@ class SearchPacketFactory implements SsdpConstants {
                 return resp;
             }
             for (Service service : rootDevice.getServices()) {
-                type = UpnpTools.getTypeAsUrn(service);
+                type = service.getTypeAsUrn();
                 if (st.equals(type)) {
                     resp.add(createSearchResponse(advertisementDuration,
                             rootDevice.getDescriptionUrl(), type,
@@ -97,7 +97,7 @@ class SearchPacketFactory implements SsdpConstants {
                 }
             }
             for (Device embDev : rootDevice.getEmbeddedDevices()) {
-                type = UpnpTools.getTypeAsUrn(embDev);
+                type = embDev.getTypeAsUrn();
                 if (st.equals(type)) {
                     resp.add(createSearchResponse(advertisementDuration,
                             rootDevice.getDescriptionUrl(), type,
@@ -106,7 +106,7 @@ class SearchPacketFactory implements SsdpConstants {
                     return resp;
                 }
                 for (Service service : embDev.getServices()) {
-                    type = UpnpTools.getTypeAsUrn(service);
+                    type = service.getTypeAsUrn();
                     if (st.equals(type)) {
                         resp.add(createSearchResponse(advertisementDuration,
                                 rootDevice.getDescriptionUrl(), type,
@@ -133,14 +133,14 @@ class SearchPacketFactory implements SsdpConstants {
                 rootDevice.getDescriptionUrl(), "uuid:" + rootDevice.getUuid(),
                 "uuid:" + rootDevice.getUuid(),
                 rootDevice.getBootId(), rootDevice.getConfigId()));
-        String type = UpnpTools.getTypeAsUrn(rootDevice);
+        String type = rootDevice.getTypeAsUrn();
         set.add(createSearchResponse(advertisementDuration,
                 rootDevice.getDescriptionUrl(), type,
                 "uuid:" + rootDevice.getUuid() + "::" + type,
                 rootDevice.getBootId(), rootDevice.getConfigId()));
         // Services
         for (Service service : rootDevice.getServices()) {
-            type = UpnpTools.getTypeAsUrn(service);
+            type = service.getTypeAsUrn();
             set.add(createSearchResponse(advertisementDuration,
                     rootDevice.getDescriptionUrl(), type,
                     "uuid:" + rootDevice.getUuid() + "::" + type,
@@ -152,14 +152,14 @@ class SearchPacketFactory implements SsdpConstants {
                     rootDevice.getDescriptionUrl(), "uuid:" + embDev.getUuid(),
                     "uuid:" + embDev.getUuid(),
                     rootDevice.getBootId(), rootDevice.getConfigId()));
-            type = UpnpTools.getTypeAsUrn(embDev);
+            type = embDev.getTypeAsUrn();
             set.add(createSearchResponse(advertisementDuration,
                     rootDevice.getDescriptionUrl(), type,
                     "uuid:" + embDev.getUuid() + "::" + type,
                     rootDevice.getBootId(), rootDevice.getConfigId()));
             // Services
             for (Service service : embDev.getServices()) {
-                type = UpnpTools.getTypeAsUrn(service);
+                type = service.getTypeAsUrn();
                 set.add(createSearchResponse(advertisementDuration,
                         rootDevice.getDescriptionUrl(), type,
                         "uuid:" + embDev.getUuid() + "::" + type,

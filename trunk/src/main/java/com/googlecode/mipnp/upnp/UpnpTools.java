@@ -38,10 +38,10 @@ public class UpnpTools {
      * @param service The service to get the type from.
      * @return the type of the given service as a Uniform Resource Name (URN)
      */
-    public static String getTypeAsUrn(Service service) {
-        return getTypeAsUrn("service", service.getVendorDomainName(),
-                service.getType(), service.getVersion(), true);
-    }
+//    public static String getTypeAsUrn(Service service) {
+//        return getTypeAsUrn("service", service.getVendorDomainName(),
+//                service.getType(), service.getVersion());
+//    }
 
     /**
      * Returns the type of a device as a Uniform Resource Name (URN).<br/>
@@ -53,10 +53,10 @@ public class UpnpTools {
      * @param device The device to get the type from.
      * @return the type of the given device as a Uniform Resource Name (URN)
      */
-    public static String getTypeAsUrn(Device device) {
-        return getTypeAsUrn("device", device.getVendorDomainName(),
-                device.getType(), device.getVersion(), true);
-    }
+//    public static String getTypeAsUrn(Device device) {
+//        return getTypeAsUrn("device", device.getVendorDomainName(),
+//                device.getType(), device.getVersion());
+//    }
 
     /**
      * Returns the identifier of a service as a Uniform Resource Name (URN).<br/>
@@ -68,17 +68,18 @@ public class UpnpTools {
      * @param service The service to get the identifier from.
      * @return the identifier of the given service as a Uniform Resource Name (URN)
      */
-    public static String getIdAsUrn(Service service) {
-        String urn = "urn:";
-
-        // TODO: replace . with - or let the programmer decide whether to follow this rule
-//        urn += service.getVendorDomainName().replace('.', '-');
-        // or
-        urn += service.getVendorDomainName();
-
-        urn += ":serviceId:" + service.getId();
-        return urn;
-    }
+//    public static String getIdAsUrn(Service service) {
+//        String urn = "urn:";
+//
+//        String vendor = service.getVendorDomainName();
+//        if (vendor.startsWith("schemas-")) {
+//            vendor = vendor.substring(8);
+//        }
+//        urn += vendor;
+//
+//        urn += ":serviceId:" + service.getId();
+//        return urn;
+//    }
 
     /**
      * Generic method to create the type of a device or service as a Uniform Resource Name (URN).
@@ -86,22 +87,13 @@ public class UpnpTools {
      * @param vendor The vendor domain name.
      * @param type The type of the device or service.
      * @param version The version of the device or service.
-     * @param schemas If true, the vendor domain name "upnp-org" will be replaced with "schemas-upnp-org".
      * @return the type of the device or service as a Uniform Resource Name (URN)
      */
     private static String getTypeAsUrn(String urnType, String vendor,
-            String type, int version, boolean schemas) {
+            String type, int version) {
 
         String urn = "urn:";
-        if (schemas && vendor.equals("upnp-org")) {
-            urn += "schemas-";
-        }
-
-        // TODO: replace . with - or let the programmer decide whether to follow this rule
-//        urn += vendor.replace('.', '-');
-        // or
         urn += vendor;
-
         urn += ":" + urnType + ":" + type + ":" + version;
         return urn;
     }

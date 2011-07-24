@@ -39,10 +39,11 @@ import org.xml.sax.SAXException;
  */
 public class ServiceImpl implements Service {
 
+    private static final String UPNP_VENDOR_DOMAIN_NAME = "upnp.org";
+
     private String vendorDomainName;
     private String type;
     private String id;
-//    private String version;
     private int version;
     private URI descriptionUri;
     private URI controlUri;
@@ -50,8 +51,15 @@ public class ServiceImpl implements Service {
     private List<Action> actions;
     private List<StateVariable> stateVariables;
 
+    public ServiceImpl(String type, String id, int version) {
+        this(UPNP_VENDOR_DOMAIN_NAME, type, id, version);
+    }
+
     public ServiceImpl(
-            String vendorDomainName, String type, String id, int version) {
+            String vendorDomainName,
+            String type,
+            String id,
+            int version) {
 
         this.vendorDomainName = vendorDomainName;
         this.type = type;
@@ -106,6 +114,24 @@ public class ServiceImpl implements Service {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public String getTypeAsUrn() {
+        String urn = "urn:";
+        if (getVendorDomainName().equals(UPNP_VENDOR_DOMAIN_NAME)) {
+            urn += "schemas-upnp-org";
+        } else {
+            urn += getVendorDomainName().replace('.', '-');
+        }
+        urn += ":service:" + getType() + ":" + getVersion();
+        return urn;
+    }
+
+    public String getIdAsUrn() {
+        String urn = "urn:";
+        urn += getVendorDomainName().replace('.', '-');
+        urn += ":serviceId:" + getId();
+        return urn;
     }
 
     public URI getDescriptionUri() {
