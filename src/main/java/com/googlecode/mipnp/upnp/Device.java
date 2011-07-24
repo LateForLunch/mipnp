@@ -46,11 +46,11 @@ public interface Device {
 
     // TODO: URLBase
 
-    /**
+    /*
      * Returns the vendor domain name of the device.
      * @return the vendor domain name of the device
      */
-    String getVendorDomainName();
+//    String getVendorDomainName();
 
     /**
      * Returns the type of the device.
@@ -62,8 +62,19 @@ public interface Device {
      * Returns the version of the device.
      * @return the version of the device
      */
-//    String getVersion();
     int getVersion();
+
+    /**
+     * Returns the type of the device as a URN.<br/>
+     * <br/>
+     * Format for standard devices defined by a UPnP Forum working committee:<br/>
+     * "urn:schemas-upnp-org:device:<i>deviceType</i>:<i>ver</i>"<br/>
+     * <br/>
+     * Format for non-standard devices specified by UPnP vendors:<br/>
+     * "urn:<i>domain-name</i>:device:<i>deviceType</i>:<i>ver</i>"
+     * @return 
+     */
+    String getTypeAsUrn();
 
     /**
      * Returns the friendly name of the device.<br/>

@@ -63,8 +63,6 @@ class SearchHandler implements Runnable, SsdpConstants {
                         recv.getData(), recv.getOffset(), recv.getLength());
                 SsdpRequest request = new SsdpRequest(bais);
                 if (request.isMsearch()) {
-                    // TODO: remove println if everything seems to work
-                    System.out.println("M-SEARCH received");
                     handleRequest(recv, request);
                 }
             } catch (MalformedHttpPacketException ex) {
@@ -81,22 +79,6 @@ class SearchHandler implements Runnable, SsdpConstants {
 
     private void handleRequest(DatagramPacket requestPacket, SsdpRequest request)
             throws MalformedHttpPacketException, IOException {
-
-//        String host = request.getHeader("Host");
-//        String[] split = host.split(":");
-//        if (split.length != 2) {
-//            throw new MalformedHttpPacketException("Malformed Host header.");
-//        }
-
-//        InetAddress addr = null;
-//        int port = -1;
-//        try {
-//            addr = InetAddress.getByName(split[0]);
-//            port = Integer.parseInt(split[1]);
-//        } catch (Exception ex) {
-//            throw new MalformedHttpPacketException(
-//                    "Can't parse address and/or port from Host header.", ex);
-//        }
 
         InetAddress addr = requestPacket.getAddress();
         int port = requestPacket.getPort();

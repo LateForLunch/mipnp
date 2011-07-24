@@ -42,7 +42,7 @@ public class ConnectionManager extends ServiceImpl {
             "src/main/resources/mediaserver/ConnectionManager-1.xml";
 
     public ConnectionManager() {
-        super("upnp-org", "ConnectionManager", "ConnectionManager", 1);
+        super("ConnectionManager", "ConnectionManager", 1);
         try {
             parseDescription(new File(XML_SERVICE_DESCRIPTION));
         } catch (Exception ex) {

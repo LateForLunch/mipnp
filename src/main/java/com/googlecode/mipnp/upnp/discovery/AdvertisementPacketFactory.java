@@ -63,14 +63,14 @@ class AdvertisementPacketFactory implements SsdpConstants {
                 rootDevice.getDescriptionUrl(), "uuid:" + rootDevice.getUuid(),
                 "uuid:" + rootDevice.getUuid(),
                 rootDevice.getBootId(), rootDevice.getConfigId()));
-        String type = UpnpTools.getTypeAsUrn(rootDevice);
+        String type = rootDevice.getTypeAsUrn();
         set.add(createAlive(advertisementDuration,
                 rootDevice.getDescriptionUrl(), type,
                 "uuid:" + rootDevice.getUuid() + "::" + type,
                 rootDevice.getBootId(), rootDevice.getConfigId()));
         // Services
         for (Service service : rootDevice.getServices()) {
-            type = UpnpTools.getTypeAsUrn(service);
+            type = service.getTypeAsUrn();
             set.add(createAlive(advertisementDuration,
                     rootDevice.getDescriptionUrl(), type,
                     "uuid:" + rootDevice.getUuid() + "::" + type,
@@ -82,14 +82,14 @@ class AdvertisementPacketFactory implements SsdpConstants {
                     rootDevice.getDescriptionUrl(), "uuid:" + embDev.getUuid(),
                     "uuid:" + embDev.getUuid(),
                     rootDevice.getBootId(), rootDevice.getConfigId()));
-            type = UpnpTools.getTypeAsUrn(embDev);
+            type = embDev.getTypeAsUrn();
             set.add(createAlive(advertisementDuration,
                     rootDevice.getDescriptionUrl(), type,
                     "uuid:" + embDev.getUuid() + "::" + type,
                     rootDevice.getBootId(), rootDevice.getConfigId()));
             // Services
             for (Service service : embDev.getServices()) {
-                type = UpnpTools.getTypeAsUrn(service);
+                type = service.getTypeAsUrn();
                 set.add(createAlive(advertisementDuration,
                         rootDevice.getDescriptionUrl(), type,
                         "uuid:" + embDev.getUuid() + "::" + type,

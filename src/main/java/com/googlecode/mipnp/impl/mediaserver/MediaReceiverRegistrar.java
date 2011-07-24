@@ -74,4 +74,30 @@ public class MediaReceiverRegistrar extends ServiceImpl {
 
         System.out.println("TODO: implement MediaReceiverRegistrar.isValidated"); // TODO
     }
+
+    /**
+     * Overridden because the '.' characters in the vendor domain name
+     * may not be replaced with '-'.
+     * @return the type of the service as a URN
+     */
+    @Override
+    public String getTypeAsUrn() {
+        String urn = "urn:";
+        urn += getVendorDomainName();
+        urn += ":service:" + getType() + ":" + getVersion();
+        return urn;
+    }
+
+    /**
+     * Overridden because the '.' characters in the vendor domain name
+     * may not be replaced with '-'.
+     * @return the identifier of the service as a URN
+     */
+    @Override
+    public String getIdAsUrn() {
+        String urn = "urn:";
+        urn += getVendorDomainName();
+        urn += ":serviceId:" + getId();
+        return urn;
+    }
 }

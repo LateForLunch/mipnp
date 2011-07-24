@@ -69,7 +69,7 @@ public class DeviceDescriptionServlet extends HttpServlet {
     private void printDevice(PrintWriter out, Device device) {
         out.println("<device>");
         out.println("<deviceType>" +
-                UpnpTools.getTypeAsUrn(device) + "</deviceType>");
+                device.getTypeAsUrn() + "</deviceType>");
         out.println("<friendlyName>" +
                 device.getFriendlyName() + "</friendlyName>");
         if (device.getManufacturer() != null) {
@@ -133,9 +133,9 @@ public class DeviceDescriptionServlet extends HttpServlet {
     private void printService(PrintWriter out, Service service) {
         out.println("<service>");
         out.println("<serviceType>" +
-                UpnpTools.getTypeAsUrn(service) + "</serviceType>");
+                service.getTypeAsUrn() + "</serviceType>");
         out.println("<serviceId>" +
-                UpnpTools.getIdAsUrn(service) + "</serviceId>");
+                service.getIdAsUrn() + "</serviceId>");
         out.println("<SCPDURL>" +
                 service.getDescriptionUri() + "</SCPDURL>");
         out.println("<controlURL>" +

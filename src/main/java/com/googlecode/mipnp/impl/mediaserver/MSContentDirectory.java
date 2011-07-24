@@ -17,8 +17,8 @@
  */
 
 /*
- * ContentDirectory.java
- * Created on Jun 30, 2011, 3:53:50 PM
+ * MSContentDirectory.java
+ * Created on Jul 24, 2011, 11:12:23 AM
  */
 package com.googlecode.mipnp.impl.mediaserver;
 
@@ -34,15 +34,15 @@ import javax.xml.ws.Holder;
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 @WebService(
-        portName="ContentDirectory",
+        portName="MSContentDirectory",
         targetNamespace="urn:schemas-upnp-org:service:ContentDirectory:1")
-public class ContentDirectory extends ServiceImpl {
+public class MSContentDirectory extends ServiceImpl {
 
     private static final String XML_SERVICE_DESCRIPTION =
-            "src/main/resources/mediaserver/ContentDirectory-1.xml";
+            "src/main/resources/mediaserver/MSContentDirectory-1.xml";
 
-    public ContentDirectory() {
-        super("ContentDirectory", "ContentDirectory", 1);
+    public MSContentDirectory() {
+        super("microsoft.com", "MSContentDirectory", "MSContentDirectory", 1);
         try {
             parseDescription(new File(XML_SERVICE_DESCRIPTION));
         } catch (Exception ex) {
@@ -53,7 +53,7 @@ public class ContentDirectory extends ServiceImpl {
 
     @WebMethod(operationName="Browse")
     public void browse(
-            @WebParam(name="ObjectID")
+            @WebParam(name="ContainerID")
             String objectId,
             @WebParam(name="BrowseFlag")
             String browseFlag,
@@ -74,7 +74,7 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
-        System.out.println("TODO: implement ContentDirectory.browse"); // TODO
+        System.out.println("TODO: implement MSContentDirectory.browse"); // TODO
     }
 
     @WebMethod(operationName="Search")
@@ -100,15 +100,7 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
-        System.out.println("TODO: implement ContentDirectory.search"); // TODO
-    }
-
-    @WebMethod(operationName="DestroyObject")
-    public void destroyObject(
-            @WebParam(name="ObjectID")
-            String objectId) {
-
-        System.out.println("TODO: implement ContentDirectory.destroyObject"); // TODO
+        System.out.println("TODO: implement MSContentDirectory.search"); // TODO
     }
 
     @WebMethod(operationName="GetSystemUpdateID")
@@ -116,7 +108,7 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="Id", mode=WebParam.Mode.OUT)
             Holder<Integer> id) {
 
-        System.out.println("TODO: implement ContentDirectory.getSystemUpdateId"); // TODO
+        System.out.println("TODO: implement MSContentDirectory.getSystemUpdateId"); // TODO
     }
 
     @WebMethod(operationName="GetSearchCapabilities")
@@ -124,7 +116,7 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="SearchCaps", mode=WebParam.Mode.OUT)
             Holder<String> searchCaps) {
 
-        System.out.println("TODO: implement ContentDirectory.getSearchCapabilities"); // TODO
+        System.out.println("TODO: implement MSContentDirectory.getSearchCapabilities"); // TODO
     }
 
     @WebMethod(operationName="GetSortCapabilities")
@@ -132,18 +124,19 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="SortCaps", mode=WebParam.Mode.OUT)
             Holder<String> sortCaps) {
 
-        System.out.println("TODO: implement ContentDirectory.getSortCapabilities"); // TODO
+        System.out.println("TODO: implement MSContentDirectory.getSortCapabilities"); // TODO
     }
 
-    @WebMethod(operationName="UpdateObject")
-    public void updateObject(
-            @WebParam(name="ObjectID")
-            String objectId,
-            @WebParam(name="CurrentTagValue")
-            String currentTagValue,
-            @WebParam(name="NewTagValue")
-            String newTagValue) {
+    @Override
+    public String getTypeAsUrn() {
+        // urn:schemas-microsoft-com:service:MSContentDirectory:1
+        return "urn:schemas-microsoft-com:service:" +
+                getType() + ":" + getVersion();
+    }
 
-        System.out.println("TODO: implement ContentDirectory.updateObject"); // TODO
+    @Override
+    public String getIdAsUrn() {
+        // urn:upnp-org:serviceId:MSContentDirectory
+        return "urn:upnp-org:serviceId:" + getId();
     }
 }
