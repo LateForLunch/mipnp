@@ -21,7 +21,15 @@ import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import com.googlecode.mipnp.impl.mediaserver.MediaServer;
 import com.googlecode.mipnp.tools.InetTools;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Scanner;
+import java.util.UUID;
 import org.apache.cxf.BusFactory;
 
 /**
@@ -38,7 +46,9 @@ public class App {
 
         UpnpServer server = null;
         try {
-            RootDevice rootDevice = new MediaServer();
+            UUID uuid = getUuid();
+            System.out.println(uuid);
+            RootDevice rootDevice = new MediaServer(uuid);
             server = new UpnpServer(rootDevice, InetTools.getLocalHost());
             server.start();
 
@@ -70,6 +80,40 @@ public class App {
                         busFactory);
             } else {
                 System.clearProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME);
+            }
+        }
+    }
+
+    private static UUID getUuid()
+            throws FileNotFoundException, IOException, ClassNotFoundException {
+
+        File uuidFile = new File("src/main/resources/mediaserver/uuid.object");
+        if (!uuidFile.exists()) {
+            UUID uuid = UUID.randomUUID();
+            writeUuidFile(uuidFile, uuid);
+            return uuid;
+        }
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(uuidFile));
+            return (UUID) ois.readObject();
+        } finally {
+            if (ois != null) {
+                ois.close();
+            }
+        }
+    }
+
+    private static void writeUuidFile(File uuidFile, UUID uuid)
+            throws FileNotFoundException, IOException {
+
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new FileOutputStream(uuidFile));
+            oos.writeObject(uuid);
+        } finally {
+            if (oos != null) {
+                oos.close();
             }
         }
     }

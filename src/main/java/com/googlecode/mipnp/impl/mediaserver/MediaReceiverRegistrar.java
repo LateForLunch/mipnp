@@ -53,6 +53,7 @@ public class MediaReceiverRegistrar extends ServiceImpl {
             Holder<Integer> result) {
 
         System.out.println("TODO: implement MediaReceiverRegistrar.isAuthorized"); // TODO
+        result.value = 1;
     }
 
     @WebMethod(operationName="RegisterDevice")
@@ -73,6 +74,7 @@ public class MediaReceiverRegistrar extends ServiceImpl {
             Holder<Integer> result) {
 
         System.out.println("TODO: implement MediaReceiverRegistrar.isValidated"); // TODO
+        result.value = 1;
     }
 
     /**
