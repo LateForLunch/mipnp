@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 public class MediaServer extends AbstractRootDevice {
 
-    public MediaServer() {
+    public MediaServer(UUID uuid) {
         setMajorUpnpVersion(1);
         setMinorUpnpVersion(1);
         setVendorDomainName("upnp.org");
@@ -45,7 +45,7 @@ public class MediaServer extends AbstractRootDevice {
         setModelNumber("1.0");
         setModelUrl(null);
         setSerialNumber("1");
-        setUuid(UUID.randomUUID());
+        setUuid(uuid);
         setUniversalProductCode(null);
         setPresentationUrl(null);
 

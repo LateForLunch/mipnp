@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : didl-lite.xml
+    Created on : July 25, 2011, 5:04 PM
+    Author     : jochem
+    Description:
+        Purpose of the document follows.
+-->
+
+<DIDL-Lite 
+xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" 
+xmlns:dc="http://purl.org/dc/elements/1.1/" 
+xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/">
+    <item id="100001" parentID="100000" restricted="true">
+        <upnp:class>object.item.audioItem.musicTrack</upnp:class>
+        <dc:title>03 - Louder</dc:title>
+    </item>
+</DIDL-Lite>

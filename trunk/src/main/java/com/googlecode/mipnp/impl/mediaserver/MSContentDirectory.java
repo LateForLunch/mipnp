@@ -101,6 +101,18 @@ public class MSContentDirectory extends ServiceImpl {
             Holder<Integer> updateId) {
 
         System.out.println("TODO: implement MSContentDirectory.search"); // TODO
+        result.value = "<DIDL-Lite ";
+        result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
+        result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
+        result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
+        result.value += "<item id=\"100001\" parentID=\"100000\" restricted=\"true\">";
+        result.value += "<upnp:class>object.item.audioItem.musicTrack</upnp:class>";
+        result.value += "<dc:title>03 - Louder</dc:title>";
+        result.value += "</item>";
+        result.value += "</DIDL-Lite>";
+        numberReturned.value = 1;
+        totalMatches.value = 1;
+        updateId.value = 0;
     }
 
     @WebMethod(operationName="GetSystemUpdateID")
