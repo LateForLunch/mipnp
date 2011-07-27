@@ -19,7 +19,7 @@ package com.googlecode.mipnp;
 
 import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.UpnpServer;
-import com.googlecode.mipnp.impl.mediaserver.MediaServer;
+import com.googlecode.mipnp.mediaserver.MediaServer;
 import com.googlecode.mipnp.tools.InetTools;
 import java.io.File;
 import java.io.FileInputStream;
