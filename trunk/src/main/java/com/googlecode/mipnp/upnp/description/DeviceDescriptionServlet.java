@@ -25,7 +25,6 @@ package com.googlecode.mipnp.upnp.description;
 import com.googlecode.mipnp.upnp.Device;
 import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.Service;
-import com.googlecode.mipnp.upnp.UpnpTools;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
