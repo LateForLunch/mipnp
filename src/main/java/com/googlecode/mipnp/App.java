@@ -17,9 +17,10 @@
  */
 package com.googlecode.mipnp;
 
-import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import com.googlecode.mipnp.mediaserver.MediaServer;
+import com.googlecode.mipnp.mediaserver.cds.MediaLibrary;
+import com.googlecode.mipnp.mediaserver.cds.MediaServlet;
 import com.googlecode.mipnp.tools.InetTools;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.URL;
 import java.util.Scanner;
 import java.util.UUID;
 import org.apache.cxf.BusFactory;
@@ -46,11 +49,21 @@ public class App {
 
         UpnpServer server = null;
         try {
+            InetAddress localHost = InetTools.getLocalHost();
             UUID uuid = getUuid();
-            System.out.println(uuid);
-            RootDevice rootDevice = new MediaServer(uuid);
-            server = new UpnpServer(rootDevice, InetTools.getLocalHost());
+            MediaLibrary library = new MediaLibrary(new File("/home/jochem/ushare/"));
+            String mediaServletLocation = "/cds";
+            MediaServer mediaServer = new MediaServer(uuid, library);
+            server = new UpnpServer(mediaServer, localHost);
+            server.addServlet(new MediaServlet(library), mediaServletLocation + "/*");
             server.start();
+
+            URL mediaLocation = new URL(
+                    "http",
+                    server.getHttpAddress().getHostAddress(),
+                    server.getHttpPort(),
+                    mediaServletLocation);
+            mediaServer.setMediaLocation(mediaLocation);
 
             System.out.println();
             System.out.println("MiPnP started");

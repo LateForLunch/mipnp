@@ -57,6 +57,7 @@ public class UpnpServer {
     private InetAddress bindAddr;
 
     private Server httpServer;
+    private ServletContextHandler context;
     private DiscoveryServer advertiser;
 
     public UpnpServer(
@@ -111,11 +112,14 @@ public class UpnpServer {
         return httpServer.getConnectors()[0].getLocalPort();
     }
 
+    public void addServlet(Servlet servlet, String path) {
+        context.addServlet(new ServletHolder(servlet), path);
+    }
+
     private void initHttpServer() {
         InetSocketAddress httpBindAddr = new InetSocketAddress(bindAddr, 0);
         this.httpServer = new Server(httpBindAddr);
-        ServletContextHandler context =
-                new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
 //        EnumSet<DispatcherType> set = EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR);
         EnumSet<DispatcherType> set = EnumSet.allOf(DispatcherType.class);

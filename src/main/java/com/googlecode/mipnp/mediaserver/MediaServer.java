@@ -22,7 +22,9 @@
  */
 package com.googlecode.mipnp.mediaserver;
 
+import com.googlecode.mipnp.mediaserver.cds.MediaLibrary;
 import com.googlecode.mipnp.upnp.AbstractRootDevice;
+import java.net.URL;
 import java.util.UUID;
 
 /**
@@ -31,7 +33,9 @@ import java.util.UUID;
  */
 public class MediaServer extends AbstractRootDevice {
 
-    public MediaServer(UUID uuid) {
+    private MSContentDirectory mscd;
+
+    public MediaServer(UUID uuid, MediaLibrary library) {
         setMajorUpnpVersion(1);
         setMinorUpnpVersion(1);
         setVendorDomainName("upnp.org");
@@ -49,9 +53,14 @@ public class MediaServer extends AbstractRootDevice {
         setUniversalProductCode(null);
         setPresentationUrl(null);
 
+        this.mscd = new MSContentDirectory(library);
         addService(new ContentDirectory());
-        addService(new MSContentDirectory());
+        addService(mscd);
         addService(new ConnectionManager());
         addService(new MediaReceiverRegistrar());
+    }
+
+    public void setMediaLocation(URL location) {
+        mscd.setMediaLocation(location);
     }
 }

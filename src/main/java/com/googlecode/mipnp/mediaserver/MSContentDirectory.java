@@ -22,8 +22,14 @@
  */
 package com.googlecode.mipnp.mediaserver;
 
+import com.googlecode.mipnp.mediaserver.cds.CdsObject;
+import com.googlecode.mipnp.mediaserver.cds.MediaLibrary;
+import com.googlecode.mipnp.mediaserver.cds.Resource;
+import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import com.googlecode.mipnp.upnp.ServiceImpl;
 import java.io.File;
+import java.net.URL;
+import java.util.List;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -41,7 +47,10 @@ public class MSContentDirectory extends ServiceImpl {
     private static final String XML_SERVICE_DESCRIPTION =
             "src/main/resources/mediaserver/MSContentDirectory-1.xml";
 
-    public MSContentDirectory() {
+    private MediaLibrary library;
+    private URL mediaLocation;
+
+    public MSContentDirectory(MediaLibrary library) {
         super("microsoft.com", "MSContentDirectory", "MSContentDirectory", 1);
         try {
             parseDescription(new File(XML_SERVICE_DESCRIPTION));
@@ -49,6 +58,7 @@ public class MSContentDirectory extends ServiceImpl {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright
         }
+        this.library = library;
     }
 
     @WebMethod(operationName="Browse")
@@ -100,15 +110,47 @@ public class MSContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
-        System.out.println("TODO: implement MSContentDirectory.search"); // TODO
+//        System.out.println("TODO: implement MSContentDirectory.search"); // TODO
+//        result.value = "<DIDL-Lite ";
+//        result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
+//        result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
+//        result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
+//        result.value += "<item id=\"100001\" parentID=\"100000\" restricted=\"true\">";
+//        result.value += "<upnp:class>object.item.audioItem.musicTrack</upnp:class>";
+//        result.value += "<dc:title>03 - Louder</dc:title>";
+//        result.value += "</item>";
+//        result.value += "</DIDL-Lite>";
+//        numberReturned.value = 1;
+//        totalMatches.value = 1;
+//        updateId.value = 0;
+
+        SearchCriteria sc = new SearchCriteria(searchCriteria);
+//        Filter f = new Filter(filter);
+        List<CdsObject> searchResult = library.search(sc);
         result.value = "<DIDL-Lite ";
         result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
         result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
         result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
-        result.value += "<item id=\"100001\" parentID=\"100000\" restricted=\"true\">";
-        result.value += "<upnp:class>object.item.audioItem.musicTrack</upnp:class>";
-        result.value += "<dc:title>03 - Louder</dc:title>";
-        result.value += "</item>";
+        for (CdsObject obj : searchResult) {
+            result.value += "<item id=\"" + obj.getId();
+            CdsObject parent = obj.getParent();
+            int parentId = -1;
+            if (parent != null) {
+                parentId = parent.getId();
+            }
+            result.value += "\" parentID=\"" + parentId + "\" restricted=\"true\">";
+            result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
+            result.value += "<dc:title>" + obj.getTitle() + "</dc:title>";
+            if (filter.contains("res")) {
+                Resource res = obj.getResource();
+                if (res != null) {
+                    result.value += "<res protocolInfo=\"http-get:*:" + res.getMimeType() + ":*\">";
+                    result.value += mediaLocation.toString() + "/" + obj.getId();
+                    result.value += "</res>";
+                }
+            }
+            result.value += "</item>";
+        }
         result.value += "</DIDL-Lite>";
         numberReturned.value = 1;
         totalMatches.value = 1;
@@ -150,5 +192,9 @@ public class MSContentDirectory extends ServiceImpl {
     public String getIdAsUrn() {
         // urn:upnp-org:serviceId:MSContentDirectory
         return "urn:upnp-org:serviceId:" + getId();
+    }
+
+    public void setMediaLocation(URL location) {
+        this.mediaLocation = location;
     }
 }
