@@ -30,12 +30,12 @@ import java.io.File;
  */
 public class MusicTrack extends CdsObject {
 
-    public MusicTrack(File musicTrack) {
+    public MusicTrack(File musicTrack, String mimeType) {
         super("object.item.audioItem.musicTrack", musicTrack.getName());
         if (musicTrack == null || !musicTrack.isFile()) {
             throw new IllegalArgumentException(
                     "Can't create a MusicTrack without a file.");
         }
-        setResource(new FileResource(musicTrack));
+        setResource(new FileResource(musicTrack, mimeType));
     }
 }

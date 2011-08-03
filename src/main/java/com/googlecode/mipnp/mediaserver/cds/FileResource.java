@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import javax.activation.MimetypesFileTypeMap;
 
 /**
  *
@@ -34,12 +33,11 @@ import javax.activation.MimetypesFileTypeMap;
  */
 public class FileResource extends Resource {
 
-    private static final MimetypesFileTypeMap MIMETYPES = new MimetypesFileTypeMap();
-
     private File file;
 
-    public FileResource(File file) {
-        super(MIMETYPES.getContentType(file));
+    public FileResource(File file, String mimeType) {
+        super(mimeType);
+        this.file = file;
     }
 
     @Override
@@ -47,7 +45,7 @@ public class FileResource extends Resource {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(file);
-        } catch (FileNotFoundException ex) {
+        } catch (Exception ex) {
         }
         return fis;
     }

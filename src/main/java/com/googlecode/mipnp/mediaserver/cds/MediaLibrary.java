@@ -43,19 +43,19 @@ public class MediaLibrary {
     }
 
     public List<CdsObject> search(SearchCriteria sc) {
-        List<CdsObject> result = new ArrayList<CdsObject>();
-        search(result, sc, root);
-        return result;
+        return search(sc, root);
     }
 
-    private void search(List<CdsObject> result, SearchCriteria sc, CdsObject obj) {
+    private List<CdsObject> search(SearchCriteria sc, CdsObject obj) {
+        List<CdsObject> result = new ArrayList<CdsObject>();
         if (sc.meetsCriteria(obj)) {
             result.add(obj);
         }
         if (obj.isContainer()) {
             for (CdsObject child : obj.getChildren()) {
-                search(result, sc, child);
+                result.addAll(search(sc, child));
             }
         }
+        return result;
     }
 }

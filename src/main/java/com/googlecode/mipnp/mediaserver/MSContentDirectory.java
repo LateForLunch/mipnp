@@ -140,7 +140,9 @@ public class MSContentDirectory extends ServiceImpl {
             }
             result.value += "\" parentID=\"" + parentId + "\" restricted=\"true\">";
             result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
-            result.value += "<dc:title>" + obj.getTitle() + "</dc:title>";
+            String title = obj.getTitle();
+            title = title.substring(0, title.lastIndexOf('.'));
+            result.value += "<dc:title>" + title + "</dc:title>";
             if (filter.contains("res")) {
                 Resource res = obj.getResource();
                 if (res != null) {
@@ -152,8 +154,8 @@ public class MSContentDirectory extends ServiceImpl {
             result.value += "</item>";
         }
         result.value += "</DIDL-Lite>";
-        numberReturned.value = 1;
-        totalMatches.value = 1;
+        numberReturned.value = searchResult.size();
+        totalMatches.value = searchResult.size();
         updateId.value = 0;
     }
 
