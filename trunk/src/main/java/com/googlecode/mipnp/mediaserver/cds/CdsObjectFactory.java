@@ -23,12 +23,19 @@
 package com.googlecode.mipnp.mediaserver.cds;
 
 import java.io.File;
+import javax.activation.MimetypesFileTypeMap;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class CdsObjectFactory {
+
+    private static final MimetypesFileTypeMap MIMETYPES = new MimetypesFileTypeMap();
+
+    static {
+        MIMETYPES.addMimeTypes("audio/mpeg mp3 MP3");
+    }
 
     public static CdsObject createObject(File file) {
         if (file == null) {
@@ -37,12 +44,12 @@ public class CdsObjectFactory {
         if (file.isDirectory()) {
             return new StorageFolder(file);
         } else {
-            int extIndex = file.getName().lastIndexOf('.');
-            String ext = file.getName().substring(extIndex + 1);
-            if (ext.equalsIgnoreCase("mp3")) {
-                return new MusicTrack(file);
+            String mimeType = MIMETYPES.getContentType(file);
+            if (mimeType.startsWith("audio")) {
+                return new MusicTrack(file, mimeType);
+            } else {
+                return null;
             }
-            return null;
         }
     }
 }

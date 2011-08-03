@@ -119,10 +119,6 @@ public abstract class CdsObject {
         return children;
     }
 
-//    public InputStream getInputStream() {
-//        return null;
-//    }
-
     public Resource getResource() {
         return resource;
     }

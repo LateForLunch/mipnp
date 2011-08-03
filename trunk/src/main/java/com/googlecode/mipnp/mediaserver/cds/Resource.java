@@ -32,6 +32,9 @@ public abstract class Resource {
 
     private String mimeType;
 
+    public Resource() {
+    }
+
     public Resource(String mimeType) {
         this.mimeType = mimeType;
     }
@@ -40,5 +43,9 @@ public abstract class Resource {
 
     public String getMimeType() {
         return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 }
