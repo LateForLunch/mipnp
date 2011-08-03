@@ -22,6 +22,8 @@
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
+import java.util.LinkedList;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
@@ -29,15 +31,105 @@ package com.googlecode.mipnp.mediaserver.cds;
 public class SearchCriteria {
 
     private String searchCriteriaStr;
+    private boolean asterix;
+    private LinkedList<String> rpn;
 
     public SearchCriteria(String searchCriteriaStr) {
-        this.searchCriteriaStr = searchCriteriaStr;
+        this.searchCriteriaStr = searchCriteriaStr.trim();
+        this.asterix = this.searchCriteriaStr.equals("*");
+        if (!asterix) {
+            parseSearchCriteria();
+        }
     }
 
     public boolean meetsCriteria(CdsObject obj) {
+        if (asterix) {
+            return true;
+        }
         if (obj.isItem()) {
             return true;
         }
         return false;
+    }
+
+    private void parseSearchCriteria() {
+        LinkedList<String> queue = new LinkedList<String>();
+        LinkedList<String> stack = new LinkedList<String>();
+        String split[] = searchCriteriaStr.split("\\s+");
+
+        for (int i = 0; i < split.length; i++) {
+            if (isQuotedVal(split[i])) {
+                queue.offer(split[i]);
+            } else if (isOp(split[i])) {
+                String peek = stack.peek();
+                while (getPrecedence(split[i]) <= getPrecedence(peek)) {
+                    queue.offer(stack.pop());
+                    peek = stack.peek();
+                }
+                stack.push(split[i]);
+            } else if (split[i].equals("(")) {
+                stack.push(split[i]);
+            } else if (split[i].equals(")")) {
+                String pop = stack.pop();
+                while (!pop.equals("(")) {
+                    queue.offer(pop);
+                    pop = stack.pop();
+                }
+            }
+        }
+
+        while (!stack.isEmpty()) {
+            queue.offer(stack.pop());
+        }
+
+        this.rpn = queue;
+    }
+
+    private boolean isOp(String str) {
+        return (isLogOp(str) ||
+                isBinOp(str) ||
+                isExistsOp(str));
+    }
+
+    private boolean isLogOp(String str) {
+        return (str.equals("and") || str.equals("or"));
+    }
+
+    private boolean isBinOp(String str) {
+        return (isRelOp(str) || isStringOp(str));
+    }
+
+    private boolean isRelOp(String str) {
+        return (str.equals("=") || str.equals("!=") ||
+                str.equals("<") || str.equals("<=") ||
+                str.equals(">") || str.equals(">="));
+    }
+
+    private boolean isStringOp(String str) {
+        return (str.equals("contains") ||
+                str.equals("doesNotContain") ||
+                str.equals("derivedfrom"));
+    }
+
+    private boolean isExistsOp(String str) {
+        return (str.equals("exists"));
+    }
+
+    private boolean isQuotedVal(String str) {
+        return (str.startsWith("\"") && str.endsWith("\""));
+    }
+
+    private int getPrecedence(String op) {
+        if (op.equals("(") || op.equals(")")) {
+            return 4;
+        } else if (isBinOp(op) || isExistsOp(op)) {
+            return 3;
+        } else if (op.equals("and")) {
+            return 2;
+        } else if (op.equals("or")) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 }
