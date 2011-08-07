@@ -30,15 +30,14 @@ import java.util.LinkedList;
  */
 public class SearchCriteria {
 
-    private String searchCriteriaStr;
     private boolean asterix;
-    private LinkedList<String> rpn;
+    private LinkedList<Token> rpn;
 
-    public SearchCriteria(String searchCriteriaStr) {
-        this.searchCriteriaStr = searchCriteriaStr.trim();
-        this.asterix = this.searchCriteriaStr.equals("*");
+    public SearchCriteria(String searchCriteria) {
+        searchCriteria = searchCriteria.trim();
+        this.asterix = searchCriteria.equals("*");
         if (!asterix) {
-            parseSearchCriteria();
+            parseSearchCriteria(searchCriteria);
         }
     }
 
@@ -46,32 +45,62 @@ public class SearchCriteria {
         if (asterix) {
             return true;
         }
-        if (obj.isItem()) {
-            return true;
+//        if (obj.isItem()) {
+//            return true;
+//        }
+        LinkedList<Token> input  = new LinkedList<Token>(rpn);
+        LinkedList<Token> stack = new LinkedList<Token>();
+
+        while (input.size() > 0) {
+            Token token = input.poll();
+            if (token.isOperator()) {
+                Token arg2 = stack.pop();
+                Token arg1 = stack.pop();
+                arg1 = replaceValue(arg1, obj);
+                arg2 = replaceValue(arg2, obj);
+                Token result = new Token(
+                        String.valueOf(token.evaluateOperator(arg1, arg2)));
+                stack.push(result);
+            } else {
+                // Token is a value
+                stack.push(token);
+            }
         }
-        return false;
+
+        return stack.pop().asBoolean();
     }
 
-    private void parseSearchCriteria() {
-        LinkedList<String> queue = new LinkedList<String>();
-        LinkedList<String> stack = new LinkedList<String>();
-        String split[] = searchCriteriaStr.split("\\s+");
+    private void parseSearchCriteria(String searchCriteria) {
+        LinkedList<Token> queue = new LinkedList<Token>();
+        LinkedList<Token> stack = new LinkedList<Token>();
+//        String split[] = searchCriteriaStr.split("\\s+"); // TODO: create own tokenizer
+        SearchCriteriaTokenizer tokenizer = new SearchCriteriaTokenizer(searchCriteria);
 
-        for (int i = 0; i < split.length; i++) {
-            if (isQuotedVal(split[i])) {
-                queue.offer(split[i]);
-            } else if (isOp(split[i])) {
-                String peek = stack.peek();
-                while (getPrecedence(split[i]) <= getPrecedence(peek)) {
+        System.out.println("Parsing: " + searchCriteria);
+//        for (int i = 0; i < split.length; i++) {
+        while (tokenizer.hasMoreElements()) {
+            Token token = tokenizer.nextElement();
+            System.out.print("Token: " + token.getToken() + " is ");
+            if (token.isValue()) {
+                System.out.println("a value");
+                queue.offer(token);
+            } else if (token.isOperator()) {
+                System.out.println("an operator");
+                Token peek = stack.peek();
+                while (peek != null &&
+                        peek.isOperator() &&
+                        token.getPrecedence() <= peek.getPrecedence()) {
                     queue.offer(stack.pop());
                     peek = stack.peek();
                 }
-                stack.push(split[i]);
-            } else if (split[i].equals("(")) {
-                stack.push(split[i]);
-            } else if (split[i].equals(")")) {
-                String pop = stack.pop();
-                while (!pop.equals("(")) {
+                stack.push(token);
+            } else if (token.isLeftParenthesis()) {
+                System.out.println("a left parenthesis");
+                stack.push(token);
+            } else if (token.isRightParenthesis()) {
+                System.out.println("a right parenthesis");
+                Token pop = stack.pop();
+                while (!pop.isLeftParenthesis()) {
                     queue.offer(pop);
                     pop = stack.pop();
                 }
@@ -85,51 +114,11 @@ public class SearchCriteria {
         this.rpn = queue;
     }
 
-    private boolean isOp(String str) {
-        return (isLogOp(str) ||
-                isBinOp(str) ||
-                isExistsOp(str));
-    }
-
-    private boolean isLogOp(String str) {
-        return (str.equals("and") || str.equals("or"));
-    }
-
-    private boolean isBinOp(String str) {
-        return (isRelOp(str) || isStringOp(str));
-    }
-
-    private boolean isRelOp(String str) {
-        return (str.equals("=") || str.equals("!=") ||
-                str.equals("<") || str.equals("<=") ||
-                str.equals(">") || str.equals(">="));
-    }
-
-    private boolean isStringOp(String str) {
-        return (str.equals("contains") ||
-                str.equals("doesNotContain") ||
-                str.equals("derivedfrom"));
-    }
-
-    private boolean isExistsOp(String str) {
-        return (str.equals("exists"));
-    }
-
-    private boolean isQuotedVal(String str) {
-        return (str.startsWith("\"") && str.endsWith("\""));
-    }
-
-    private int getPrecedence(String op) {
-        if (op.equals("(") || op.equals(")")) {
-            return 4;
-        } else if (isBinOp(op) || isExistsOp(op)) {
-            return 3;
-        } else if (op.equals("and")) {
-            return 2;
-        } else if (op.equals("or")) {
-            return 1;
-        } else {
-            return -1;
+    private Token replaceValue(Token arg, CdsObject obj) {
+        if (arg.getToken().equals("upnp:class")) {
+            return new Token("\"" + obj.getUpnpClass() + "\"");
         }
+        // TODO: add more properties
+        return arg;
     }
 }
