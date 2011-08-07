@@ -44,6 +44,13 @@ import org.apache.cxf.BusFactory;
 public class App {
 
     public static void main(String[] args) {
+        System.out.println("MiPnP  Copyright (C) 2010, 2011  Jochem Van denbussche");
+        System.out.println("This program comes with ABSOLUTELY NO WARRANTY.");
+        System.out.println("This is free software, and you are welcome to redistribute it");
+        System.out.println("under certain conditions.");
+        System.out.println("Read the LICENSE.txt file for more information.");
+        System.out.println();
+
         String busFactory =
                 System.getProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME);
         System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
