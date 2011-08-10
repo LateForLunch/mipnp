@@ -36,24 +36,36 @@ public abstract class CdsObject {
     private static final String CLASS_ITEM = "object.item";
     private static final String CLASS_CONTAINER = "object.container";
 
-    private static int nextId = 0;
+    private static int nextId = 1000;
 
-    private int id;
     private String upnpClass;
+    private String id;
     private CdsObject parent;
     private String title;
     private boolean container;
     private List<CdsObject> children;
     private Resource resource;
 
-    public CdsObject(String upnpClass, String title) {
+    public CdsObject(String upnpClass) {
+        this(upnpClass, null);
+    }
+
+    public CdsObject(String upnpClass, String id) {
+        this(upnpClass, id, "");
+    }
+
+    public CdsObject(String upnpClass, String id, String title) {
         if (!upnpClass.startsWith(CLASS_ITEM) && !upnpClass.startsWith(CLASS_CONTAINER)) {
             throw new IllegalArgumentException(
                     "UPnP Class must start with \"" +
                     CLASS_ITEM + "\" or \"" + CLASS_CONTAINER + "\".");
         }
-        this.id = nextId;
-        nextId++;
+        if (id == null) {
+            this.id = String.valueOf(nextId);
+            nextId++;
+        } else {
+            this.id = id;
+        }
         this.upnpClass = upnpClass;
         this.title = title;
         if (upnpClass.startsWith(CLASS_ITEM)) {
@@ -64,12 +76,16 @@ public abstract class CdsObject {
         }
     }
 
-    public int getId() {
+    public String getUpnpClass() {
+        return upnpClass;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public String getUpnpClass() {
-        return upnpClass;
+    protected void setId(String id) {
+        this.id = id;
     }
 
     public CdsObject getParent() {
@@ -82,6 +98,10 @@ public abstract class CdsObject {
 
     public String getTitle() {
         return title;
+    }
+
+    protected void setTitle(String title) {
+        this.title = title;
     }
 
     public boolean isContainer() {
@@ -99,15 +119,15 @@ public abstract class CdsObject {
         }
     }
 
-    public CdsObject getChildById(int id) {
+    public CdsObject getChildById(String id) {
         if (isContainer()) {
-            for (CdsObject child : children) {
-                if (child.getId() == id) {
+            for (CdsObject child : getChildren()) {
+                if (child.getId().equals(id)) {
                     return child;
                 }
             }
             CdsObject result = null;
-            for (CdsObject child : children) {
+            for (CdsObject child : getChildren()) {
                 result = child.getChildById(id);
                 if (result != null) {
                     return result;
@@ -117,7 +137,15 @@ public abstract class CdsObject {
         return null;
     }
 
-    public Iterable<CdsObject> getChildren() {
+    public int getNumberOfChildren() {
+        if (isContainer()) {
+            return getChildren().size();
+        } else {
+            return 0;
+        }
+    }
+
+    public List<CdsObject> getChildren() {
         return children;
     }
 

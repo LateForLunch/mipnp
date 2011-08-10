@@ -19,8 +19,8 @@
  */
 
 /*
- * MusicTrack.java
- * Created on Jul 28, 2011, 1:39:25 PM
+ * Photo.java
+ * Created on Aug 9, 2011, 2:45:45 PM
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
@@ -30,19 +30,19 @@ import java.io.File;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class MusicTrack extends CdsObject {
+public class Photo extends CdsObject {
 
-    private static final String UPNP_CLASS = "object.item.audioItem.musicTrack";
+    private static final String UPNP_CLASS = "object.item.imageItem.photo";
 
-    public MusicTrack(File musicTrack, String mimeType) {
+    public Photo(File photo, String mimeType) {
         super(UPNP_CLASS);
-        if (musicTrack == null || !musicTrack.isFile()) {
+        if (photo == null || !photo.isFile()) {
             throw new IllegalArgumentException(
-                    "Can't create a MusicTrack without a file.");
+                    "Can't create a Photo without a file.");
         }
-        String title = musicTrack.getName();
+        String title = photo.getName();
         title = title.substring(0, title.lastIndexOf('.'));
         setTitle(title);
-        setResource(new FileResource(musicTrack, mimeType));
+        setResource(new FileResource(photo, mimeType));
     }
 }

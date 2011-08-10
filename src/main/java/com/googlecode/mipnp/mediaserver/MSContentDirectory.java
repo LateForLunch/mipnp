@@ -66,7 +66,7 @@ public class MSContentDirectory extends ServiceImpl {
     @WebMethod(operationName="Browse")
     public void browse(
             @WebParam(name="ContainerID")
-            String objectId,
+            String containerId,
             @WebParam(name="BrowseFlag")
             String browseFlag,
             @WebParam(name="Filter")
@@ -87,6 +87,76 @@ public class MSContentDirectory extends ServiceImpl {
             Holder<Integer> updateId) {
 
         System.out.println("TODO: implement MSContentDirectory.browse"); // TODO
+
+        CdsObject obj = library.getChildById(containerId);
+        if (obj == null) {
+            // TODO: Someone is asking an object we don't have:
+            // return the root object (for now)
+            obj = library.getRootObject();
+        }
+        if (!obj.isContainer()) {
+            return; // TODO: SOAP fault
+        }
+        result.value = "<DIDL-Lite ";
+        result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
+        result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
+        result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
+
+        if (browseFlag.equals("BrowseMetadata")) {
+            result.value += "<container id=\"" + obj.getId();
+//            CdsObject parent = obj.getParent();
+//            String parentId = "-1";
+//            if (parent != null) {
+//                parentId = parent.getId();
+//            }
+            String parentId = containerId; // TODO: this is a temp fix
+            result.value += "\" parentID=\"" + parentId;
+            result.value += "\" restricted=\"true\" searchable=\"true\">";
+            result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
+            result.value += "<dc:title>" + obj.getTitle() + "</dc:title>";
+            result.value += "</container>";
+            numberReturned.value = 1;
+            totalMatches.value = 1;
+        } else if (browseFlag.equals("BrowseDirectChildren")) {
+            for (CdsObject child : obj.getChildren()) {
+                if (child.isContainer()) {
+                    result.value += "<container childCount=\"";
+                    result.value += child.getNumberOfChildren() + "\"";
+                } else {
+                    result.value += "<item";
+                }
+                result.value += " id=\"" + child.getId();
+//                CdsObject parent = child.getParent();
+//                String parentId = "-1";
+//                if (parent != null) {
+//                    parentId = parent.getId();
+//                }
+                String parentId = containerId; // TODO: this is a temp fix
+                result.value += "\" parentID=\"" + parentId;
+                result.value += "\" restricted=\"true\">";
+                result.value += "<upnp:class>" + child.getUpnpClass() + "</upnp:class>";
+                result.value += "<dc:title>" + child.getTitle() + "</dc:title>";
+                if (child.isContainer()) {
+                    result.value += "</container>";
+                } else {
+                    if (filter.contains("res") || filter.equals("*")) {
+                        Resource res = child.getResource();
+                        if (res != null) {
+                            result.value += "<res protocolInfo=\"http-get:*:";
+                            result.value += res.getMimeType() + ":*\">";
+                            result.value += mediaLocation.toString() + "/" + child.getId();
+                            result.value += "</res>";
+                        }
+                    }
+                    result.value += "</item>";
+                }
+            }
+            numberReturned.value = obj.getNumberOfChildren();
+            totalMatches.value = obj.getNumberOfChildren();
+        }
+
+        result.value += "</DIDL-Lite>";
+        updateId.value = 0;
     }
 
     @WebMethod(operationName="Search")
@@ -112,20 +182,6 @@ public class MSContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
-//        System.out.println("TODO: implement MSContentDirectory.search"); // TODO
-//        result.value = "<DIDL-Lite ";
-//        result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
-//        result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
-//        result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
-//        result.value += "<item id=\"100001\" parentID=\"100000\" restricted=\"true\">";
-//        result.value += "<upnp:class>object.item.audioItem.musicTrack</upnp:class>";
-//        result.value += "<dc:title>03 - Louder</dc:title>";
-//        result.value += "</item>";
-//        result.value += "</DIDL-Lite>";
-//        numberReturned.value = 1;
-//        totalMatches.value = 1;
-//        updateId.value = 0;
-
         SearchCriteria sc = new SearchCriteria(searchCriteria);
 //        Filter f = new Filter(filter);
         List<CdsObject> searchResult = library.search(sc);
@@ -136,15 +192,13 @@ public class MSContentDirectory extends ServiceImpl {
         for (CdsObject obj : searchResult) {
             result.value += "<item id=\"" + obj.getId();
             CdsObject parent = obj.getParent();
-            int parentId = -1;
+            String parentId = "-1";
             if (parent != null) {
                 parentId = parent.getId();
             }
             result.value += "\" parentID=\"" + parentId + "\" restricted=\"true\">";
             result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
-            String title = obj.getTitle();
-            title = title.substring(0, title.lastIndexOf('.'));
-            result.value += "<dc:title>" + title + "</dc:title>";
+            result.value += "<dc:title>" + obj.getTitle() + "</dc:title>";
             if (filter.contains("res")) {
                 Resource res = obj.getResource();
                 if (res != null) {

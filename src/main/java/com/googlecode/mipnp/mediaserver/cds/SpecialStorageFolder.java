@@ -19,30 +19,32 @@
  */
 
 /*
- * MusicTrack.java
- * Created on Jul 28, 2011, 1:39:25 PM
+ * SpecialContainer.java
+ * Created on Aug 9, 2011, 4:27:32 PM
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
-import java.io.File;
+import java.util.List;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class MusicTrack extends CdsObject {
+public abstract class SpecialStorageFolder extends StorageFolder {
 
-    private static final String UPNP_CLASS = "object.item.audioItem.musicTrack";
-
-    public MusicTrack(File musicTrack, String mimeType) {
-        super(UPNP_CLASS);
-        if (musicTrack == null || !musicTrack.isFile()) {
-            throw new IllegalArgumentException(
-                    "Can't create a MusicTrack without a file.");
-        }
-        String title = musicTrack.getName();
-        title = title.substring(0, title.lastIndexOf('.'));
-        setTitle(title);
-        setResource(new FileResource(musicTrack, mimeType));
+    public SpecialStorageFolder(String title) {
+        super(title);
     }
+
+    @Override
+    public void addChild(CdsObject child) {
+    }
+
+    @Override
+    public CdsObject getChildById(String id) {
+        return null;
+    }
+
+    @Override
+    public abstract List<CdsObject> getChildren();
 }
