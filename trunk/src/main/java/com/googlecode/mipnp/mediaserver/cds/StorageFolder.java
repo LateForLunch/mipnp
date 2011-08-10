@@ -32,18 +32,23 @@ import java.io.File;
  */
 public class StorageFolder extends CdsObject {
 
-    private File directory;
+    private static final String UPNP_CLASS = "object.container.storageFolder";
 
     public StorageFolder(File directory) {
-        super("object.container.storageFolder", directory.getName());
+        super(UPNP_CLASS);
         if (directory == null || !directory.isDirectory()) {
             throw new IllegalArgumentException(
                     "Can't create a StorageFolder without a directory.");
         }
-        this.directory = directory;
+        setTitle(directory.getName());
         File[] list = directory.listFiles();
         for (int i = 0; i < list.length; i++) {
             addChild(CdsObjectFactory.createObject(list[i]));
         }
+    }
+
+    public StorageFolder(String title) {
+        super(UPNP_CLASS);
+        setTitle(title);
     }
 }

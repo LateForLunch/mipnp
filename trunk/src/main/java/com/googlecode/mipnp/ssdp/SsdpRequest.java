@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010, 2011  Jochem Van denbussche, Tijl Van Assche
+ * Copyright (C) 2010, 2011  Jochem Van denbussche
  *
  * This file is part of MiPnP.
  *
@@ -33,7 +33,6 @@ import java.io.OutputStream;
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
- * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
 public class SsdpRequest extends HttpRequest implements SsdpConstants {
 

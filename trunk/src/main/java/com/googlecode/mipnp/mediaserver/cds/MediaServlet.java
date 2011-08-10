@@ -49,16 +49,8 @@ public class MediaServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
-        String strId = requestURI.substring(requestURI.lastIndexOf('/') + 1);
-        if (strId == null || strId.equals("")) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        int id = -1;
-        try {
-            id = Integer.parseInt(strId);
-        } catch (NumberFormatException ex) {
+        String id = requestURI.substring(requestURI.lastIndexOf('/') + 1);
+        if (id == null || id.equals("")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }

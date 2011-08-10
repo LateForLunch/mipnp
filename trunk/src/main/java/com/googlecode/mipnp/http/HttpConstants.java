@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010, 2011  Jochem Van denbussche, Tijl Van Assche
+ * Copyright (C) 2010, 2011  Jochem Van denbussche
  *
  * This file is part of MiPnP.
  *
@@ -17,6 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * HttpConstants.java
+ * Created on Oct 24, 2010, 10:54:07 AM
+ */
 package com.googlecode.mipnp.http;
 
 import java.nio.charset.Charset;
@@ -24,15 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This interface provides constant useful for HTTP.<br/>
- * <br />
- * See RFC 2616: http://tools.ietf.org/html/rfc2616.html
- * <br />
- * <br />
- * Created on Oct 24, 2010, 10:54:07 AM
- * 
+ * This interface provides constants useful for HTTP.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
- * @author Tijl Van Assche <tijlvanassche@gmail.com>
  */
 public interface HttpConstants {
 
@@ -46,7 +44,6 @@ public interface HttpConstants {
     public static final byte[] CRLFb = {CRb, LFb};
     public static final char CR = '\r';
     public static final char LF = '\n';
-    public static final char HT = '\t';
     public static final String CRLF = "" + CR + LF;
 
     /*

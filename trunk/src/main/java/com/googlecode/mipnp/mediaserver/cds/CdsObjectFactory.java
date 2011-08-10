@@ -36,7 +36,14 @@ public class CdsObjectFactory {
     private static final MimetypesFileTypeMap MIMETYPES = new MimetypesFileTypeMap();
 
     static {
+        MIMETYPES.addMimeTypes("audio/x-ms-wma wma WMA");
         MIMETYPES.addMimeTypes("audio/mpeg mp3 MP3");
+        MIMETYPES.addMimeTypes("audio/wav wav WAV");
+        MIMETYPES.addMimeTypes("image/jpeg jpg JPG jpeg JPEG");
+        MIMETYPES.addMimeTypes("image/png png PNG");
+        MIMETYPES.addMimeTypes("video/x-ms-wmv wmv WMV");
+        MIMETYPES.addMimeTypes("video/mpeg mpg MPG mpeg MPEG");
+        MIMETYPES.addMimeTypes("video/avi avi AVI");
     }
 
     public static CdsObject createObject(File file) {
@@ -49,6 +56,8 @@ public class CdsObjectFactory {
             String mimeType = MIMETYPES.getContentType(file);
             if (mimeType.startsWith("audio")) {
                 return new MusicTrack(file, mimeType);
+            } else if (mimeType.startsWith("image")) {
+                return new Photo(file, mimeType);
             } else {
                 return null;
             }

@@ -38,9 +38,14 @@ public class MediaLibrary {
 
     public MediaLibrary(File rootDirectory) {
         this.root = new StorageFolder(rootDirectory);
+        root.setId("0");
     }
 
-    public CdsObject getChildById(int id) {
+    public CdsObject getRootObject() {
+        return root;
+    }
+
+    public CdsObject getChildById(String id) {
         return root.getChildById(id);
     }
 
