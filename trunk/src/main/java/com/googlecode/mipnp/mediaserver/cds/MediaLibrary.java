@@ -34,23 +34,25 @@ import java.util.List;
  */
 public class MediaLibrary {
 
-    private CdsObject root;
+//    private CdsObject root;
 
-    public MediaLibrary(File rootDirectory) {
-        this.root = new StorageFolder(rootDirectory);
-        root.setId("0");
+    public MediaLibrary(File mediaDirectory) {
+//        this.root = new StorageFolder(rootDirectory);
+//        root.setId("0");
     }
 
-    public CdsObject getRootObject() {
-        return root;
-    }
+//    public CdsObject getRootObject() {
+//        return root;
+//    }
 
-    public CdsObject getChildById(String id) {
-        return root.getChildById(id);
+    public CdsObject getObjectById(String id) {
+//        return root.getChildById(id);
+        return null;
     }
 
     public List<CdsObject> search(SearchCriteria sc) {
-        return search(sc, root);
+//        return search(sc, root);
+        return null;
     }
 
     private List<CdsObject> search(SearchCriteria sc, CdsObject obj) {

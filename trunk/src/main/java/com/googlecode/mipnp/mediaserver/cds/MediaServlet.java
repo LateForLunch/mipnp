@@ -55,7 +55,7 @@ public class MediaServlet extends HttpServlet {
             return;
         }
 
-        CdsObject obj = library.getChildById(id);
+        CdsObject obj = library.getObjectById(id);
         if (obj == null || obj.isContainer()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
