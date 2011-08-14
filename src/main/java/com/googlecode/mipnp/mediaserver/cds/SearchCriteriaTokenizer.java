@@ -30,11 +30,11 @@ import java.util.Enumeration;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class SearchCriteriaTokenizer implements Enumeration<Token> {
+class SearchCriteriaTokenizer implements Enumeration<SearchCriteriaToken> {
 
     private String str;
     private int index;
-    private Token nextElement;
+    private SearchCriteriaToken nextElement;
 
     public SearchCriteriaTokenizer(String str) {
         this.str = str.trim();
@@ -46,8 +46,8 @@ class SearchCriteriaTokenizer implements Enumeration<Token> {
         return (nextElement != null);
     }
 
-    public Token nextElement() {
-        Token token = nextElement;
+    public SearchCriteriaToken nextElement() {
+        SearchCriteriaToken token = nextElement;
         setNextToken();
         return token;
     }
@@ -65,7 +65,7 @@ class SearchCriteriaTokenizer implements Enumeration<Token> {
         while (str.substring(index).matches("^\\s+\\S+")) {
             index++;
         }
-        this.nextElement = new Token(token.trim());
+        this.nextElement = new SearchCriteriaToken(token.trim());
     }
 
     private boolean isValidToken(String str) {

@@ -88,11 +88,11 @@ public class MSContentDirectory extends ServiceImpl {
 
         System.out.println("TODO: implement MSContentDirectory.browse"); // TODO
 
-        CdsObject obj = library.getChildById(containerId);
+        CdsObject obj = library.getObjectById(containerId);
         if (obj == null) {
             // TODO: Someone is asking an object we don't have:
             // return the root object (for now)
-            obj = library.getRootObject();
+            obj = library.getObjectById("0");
         }
         if (!obj.isContainer()) {
             return; // TODO: SOAP fault

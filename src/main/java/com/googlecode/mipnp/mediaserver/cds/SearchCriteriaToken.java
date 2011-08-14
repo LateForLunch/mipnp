@@ -19,7 +19,7 @@
  */
 
 /*
- * Token.java
+ * SearchCriteriaToken.java
  * Created on Aug 6, 2011, 5:15:46 PM
  */
 package com.googlecode.mipnp.mediaserver.cds;
@@ -28,7 +28,7 @@ package com.googlecode.mipnp.mediaserver.cds;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class Token {
+class SearchCriteriaToken {
 
     private static final String OP_AND = "and";
     private static final String OP_OR = "or";
@@ -48,7 +48,7 @@ class Token {
 
     private String token;
 
-    public Token(String token) {
+    public SearchCriteriaToken(String token) {
         this.token = token;
     }
 
@@ -136,7 +136,7 @@ class Token {
         return Boolean.parseBoolean(asString());
     }
 
-    public boolean evaluateOperator(Token arg1, Token arg2) {
+    public boolean evaluateOperator(SearchCriteriaToken arg1, SearchCriteriaToken arg2) {
         if (!isOperator()) {
             return false;
         }

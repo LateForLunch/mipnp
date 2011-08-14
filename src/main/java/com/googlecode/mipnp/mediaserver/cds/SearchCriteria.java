@@ -33,7 +33,7 @@ import java.util.LinkedList;
 public class SearchCriteria {
 
     private boolean asterix;
-    private LinkedList<Token> rpn;
+    private LinkedList<SearchCriteriaToken> rpn;
 
     public SearchCriteria(String searchCriteria) {
         searchCriteria = searchCriteria.trim();
@@ -47,24 +47,21 @@ public class SearchCriteria {
         if (asterix) {
             return true;
         }
-//        if (obj.isItem()) {
-//            return true;
-//        }
-        LinkedList<Token> input  = new LinkedList<Token>(rpn);
-        LinkedList<Token> stack = new LinkedList<Token>();
+
+        LinkedList<SearchCriteriaToken> input  = new LinkedList<SearchCriteriaToken>(rpn);
+        LinkedList<SearchCriteriaToken> stack = new LinkedList<SearchCriteriaToken>();
 
         while (input.size() > 0) {
-            Token token = input.poll();
+            SearchCriteriaToken token = input.poll();
             if (token.isOperator()) {
-                Token arg2 = stack.pop();
-                Token arg1 = stack.pop();
+                SearchCriteriaToken arg2 = stack.pop();
+                SearchCriteriaToken arg1 = stack.pop();
                 arg1 = replaceValue(arg1, obj);
                 arg2 = replaceValue(arg2, obj);
-                Token result = new Token(
+                SearchCriteriaToken result = new SearchCriteriaToken(
                         String.valueOf(token.evaluateOperator(arg1, arg2)));
                 stack.push(result);
             } else {
-                // Token is a value
                 stack.push(token);
             }
         }
@@ -73,22 +70,16 @@ public class SearchCriteria {
     }
 
     private void parseSearchCriteria(String searchCriteria) {
-        LinkedList<Token> queue = new LinkedList<Token>();
-        LinkedList<Token> stack = new LinkedList<Token>();
-//        String split[] = searchCriteriaStr.split("\\s+"); // TODO: create own tokenizer
+        LinkedList<SearchCriteriaToken> queue = new LinkedList<SearchCriteriaToken>();
+        LinkedList<SearchCriteriaToken> stack = new LinkedList<SearchCriteriaToken>();
         SearchCriteriaTokenizer tokenizer = new SearchCriteriaTokenizer(searchCriteria);
 
-        System.out.println("Parsing: " + searchCriteria);
-//        for (int i = 0; i < split.length; i++) {
         while (tokenizer.hasMoreElements()) {
-            Token token = tokenizer.nextElement();
-            System.out.print("Token: " + token.getToken() + " is ");
+            SearchCriteriaToken token = tokenizer.nextElement();
             if (token.isValue()) {
-                System.out.println("a value");
                 queue.offer(token);
             } else if (token.isOperator()) {
-                System.out.println("an operator");
-                Token peek = stack.peek();
+                SearchCriteriaToken peek = stack.peek();
                 while (peek != null &&
                         peek.isOperator() &&
                         token.getPrecedence() <= peek.getPrecedence()) {
@@ -97,11 +88,9 @@ public class SearchCriteria {
                 }
                 stack.push(token);
             } else if (token.isLeftParenthesis()) {
-                System.out.println("a left parenthesis");
                 stack.push(token);
             } else if (token.isRightParenthesis()) {
-                System.out.println("a right parenthesis");
-                Token pop = stack.pop();
+                SearchCriteriaToken pop = stack.pop();
                 while (!pop.isLeftParenthesis()) {
                     queue.offer(pop);
                     pop = stack.pop();
@@ -116,9 +105,9 @@ public class SearchCriteria {
         this.rpn = queue;
     }
 
-    private Token replaceValue(Token arg, CdsObject obj) {
+    private SearchCriteriaToken replaceValue(SearchCriteriaToken arg, CdsObject obj) {
         if (arg.getToken().equals("upnp:class")) {
-            return new Token("\"" + obj.getUpnpClass() + "\"");
+            return new SearchCriteriaToken("\"" + obj.getUpnpClass() + "\"");
         }
         // TODO: add more properties
         return arg;
