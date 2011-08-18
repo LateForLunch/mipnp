@@ -31,10 +31,7 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public abstract class CdsObject {
-
-    private static final String CLASS_ITEM = "object.item";
-    private static final String CLASS_CONTAINER = "object.container";
+public class CdsObject implements CdsConstants {
 
     private static int nextId = 1000;
 
@@ -51,24 +48,28 @@ public abstract class CdsObject {
     }
 
     public CdsObject(String upnpClass, String id) {
-        this(upnpClass, id, "");
+        this(upnpClass, id, null);
     }
 
     public CdsObject(String upnpClass, String id, String title) {
-        if (!upnpClass.startsWith(CLASS_ITEM) && !upnpClass.startsWith(CLASS_CONTAINER)) {
+        if (!upnpClass.startsWith(UPNP_CLASS_ITEM) &&
+                !upnpClass.startsWith(UPNP_CLASS_CONTAINER)) {
+
             throw new IllegalArgumentException(
                     "UPnP Class must start with \"" +
-                    CLASS_ITEM + "\" or \"" + CLASS_CONTAINER + "\".");
+                    UPNP_CLASS_ITEM + "\" or \"" +
+                    UPNP_CLASS_CONTAINER + "\".");
         }
+
+        this.upnpClass = upnpClass;
         if (id == null) {
             this.id = String.valueOf(nextId);
             nextId++;
         } else {
             this.id = id;
         }
-        this.upnpClass = upnpClass;
         this.title = title;
-        if (upnpClass.startsWith(CLASS_ITEM)) {
+        if (upnpClass.startsWith(UPNP_CLASS_ITEM)) {
             this.container = false;
         } else {
             this.container = true;
@@ -84,9 +85,9 @@ public abstract class CdsObject {
         return id;
     }
 
-    protected void setId(String id) {
-        this.id = id;
-    }
+//    protected void setId(String id) {
+//        this.id = id;
+//    }
 
     public CdsObject getParent() {
         return parent;
@@ -100,7 +101,7 @@ public abstract class CdsObject {
         return title;
     }
 
-    protected void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -119,7 +120,7 @@ public abstract class CdsObject {
         }
     }
 
-    public CdsObject getChildById(String id) {
+    public CdsObject getObjectById(String id) {
         if (isContainer()) {
             for (CdsObject child : getChildren()) {
                 if (child.getId().equals(id)) {
@@ -128,7 +129,7 @@ public abstract class CdsObject {
             }
             CdsObject result = null;
             for (CdsObject child : getChildren()) {
-                result = child.getChildById(id);
+                result = child.getObjectById(id);
                 if (result != null) {
                     return result;
                 }
@@ -155,5 +156,21 @@ public abstract class CdsObject {
 
     public void setResource(Resource resource) {
         this.resource = resource;
+    }
+
+    public boolean contains(String upnpClass) {
+        if (isItem()) {
+            return false;
+        }
+        for (CdsObject child : getChildren()) {
+            if (child.isContainer()) {
+                if (child.contains(upnpClass)) {
+                    return true;
+                }
+            } else if (child.getUpnpClass().startsWith(upnpClass)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

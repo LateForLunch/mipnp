@@ -31,6 +31,7 @@ import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import com.googlecode.mipnp.upnp.ServiceImpl;
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -86,17 +87,15 @@ public class MSContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
-        System.out.println("TODO: implement MSContentDirectory.browse"); // TODO
-
         CdsObject obj = library.getObjectById(containerId);
         if (obj == null) {
-            // TODO: Someone is asking an object we don't have:
-            // return the root object (for now)
-            obj = library.getObjectById("0");
+            // TODO: Someone is asking an object we don't have
+            return;
         }
         if (!obj.isContainer()) {
             return; // TODO: SOAP fault
         }
+
         result.value = "<DIDL-Lite ";
         result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
         result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
@@ -104,12 +103,12 @@ public class MSContentDirectory extends ServiceImpl {
 
         if (browseFlag.equals("BrowseMetadata")) {
             result.value += "<container id=\"" + obj.getId();
-//            CdsObject parent = obj.getParent();
-//            String parentId = "-1";
-//            if (parent != null) {
-//                parentId = parent.getId();
-//            }
-            String parentId = containerId; // TODO: this is a temp fix
+            CdsObject parent = obj.getParent();
+            String parentId = "-1";
+            if (parent != null) {
+                parentId = parent.getId();
+            }
+//            String parentId = containerId; // TODO: this is a temp fix
             result.value += "\" parentID=\"" + parentId;
             result.value += "\" restricted=\"true\" searchable=\"true\">";
             result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
@@ -126,12 +125,12 @@ public class MSContentDirectory extends ServiceImpl {
                     result.value += "<item";
                 }
                 result.value += " id=\"" + child.getId();
-//                CdsObject parent = child.getParent();
-//                String parentId = "-1";
-//                if (parent != null) {
-//                    parentId = parent.getId();
-//                }
-                String parentId = containerId; // TODO: this is a temp fix
+                CdsObject parent = child.getParent();
+                String parentId = "-1";
+                if (parent != null) {
+                    parentId = parent.getId();
+                }
+//                String parentId = containerId; // TODO: this is a temp fix
                 result.value += "\" parentID=\"" + parentId;
                 result.value += "\" restricted=\"true\">";
                 result.value += "<upnp:class>" + child.getUpnpClass() + "</upnp:class>";
@@ -153,6 +152,9 @@ public class MSContentDirectory extends ServiceImpl {
             }
             numberReturned.value = obj.getNumberOfChildren();
             totalMatches.value = obj.getNumberOfChildren();
+        } else {
+            // TODO: SOAP fault
+            return;
         }
 
         result.value += "</DIDL-Lite>";
@@ -182,13 +184,21 @@ public class MSContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
+        // TODO: this is a temp fix
+        List<String> musicContainers = Arrays.asList(
+                "4", "5", "6", "7", "F",
+                "100", "101", "102", "103", "104", "105", "106", "107", "108");
+        if (musicContainers.contains(containerId)) {
+            containerId = "14";
+        }
+
         SearchCriteria sc = new SearchCriteria(searchCriteria);
-//        Filter f = new Filter(filter);
         List<CdsObject> searchResult = library.search(sc);
         result.value = "<DIDL-Lite ";
         result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
         result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
         result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
+
         for (CdsObject obj : searchResult) {
             result.value += "<item id=\"" + obj.getId();
             CdsObject parent = obj.getParent();

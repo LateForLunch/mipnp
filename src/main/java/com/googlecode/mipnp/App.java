@@ -60,7 +60,9 @@ public class App {
         try {
             InetAddress localHost = InetTools.getLocalHost();
             UUID uuid = getUuid();
-            MediaLibrary library = new MediaLibrary(new File("/home/jochem/ushare/"));
+            MediaLibrary library = new MediaLibrary();
+            library.addMedia(new File("/home/jochem/ushare/"));
+            System.out.println(library.toString());
             String mediaServletLocation = "/cds";
             MediaServer mediaServer = new MediaServer(uuid, library);
             server = new UpnpServer(mediaServer, localHost);

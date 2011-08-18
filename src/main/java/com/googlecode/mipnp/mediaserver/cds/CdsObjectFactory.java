@@ -31,7 +31,7 @@ import javax.activation.MimetypesFileTypeMap;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class CdsObjectFactory {
+public class CdsObjectFactory implements CdsConstants {
 
     private static final MimetypesFileTypeMap MIMETYPES = new MimetypesFileTypeMap();
 
@@ -46,21 +46,71 @@ public class CdsObjectFactory {
         MIMETYPES.addMimeTypes("video/avi avi AVI");
     }
 
-    public static CdsObject createObject(File file) {
+    public CdsObject createObject(File file) {
         if (file == null) {
             return null;
         }
         if (file.isDirectory()) {
-            return new StorageFolder(file);
+            CdsObject obj = createStorageFolder();
+            obj.setTitle(file.getName());
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                obj.addChild(createObject(files[i]));
+            }
+            return obj;
         } else {
             String mimeType = MIMETYPES.getContentType(file);
             if (mimeType.startsWith("audio")) {
-                return new MusicTrack(file, mimeType);
+                return createMusicTrack(file, mimeType);
+            } else if (mimeType.startsWith("video")) {
+                return createMovie(file, mimeType);
             } else if (mimeType.startsWith("image")) {
-                return new Photo(file, mimeType);
+                return createPhoto(file, mimeType);
             } else {
                 return null;
             }
         }
+    }
+
+    public CdsObject createStorageFolder() {
+        return new CdsObject(UPNP_CLASS_STORAGE_FOLDER);
+    }
+
+    public CdsObject createStorageFolder(String id) {
+        return new CdsObject(UPNP_CLASS_STORAGE_FOLDER, id);
+    }
+
+    public CdsObject createStorageFolder(String id, String title) {
+        return new CdsObject(UPNP_CLASS_STORAGE_FOLDER, id, title);
+    }
+
+    public CdsObject createMusicTrack(File file, String mimeType) {
+        CdsObject obj = new CdsObject(UPNP_CLASS_MUSIC_TRACK);
+        String title = file.getName();
+        title = title.substring(0, title.lastIndexOf('.'));
+        obj.setTitle(title);
+        FileResource res = new FileResource(file, mimeType);
+        obj.setResource(res);
+        return obj;
+    }
+
+    public CdsObject createPhoto(File file, String mimeType) {
+        CdsObject obj = new CdsObject(UPNP_CLASS_PHOTO);
+        String title = file.getName();
+        title = title.substring(0, title.lastIndexOf('.'));
+        obj.setTitle(title);
+        FileResource res = new FileResource(file, mimeType);
+        obj.setResource(res);
+        return obj;
+    }
+
+    public CdsObject createMovie(File file, String mimeType) {
+        CdsObject obj = new CdsObject(UPNP_CLASS_MOVIE);
+        String title = file.getName();
+        title = title.substring(0, title.lastIndexOf('.'));
+        obj.setTitle(title);
+        FileResource res = new FileResource(file, mimeType);
+        obj.setResource(res);
+        return obj;
     }
 }
