@@ -54,7 +54,6 @@ public class MediaReceiverRegistrar extends ServiceImpl {
             @WebParam(name="Result", mode=WebParam.Mode.OUT)
             Holder<Integer> result) {
 
-        System.out.println("TODO: implement MediaReceiverRegistrar.isAuthorized"); // TODO
         result.value = 1;
     }
 
@@ -75,7 +74,6 @@ public class MediaReceiverRegistrar extends ServiceImpl {
             @WebParam(name="Result", mode=WebParam.Mode.OUT)
             Holder<Integer> result) {
 
-        System.out.println("TODO: implement MediaReceiverRegistrar.isValidated"); // TODO
         result.value = 1;
     }
 

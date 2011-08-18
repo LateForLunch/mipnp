@@ -26,7 +26,6 @@ package com.googlecode.mipnp.mediaserver.cds;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
