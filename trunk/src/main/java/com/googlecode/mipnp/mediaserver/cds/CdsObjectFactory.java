@@ -46,13 +46,14 @@ public class CdsObjectFactory implements CdsConstants {
         MIMETYPES.addMimeTypes("video/avi avi AVI");
     }
 
-    public CdsObject createObject(File file) {
+    public static CdsObject createObject(File file) {
         if (file == null) {
             return null;
         }
         if (file.isDirectory()) {
             CdsObject obj = createStorageFolder();
             obj.setTitle(file.getName());
+            obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
             File[] files = file.listFiles();
             for (int i = 0; i < files.length; i++) {
                 obj.addChild(createObject(files[i]));
@@ -72,43 +73,46 @@ public class CdsObjectFactory implements CdsConstants {
         }
     }
 
-    public CdsObject createStorageFolder() {
+    public static CdsObject createStorageFolder() {
         return new CdsObject(UPNP_CLASS_STORAGE_FOLDER);
     }
 
-    public CdsObject createStorageFolder(String id) {
+    public static CdsObject createStorageFolder(String id) {
         return new CdsObject(UPNP_CLASS_STORAGE_FOLDER, id);
     }
 
-    public CdsObject createStorageFolder(String id, String title) {
+    public static CdsObject createStorageFolder(String id, String title) {
         return new CdsObject(UPNP_CLASS_STORAGE_FOLDER, id, title);
     }
 
-    public CdsObject createMusicTrack(File file, String mimeType) {
+    public static CdsObject createMusicTrack(File file, String mimeType) {
         CdsObject obj = new CdsObject(UPNP_CLASS_MUSIC_TRACK);
         String title = file.getName();
         title = title.substring(0, title.lastIndexOf('.'));
         obj.setTitle(title);
+        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
         FileResource res = new FileResource(file, mimeType);
         obj.setResource(res);
         return obj;
     }
 
-    public CdsObject createPhoto(File file, String mimeType) {
+    public static CdsObject createPhoto(File file, String mimeType) {
         CdsObject obj = new CdsObject(UPNP_CLASS_PHOTO);
         String title = file.getName();
         title = title.substring(0, title.lastIndexOf('.'));
         obj.setTitle(title);
+        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
         FileResource res = new FileResource(file, mimeType);
         obj.setResource(res);
         return obj;
     }
 
-    public CdsObject createMovie(File file, String mimeType) {
+    public static CdsObject createMovie(File file, String mimeType) {
         CdsObject obj = new CdsObject(UPNP_CLASS_MOVIE);
         String title = file.getName();
         title = title.substring(0, title.lastIndexOf('.'));
         obj.setTitle(title);
+        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
         FileResource res = new FileResource(file, mimeType);
         obj.setResource(res);
         return obj;

@@ -42,6 +42,7 @@ public interface CdsConstants {
     public static final String UPNP_CLASS_MOVIE = UPNP_CLASS_VIDEO_ITEM + ".movie";
 
     public static final String PROPERTY_ID = "id";
+    public static final String PROPERTY_FOLDER = "folder";
     public static final String PROPERTY_TITLE = "title";
     public static final String PROPERTY_CREATOR = "creator";
     public static final String PROPERTY_CLASS = "class";

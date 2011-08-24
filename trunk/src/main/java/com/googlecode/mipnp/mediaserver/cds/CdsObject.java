@@ -25,13 +25,16 @@
 package com.googlecode.mipnp.mediaserver.cds;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class CdsObject implements CdsConstants {
+public class CdsObject implements CdsConstants, Iterable<CdsObject> {
 
     private static int nextId = 1000;
 
@@ -42,6 +45,7 @@ public class CdsObject implements CdsConstants {
     private boolean container;
     private List<CdsObject> children;
     private Resource resource;
+    private Map<String, String> properties;
 
     public CdsObject(String upnpClass) {
         this(upnpClass, null);
@@ -69,6 +73,7 @@ public class CdsObject implements CdsConstants {
             this.id = id;
         }
         this.title = title;
+        this.properties = new HashMap<String, String>();
         if (upnpClass.startsWith(UPNP_CLASS_ITEM)) {
             this.container = false;
         } else {
@@ -84,10 +89,6 @@ public class CdsObject implements CdsConstants {
     public String getId() {
         return id;
     }
-
-//    protected void setId(String id) {
-//        this.id = id;
-//    }
 
     public CdsObject getParent() {
         return parent;
@@ -113,10 +114,28 @@ public class CdsObject implements CdsConstants {
         return !isContainer();
     }
 
+    public String getProperty(String property) {
+        return properties.get(property);
+    }
+
+    public void setProperty(String property, String value) {
+        properties.put(property, value);
+    }
+
+    public boolean containsProperty(String property) {
+        return properties.containsKey(property);
+    }
+
     public void addChild(CdsObject child) {
+        addChild(child, true);
+    }
+
+    public void addChild(CdsObject child, boolean setParent) {
         if (isContainer() && child != null) {
-            child.setParent(this);
             children.add(child);
+            if (setParent) {
+                child.setParent(this);
+            }
         }
     }
 
@@ -158,13 +177,13 @@ public class CdsObject implements CdsConstants {
         this.resource = resource;
     }
 
-    public boolean contains(String upnpClass) {
+    public boolean containsUpnpClass(String upnpClass) {
         if (isItem()) {
             return false;
         }
         for (CdsObject child : getChildren()) {
             if (child.isContainer()) {
-                if (child.contains(upnpClass)) {
+                if (child.containsUpnpClass(upnpClass)) {
                     return true;
                 }
             } else if (child.getUpnpClass().startsWith(upnpClass)) {
@@ -172,5 +191,9 @@ public class CdsObject implements CdsConstants {
             }
         }
         return false;
+    }
+
+    public Iterator<CdsObject> iterator() {
+        return new CdsObjectIterator(this);
     }
 }

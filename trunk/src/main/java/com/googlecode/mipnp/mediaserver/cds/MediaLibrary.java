@@ -25,7 +25,6 @@
 package com.googlecode.mipnp.mediaserver.cds;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,40 +60,28 @@ public class MediaLibrary {
 //    public static final String ID_PICTURES_PLAYLISTS = "11";
     public static final String ID_PICTURES_FOLDERS = "16";
 
-    private CdsObjectFactory factory;
     private CdsObject root;
-    private CdsObject musicFolders;
-    private CdsObject videoFolders;
-    private CdsObject pictureFolders;
+    private CdsObject music;
+    private CdsObject video;
+    private CdsObject pictures;
 
     public MediaLibrary() {
-        this.factory = new CdsObjectFactory();
         init();
     }
 
-    public void addMedia(File mediaFile) throws FileNotFoundException {
-        CdsObject obj = null;
-        if (mediaFile.isDirectory()) {
-            obj = factory.createObject(mediaFile);
-        } else {
-            File parentFile = mediaFile.getParentFile();
-            obj = factory.createStorageFolder();
-            obj.setTitle(parentFile.getName());
-            obj.addChild(factory.createObject(mediaFile));
-        }
+    public void addMedia(File mediaFile) {
+        CdsObject obj = CdsObjectFactory.createObject(mediaFile);
 
         if (obj == null) {
-            return; // TODO: exception?
+            return; // TODO: throw exception
         }
 
-        if (obj.contains(CdsConstants.UPNP_CLASS_AUDIO_ITEM)) {
-            musicFolders.addChild(obj);
-        }
-        if (obj.contains(CdsConstants.UPNP_CLASS_VIDEO_ITEM)) {
-            videoFolders.addChild(obj);
-        }
-        if (obj.contains(CdsConstants.UPNP_CLASS_IMAGE_ITEM)) {
-            pictureFolders.addChild(obj);
+        if (obj.isContainer()) {
+            for (CdsObject item : obj) {
+                addItem(item);
+            }
+        } else {
+            addItem(obj);
         }
     }
 
@@ -119,32 +106,12 @@ public class MediaLibrary {
         return result;
     }
 
-    private void init() {
-        this.root = factory.createStorageFolder(ID_ROOT, "Root");
-
-        CdsObject music = factory.createStorageFolder(ID_MUSIC, "Music");
-        this.musicFolders = factory.createStorageFolder(ID_MUSIC_FOLDERS, "Folders");
-        music.addChild(musicFolders);
-
-        CdsObject video = factory.createStorageFolder(ID_VIDEO, "Video");
-        this.videoFolders = factory.createStorageFolder(ID_VIDEO_FOLDERS, "Folders");
-        video.addChild(videoFolders);
-
-        CdsObject pictures = factory.createStorageFolder(ID_PICTURES, "Pictures");
-        this.pictureFolders = factory.createStorageFolder(ID_PICTURES_FOLDERS, "Folders");
-        pictures.addChild(pictureFolders);
-
-        root.addChild(music);
-        root.addChild(video);
-        root.addChild(pictures);
-    }
-
     @Override
     public String toString() {
         return toString(root, 0);
     }
 
-    public String toString(CdsObject obj, int level) {
+    private String toString(CdsObject obj, int level) {
         String str = "";
         for (int i = 0; i < level; i++) {
             str += " ";
@@ -156,5 +123,44 @@ public class MediaLibrary {
             }
         }
         return str;
+    }
+
+    private void init() {
+        this.root = CdsObjectFactory.createStorageFolder(ID_ROOT, "Root");
+
+        this.music = CdsObjectFactory.createStorageFolder(ID_MUSIC, "Music");
+        CdsObject musicFolders = new GroupStorageFolder(
+                ID_MUSIC_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER);
+        music.addChild(musicFolders);
+
+        this.video = CdsObjectFactory.createStorageFolder(ID_VIDEO, "Video");
+        CdsObject videoFolders = new GroupStorageFolder(
+                ID_VIDEO_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER);
+        video.addChild(videoFolders);
+
+        this.pictures = CdsObjectFactory.createStorageFolder(ID_PICTURES, "Pictures");
+        CdsObject pictureFolders = new GroupStorageFolder(
+                ID_PICTURES_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER);
+        pictures.addChild(pictureFolders);
+
+        root.addChild(music);
+        root.addChild(video);
+        root.addChild(pictures);
+    }
+
+    private void addItem(CdsObject item) {
+        if (item.getUpnpClass().startsWith(CdsConstants.UPNP_CLASS_AUDIO_ITEM)) {
+            for (CdsObject group : music.getChildren()) {
+                group.addChild(item);
+            }
+        } else if (item.getUpnpClass().startsWith(CdsConstants.UPNP_CLASS_VIDEO_ITEM)) {
+            for (CdsObject group : video.getChildren()) {
+                group.addChild(item);
+            }
+        } else if (item.getUpnpClass().startsWith(CdsConstants.UPNP_CLASS_IMAGE_ITEM)) {
+            for (CdsObject group : pictures.getChildren()) {
+                group.addChild(item);
+            }
+        }
     }
 }
