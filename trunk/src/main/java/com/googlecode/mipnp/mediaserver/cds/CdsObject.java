@@ -44,7 +44,7 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
     private String title;
     private boolean container;
     private List<CdsObject> children;
-    private Resource resource;
+    private FileResource resource;
     private Map<String, String> properties;
 
     public CdsObject(String upnpClass) {
@@ -169,11 +169,11 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
         return children;
     }
 
-    public Resource getResource() {
+    public FileResource getResource() {
         return resource;
     }
 
-    public void setResource(Resource resource) {
+    public void setResource(FileResource resource) {
         this.resource = resource;
     }
 

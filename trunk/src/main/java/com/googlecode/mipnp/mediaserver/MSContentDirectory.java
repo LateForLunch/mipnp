@@ -25,8 +25,8 @@
 package com.googlecode.mipnp.mediaserver;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
+import com.googlecode.mipnp.mediaserver.cds.FileResource;
 import com.googlecode.mipnp.mediaserver.cds.MediaLibrary;
-import com.googlecode.mipnp.mediaserver.cds.Resource;
 import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import com.googlecode.mipnp.upnp.ServiceImpl;
 import java.io.File;
@@ -108,7 +108,6 @@ public class MSContentDirectory extends ServiceImpl {
             if (parent != null) {
                 parentId = parent.getId();
             }
-//            String parentId = containerId; // TODO: this is a temp fix
             result.value += "\" parentID=\"" + parentId;
             result.value += "\" restricted=\"true\" searchable=\"true\">";
             result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
@@ -117,7 +116,14 @@ public class MSContentDirectory extends ServiceImpl {
             numberReturned.value = 1;
             totalMatches.value = 1;
         } else if (browseFlag.equals("BrowseDirectChildren")) {
-            for (CdsObject child : obj.getChildren()) {
+            List<CdsObject> children = obj.getChildren();
+            CdsObject child = null;
+            int responseCount = children.size();
+            if (responseCount > requestedCount) {
+                responseCount = requestedCount;
+            }
+            for (int i = startingIndex; i < requestedCount; i++) {
+                child = children.get(i);
                 if (child.isContainer()) {
                     result.value += "<container childCount=\"";
                     result.value += child.getNumberOfChildren() + "\"";
@@ -130,7 +136,6 @@ public class MSContentDirectory extends ServiceImpl {
                 if (parent != null) {
                     parentId = parent.getId();
                 }
-//                String parentId = containerId; // TODO: this is a temp fix
                 result.value += "\" parentID=\"" + parentId;
                 result.value += "\" restricted=\"true\">";
                 result.value += "<upnp:class>" + child.getUpnpClass() + "</upnp:class>";
@@ -139,7 +144,7 @@ public class MSContentDirectory extends ServiceImpl {
                     result.value += "</container>";
                 } else {
                     if (filter.contains("res") || filter.equals("*")) {
-                        Resource res = child.getResource();
+                        FileResource res = child.getResource();
                         if (res != null) {
                             result.value += "<res protocolInfo=\"http-get:*:";
                             result.value += res.getMimeType() + ":*\">";
@@ -150,8 +155,8 @@ public class MSContentDirectory extends ServiceImpl {
                     result.value += "</item>";
                 }
             }
-            numberReturned.value = obj.getNumberOfChildren();
-            totalMatches.value = obj.getNumberOfChildren();
+            numberReturned.value = responseCount;
+            totalMatches.value = children.size();
         } else {
             // TODO: SOAP fault
             return;
@@ -199,7 +204,13 @@ public class MSContentDirectory extends ServiceImpl {
         result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
         result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
 
-        for (CdsObject obj : searchResult) {
+        CdsObject obj = null;
+        int responseCount = searchResult.size();
+        if (responseCount > requestedCount) {
+            responseCount = requestedCount;
+        }
+        for (int i = startingIndex; i < responseCount; i++) {
+            obj = searchResult.get(i);
             result.value += "<item id=\"" + obj.getId();
             CdsObject parent = obj.getParent();
             String parentId = "-1";
@@ -210,7 +221,7 @@ public class MSContentDirectory extends ServiceImpl {
             result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
             result.value += "<dc:title>" + obj.getTitle() + "</dc:title>";
             if (filter.contains("res")) {
-                Resource res = obj.getResource();
+                FileResource res = obj.getResource();
                 if (res != null) {
                     result.value += "<res protocolInfo=\"http-get:*:" + res.getMimeType() + ":*\">";
                     result.value += mediaLocation.toString() + "/" + obj.getId();
@@ -220,7 +231,7 @@ public class MSContentDirectory extends ServiceImpl {
             result.value += "</item>";
         }
         result.value += "</DIDL-Lite>";
-        numberReturned.value = searchResult.size();
+        numberReturned.value = responseCount;
         totalMatches.value = searchResult.size();
         updateId.value = 0;
     }
