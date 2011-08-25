@@ -35,7 +35,7 @@ import java.util.UUID;
  */
 public class MediaServer extends AbstractRootDevice {
 
-    private MSContentDirectory mscd;
+    private ContentDirectory cd;
 
     public MediaServer(UUID uuid, MediaLibrary library) {
         setMajorUpnpVersion(1);
@@ -55,14 +55,14 @@ public class MediaServer extends AbstractRootDevice {
         setUniversalProductCode(null);
         setPresentationUrl(null);
 
-        this.mscd = new MSContentDirectory(library);
-        addService(new ContentDirectory());
-        addService(mscd);
+        this.cd = new ContentDirectory(library);
+        addService(cd);
         addService(new ConnectionManager());
         addService(new MediaReceiverRegistrar());
+        addService(new MSContentDirectoryWrapper(cd));
     }
 
     public void setMediaLocation(URL location) {
-        mscd.setMediaLocation(location);
+        cd.setMediaLocation(location);
     }
 }

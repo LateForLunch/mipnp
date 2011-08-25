@@ -30,7 +30,7 @@ import java.util.LinkedList;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class SearchCriteria {
+public class SearchCriteria implements CdsConstants {
 
     private boolean asterix;
     private LinkedList<SearchCriteriaToken> rpn;
@@ -106,10 +106,12 @@ public class SearchCriteria {
     }
 
     private SearchCriteriaToken replaceValue(SearchCriteriaToken arg, CdsObject obj) {
-        if (arg.getToken().equals("upnp:class")) {
-            return new SearchCriteriaToken("\"" + obj.getUpnpClass() + "\"");
-        }
         // TODO: add more properties
+        if (arg.getToken().equals(PROPERTY_CLASS)) {
+            return new SearchCriteriaToken("\"" + obj.getUpnpClass() + "\"");
+        } else if (obj.containsProperty(arg.getToken())) {
+            return new SearchCriteriaToken("\"" + obj.getProperty(arg.getToken()) + "\"");
+        }
         return arg;
     }
 }

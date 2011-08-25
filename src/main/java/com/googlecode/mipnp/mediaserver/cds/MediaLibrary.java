@@ -40,7 +40,7 @@ public class MediaLibrary {
     public static final String ID_MUSIC_ALL = "4";
 //    public static final String ID_MUSIC_GENRE = "5";
 //    public static final String ID_MUSIC_ARTIST = "6";
-//    public static final String ID_MUSIC_ALBUM = "7";
+    public static final String ID_MUSIC_ALBUM = "7";
 //    public static final String ID_MUSIC_PLAYLISTS = "F";
     public static final String ID_MUSIC_FOLDERS = "14";
 
@@ -86,6 +86,9 @@ public class MediaLibrary {
     }
 
     public CdsObject getObjectById(String id) {
+        if (id.equals(ID_ROOT)) {
+            return root;
+        }
         return root.getObjectById(id);
     }
 
@@ -134,6 +137,9 @@ public class MediaLibrary {
         CdsObject musicFolders = new GroupStorageFolder(
                 ID_MUSIC_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER, true);
         music.addChild(musicFolders);
+        CdsObject musicAlbum = new GroupStorageFolder(
+                ID_MUSIC_ALBUM, "Album", CdsConstants.PROPERTY_ALBUM);
+        music.addChild(musicAlbum);
 
         this.video = CdsObjectFactory.createStorageFolder(ID_VIDEO, "Video");
         CdsObject videoFolders = new GroupStorageFolder(
