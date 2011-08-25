@@ -69,8 +69,8 @@ public class MediaServlet extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(res.getMimeType());
-        OutputStream out = response.getOutputStream();
         InputStream in = res.getInputStream();
+        OutputStream out = response.getOutputStream();
 
         byte[] buf = new byte[1024];
         int count = 0;

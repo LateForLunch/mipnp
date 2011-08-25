@@ -70,18 +70,12 @@ public class MediaLibrary {
     }
 
     public void addMedia(File mediaFile) {
-        CdsObject obj = CdsObjectFactory.createObject(mediaFile);
-
-        if (obj == null) {
-            return; // TODO: throw exception
-        }
-
-        if (obj.isContainer()) {
-            for (CdsObject item : obj) {
+        if (mediaFile.isDirectory()) {
+            for (CdsObject item : CdsObjectFactory.createItems(mediaFile)) {
                 addItem(item);
             }
         } else {
-            addItem(obj);
+            addItem(CdsObjectFactory.createItem(mediaFile));
         }
     }
 
@@ -116,7 +110,9 @@ public class MediaLibrary {
         for (int i = 0; i < level; i++) {
             str += " ";
         }
-        str += obj.getTitle() + "\n";
+        String parent = (obj.getParent() == null ? "-1" : obj.getParent().getId());
+        str += "(ID: " + obj.getId() + ", parentID: " + parent + ") " + obj.getTitle() + "\n";
+//        str += obj.getTitle() + "\n";
         if (obj.isContainer()) {
             for (CdsObject child : obj.getChildren()) {
                 str += toString(child, level + 1);
@@ -130,17 +126,17 @@ public class MediaLibrary {
 
         this.music = CdsObjectFactory.createStorageFolder(ID_MUSIC, "Music");
         CdsObject musicFolders = new GroupStorageFolder(
-                ID_MUSIC_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER);
+                ID_MUSIC_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER, true);
         music.addChild(musicFolders);
 
         this.video = CdsObjectFactory.createStorageFolder(ID_VIDEO, "Video");
         CdsObject videoFolders = new GroupStorageFolder(
-                ID_VIDEO_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER);
+                ID_VIDEO_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER, true);
         video.addChild(videoFolders);
 
         this.pictures = CdsObjectFactory.createStorageFolder(ID_PICTURES, "Pictures");
         CdsObject pictureFolders = new GroupStorageFolder(
-                ID_PICTURES_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER);
+                ID_PICTURES_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER, true);
         pictures.addChild(pictureFolders);
 
         root.addChild(music);
@@ -149,6 +145,9 @@ public class MediaLibrary {
     }
 
     private void addItem(CdsObject item) {
+        if (item == null) {
+            return;
+        }
         if (item.getUpnpClass().startsWith(CdsConstants.UPNP_CLASS_AUDIO_ITEM)) {
             for (CdsObject group : music.getChildren()) {
                 group.addChild(item);
