@@ -25,8 +25,8 @@
 package com.googlecode.mipnp.mediaserver.cds;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
 
 /**
  *
@@ -42,12 +42,29 @@ public class FileResource extends Resource {
     }
 
     @Override
-    public InputStream getInputStream() {
-        FileInputStream fis = null;
+    public RandomAccessFile getDataInput() {
+//        FileInputStream fis = null;
+//        try {
+//            fis = new FileInputStream(file);
+//        } catch (Exception ex) {
+//        }
+//        return fis;
+
+        RandomAccessFile ras = null;
         try {
-            fis = new FileInputStream(file);
-        } catch (Exception ex) {
+            ras = new RandomAccessFile(file, "r");
+        } catch (FileNotFoundException ex) {
         }
-        return fis;
+        return ras;
+    }
+
+    @Override
+    public long getContentLength() {
+        return file.length();
+    }
+
+    @Override
+    public long getLastModified() {
+        return file.lastModified();
     }
 }

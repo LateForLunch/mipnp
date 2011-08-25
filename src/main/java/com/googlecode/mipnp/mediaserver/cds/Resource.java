@@ -24,7 +24,9 @@
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
+import java.io.DataInput;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 
 /**
  *
@@ -41,7 +43,11 @@ public abstract class Resource {
         this.mimeType = mimeType;
     }
 
-    public abstract InputStream getInputStream();
+    public abstract RandomAccessFile getDataInput(); // TODO
+
+    public abstract long getContentLength();
+
+    public abstract long getLastModified();
 
     public String getMimeType() {
         return mimeType;

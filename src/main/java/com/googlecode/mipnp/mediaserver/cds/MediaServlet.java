@@ -24,9 +24,11 @@
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
+import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -67,15 +69,58 @@ public class MediaServlet extends HttpServlet {
             return;
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
+        String range = request.getHeader("Range");
+        long start = 0;
+        long end = res.getContentLength() - 1;
+        if (range != null) {
+            range = range.substring(6);
+            String strStart = range.substring(0, range.indexOf('-'));
+            String strEnd = range.substring(range.indexOf('-') + 1);
+            start = (strStart.length() > 0) ? Long.parseLong(strStart) : -1;
+            end = (strEnd.length() > 0) ? Long.parseLong(strEnd) : -1;
+
+            if (start < 0) {
+                start = res.getContentLength() - end;
+                end = res.getContentLength() - 1;
+            } else if (end < 0 || end > res.getContentLength() - 1) {
+                end = res.getContentLength() - 1;
+            }
+        }
+
+        if (start == 0 && end == res.getContentLength() - 1) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+            response.setHeader("Content-Range",
+                    "bytes " + start + "-" + end + "/" + res.getContentLength());
+        }
         response.setContentType(res.getMimeType());
-        InputStream in = res.getInputStream();
+        response.setHeader("Content-Length", String.valueOf(res.getContentLength()));
+        response.setDateHeader("Date", System.currentTimeMillis());
+        response.setDateHeader("Last-Modified", res.getLastModified());
+
+//        InputStream in = res.getInputStream();
+        RandomAccessFile in = res.getDataInput();
         OutputStream out = response.getOutputStream();
+
+//        for (int i = 0; i < start; i++) {
+//            in.read();
+//        }
+        if (start > 0) {
+            in.seek(start);
+        }
 
         byte[] buf = new byte[1024];
         int count = 0;
-        while ((count = in.read(buf)) >= 0) {
-            out.write(buf, 0, count);
+        long todo = (end - start) + 1;
+        while ((count = in.read(buf)) > 0) {
+            todo -= count;
+            if (todo > 0) {
+                out.write(buf, 0, count);
+            } else {
+                out.write(buf, 0, (int) todo + count);
+                break;
+            }
         }
 
         in.close();
