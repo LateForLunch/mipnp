@@ -55,7 +55,11 @@ public class GroupStorageFolder extends CdsObject {
             }
         }
         CdsObject group = CdsObjectFactory.createStorageFolder();
-        group.setTitle(property);
+        String title = property;
+        if (title == null || title.equals("")) {
+            title = "Unknown";
+        }
+        group.setTitle(title);
         group.addChild(child, (globalSetParent && setParent));
         super.addChild(group, true);
     }

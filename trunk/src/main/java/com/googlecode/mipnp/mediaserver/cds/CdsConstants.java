@@ -43,15 +43,15 @@ public interface CdsConstants {
 
     public static final String PROPERTY_ID = "id";
     public static final String PROPERTY_FOLDER = "folder";
-    public static final String PROPERTY_TITLE = "title";
-    public static final String PROPERTY_CREATOR = "creator";
-    public static final String PROPERTY_CLASS = "class";
+    public static final String PROPERTY_TITLE = "dc:title";
+    public static final String PROPERTY_CREATOR = "dc:creator";
+    public static final String PROPERTY_CLASS = "upnp:class";
     public static final String PROPERTY_SEARCHABLE = "searchable";
     public static final String PROPERTY_PARENT_ID = "parentID";
     public static final String PROPERTY_RESTRICTED = "restricted";
     public static final String PROPERTY_CHILD_COUNT = "childCount";
 
-    public static final String PROPERTY_GENRE = "genre";
-    public static final String PROPERTY_ARTIST = "artist";
-    public static final String PROPERTY_ALBUM = "album";
+    public static final String PROPERTY_GENRE = "upnp:genre";
+    public static final String PROPERTY_ARTIST = "upnp:artist";
+    public static final String PROPERTY_ALBUM = "upnp:album";
 }
