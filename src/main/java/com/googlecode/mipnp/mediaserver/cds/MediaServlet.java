@@ -24,9 +24,7 @@
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
-import java.io.DataInput;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import javax.servlet.ServletException;
@@ -63,7 +61,7 @@ public class MediaServlet extends HttpServlet {
             return;
         }
 
-        Resource res = obj.getResource();
+        FileResource res = obj.getResource();
         if (res == null) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
@@ -100,7 +98,7 @@ public class MediaServlet extends HttpServlet {
         response.setDateHeader("Last-Modified", res.getLastModified());
 
 //        InputStream in = res.getInputStream();
-        RandomAccessFile in = res.getDataInput();
+        RandomAccessFile in = res.getRandomAccessFile();
         OutputStream out = response.getOutputStream();
 
 //        for (int i = 0; i < start; i++) {

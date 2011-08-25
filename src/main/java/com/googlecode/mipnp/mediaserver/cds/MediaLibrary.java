@@ -79,6 +79,12 @@ public class MediaLibrary {
         }
     }
 
+    public void addMedia(MediaSource source) {
+        for (CdsObject item : source.getItems()) {
+            addItem(item);
+        }
+    }
+
     public CdsObject getObjectById(String id) {
         return root.getObjectById(id);
     }

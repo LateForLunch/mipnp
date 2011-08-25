@@ -19,41 +19,26 @@
  */
 
 /*
- * Resource.java
- * Created on Aug 2, 2011, 3:31:08 PM
+ * BansheePlugin.java
+ * Created on Aug 25, 2011, 3:07:45 PM
  */
-package com.googlecode.mipnp.mediaserver.cds;
+package com.googlecode.mipnp.plugins.banshee;
 
-import java.io.DataInput;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+import com.googlecode.mipnp.mediaserver.cds.CdsObject;
+import com.googlecode.mipnp.mediaserver.cds.MediaSource;
+import java.io.File;
+import java.util.List;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public abstract class Resource {
+public class BansheePlugin implements MediaSource {
 
-    private String mimeType;
-
-    public Resource() {
+    public BansheePlugin(File bansheeDb) {
     }
 
-    public Resource(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    public abstract RandomAccessFile getDataInput(); // TODO
-
-    public abstract long getContentLength();
-
-    public abstract long getLastModified();
-
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
+    public List<CdsObject> getItems() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
