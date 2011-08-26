@@ -31,7 +31,9 @@ package com.googlecode.mipnp.mediaserver.cds;
 public interface CdsConstants {
 
     public static final String UPNP_CLASS_CONTAINER = "object.container";
-    public static final String UPNP_CLASS_STORAGE_FOLDER = "object.container.storageFolder";
+    public static final String UPNP_CLASS_STORAGE_FOLDER = UPNP_CLASS_CONTAINER + ".storageFolder";
+    public static final String UPNP_CLASS_ALBUM = UPNP_CLASS_CONTAINER + ".album";
+    public static final String UPNP_CLASS_MUSIC_ALBUM = UPNP_CLASS_ALBUM + ".musicAlbum";
 
     public static final String UPNP_CLASS_ITEM = "object.item";
     public static final String UPNP_CLASS_IMAGE_ITEM = UPNP_CLASS_ITEM + ".imageItem";

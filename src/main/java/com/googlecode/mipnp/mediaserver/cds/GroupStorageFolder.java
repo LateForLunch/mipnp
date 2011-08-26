@@ -31,17 +31,26 @@ package com.googlecode.mipnp.mediaserver.cds;
 public class GroupStorageFolder extends CdsObject {
 
     private String groupProperty;
+    private String childClass;
     private boolean globalSetParent;
 
     public GroupStorageFolder(String id, String title, String groupProperty) {
-        this(id, title, groupProperty, false);
+        this(id, title, groupProperty, UPNP_CLASS_STORAGE_FOLDER);
     }
 
     public GroupStorageFolder(
-            String id, String title, String groupProperty, boolean setParent) {
+            String id, String title, String groupProperty, String childClass) {
+
+        this(id, title, groupProperty, childClass, false);
+    }
+
+    public GroupStorageFolder(
+            String id, String title, String groupProperty,
+            String childClass, boolean setParent) {
 
         super(UPNP_CLASS_STORAGE_FOLDER, id, title);
         this.groupProperty = groupProperty;
+        this.childClass = childClass;
         this.globalSetParent = setParent;
     }
 
@@ -54,7 +63,8 @@ public class GroupStorageFolder extends CdsObject {
                 return;
             }
         }
-        CdsObject group = CdsObjectFactory.createStorageFolder();
+//        CdsObject group = CdsObjectFactory.createStorageFolder();
+        CdsObject group = new CdsObject(childClass);
         String title = property;
         if (title == null || title.equals("")) {
             title = "Unknown";

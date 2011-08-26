@@ -77,9 +77,13 @@ public class BansheePlugin implements MediaSource {
                     if (obj == null) {
                         continue;
                     }
-                    obj.setTitle(rs.getString("title"));
-                    obj.setProperty(CdsConstants.PROPERTY_ARTIST, rs.getString("artist"));
-                    obj.setProperty(CdsConstants.PROPERTY_ALBUM, rs.getString("album"));
+                    obj.setTitle(replaceIllegalChars(rs.getString("title")));
+                    obj.setProperty(
+                            CdsConstants.PROPERTY_ARTIST,
+                            replaceIllegalChars(rs.getString("artist")));
+                    obj.setProperty(
+                            CdsConstants.PROPERTY_ALBUM,
+                            replaceIllegalChars(rs.getString("album")));
                     list.add(obj);
                 } catch (URISyntaxException ex) {
                     ex.printStackTrace(); // TODO
@@ -91,48 +95,10 @@ public class BansheePlugin implements MediaSource {
         return list;
     }
 
-    public static void main(String[] args) throws ClassNotFoundException {
-        // load the sqlite-JDBC driver using the current class loader
-        Class.forName("org.sqlite.JDBC");
-
-        Connection connection = null;
-        try {
-            File db = new File("src/main/resources/banshee/banshee.db");
-
-            // create a database connection
-            connection = DriverManager.getConnection(
-                    "jdbc:sqlite:" + db.getAbsolutePath());
-            Statement statement = connection.createStatement();
-            statement.setQueryTimeout(30);  // set timeout to 30 sec.
-
-            ResultSet rs = statement.executeQuery(
-                    "SELECT tr.Title AS title, al.Title AS album, ar.Name AS artist " +
-                    "FROM CoreTracks AS tr " +
-                    "LEFT JOIN CoreAlbums AS al " +
-                    "ON tr.AlbumID=al.AlbumID " +
-                    "LEFT JOIN CoreArtists AS ar " +
-                    "ON tr.ArtistID=ar.ArtistID");
-            while (rs.next()) {
-                // read the result set
-                System.out.println("title: " + rs.getString("title"));
-                System.out.println("artist: " + rs.getString("artist"));
-                System.out.println("album: " + rs.getString("album"));
-                System.out.println();
-                break;
-            }
-        } catch (SQLException e) {
-            // if the error message is "out of memory", 
-            // it probably means no database file is found
-            System.err.println(e.getMessage());
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                // connection close failed.
-                System.err.println(e);
-            }
+    private String replaceIllegalChars(String str) {
+        if (str != null) {
+            return str.replaceAll("&", "&amp;");
         }
+        return str;
     }
 }
