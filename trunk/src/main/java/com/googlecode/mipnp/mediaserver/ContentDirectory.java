@@ -131,6 +131,10 @@ public class ContentDirectory extends ServiceImpl {
             if (requestedCount > 0 && responseCount > requestedCount) {
                 responseCount = requestedCount;
             }
+            // TODO: temp fix to avoid chunking
+//            if (responseCount > 21) {
+//                responseCount = 20;
+//            }
             for (int i = startingIndex; i < startingIndex + responseCount; i++) {
                 child = children.get(i);
                 if (child.isContainer()) {
