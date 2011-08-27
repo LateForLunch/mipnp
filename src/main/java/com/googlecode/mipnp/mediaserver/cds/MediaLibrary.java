@@ -38,8 +38,8 @@ public class MediaLibrary {
 
     public static final String ID_MUSIC = "1";
     public static final String ID_MUSIC_ALL = "4";
-//    public static final String ID_MUSIC_GENRE = "5";
-//    public static final String ID_MUSIC_ARTIST = "6";
+    public static final String ID_MUSIC_GENRE = "5";
+    public static final String ID_MUSIC_ARTIST = "6";
     public static final String ID_MUSIC_ALBUM = "7";
 //    public static final String ID_MUSIC_PLAYLISTS = "F";
     public static final String ID_MUSIC_FOLDERS = "14";
@@ -131,29 +131,43 @@ public class MediaLibrary {
     }
 
     private void init() {
+        /*
+         * Root
+         */
         this.root = CdsObjectFactory.createStorageFolder(ID_ROOT, "Root");
 
+        /*
+         * Music
+         */
         this.music = CdsObjectFactory.createStorageFolder(ID_MUSIC, "Music");
-        CdsObject musicFolders = new GroupStorageFolder(
-                ID_MUSIC_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER,
-                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true);
-        music.addChild(musicFolders);
-        CdsObject musicAlbum = new GroupStorageFolder(
+        music.addChild(new GroupContainer(
+                ID_MUSIC_GENRE, "Genre", CdsConstants.PROPERTY_GENRE,
+                CdsConstants.UPNP_CLASS_MUSIC_GENRE));
+        music.addChild(new GroupContainer(
+                ID_MUSIC_ARTIST, "Artist", CdsConstants.PROPERTY_ARTIST,
+                CdsConstants.UPNP_CLASS_MUSIC_ARTIST));
+        music.addChild(new GroupContainer(
                 ID_MUSIC_ALBUM, "Album", CdsConstants.PROPERTY_ALBUM,
-                CdsConstants.UPNP_CLASS_MUSIC_ALBUM);
-        music.addChild(musicAlbum);
+                CdsConstants.UPNP_CLASS_MUSIC_ALBUM));
+        music.addChild(new GroupContainer(
+                ID_MUSIC_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER,
+                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true)); // TODO: let all music be parent
 
+        /*
+         * Video
+         */
         this.video = CdsObjectFactory.createStorageFolder(ID_VIDEO, "Video");
-        CdsObject videoFolders = new GroupStorageFolder(
+        video.addChild(new GroupContainer(
                 ID_VIDEO_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER,
-                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true);
-        video.addChild(videoFolders);
+                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true)); // TODO: let all video be parent
 
+        /*
+         * Pictures
+         */
         this.pictures = CdsObjectFactory.createStorageFolder(ID_PICTURES, "Pictures");
-        CdsObject pictureFolders = new GroupStorageFolder(
+        pictures.addChild(new GroupContainer(
                 ID_PICTURES_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER,
-                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true);
-        pictures.addChild(pictureFolders);
+                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true)); // TODO: let all pictures be parent
 
         root.addChild(music);
         root.addChild(video);

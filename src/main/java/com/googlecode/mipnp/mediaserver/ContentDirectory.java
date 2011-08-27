@@ -89,7 +89,8 @@ public class ContentDirectory extends ServiceImpl {
         CdsObject obj = library.getObjectById(objectId);
         if (obj == null) {
             // TODO: Someone is asking an object we don't have
-            System.out.println("ERROR: " + objectId + " not found.");
+            numberReturned.value = 0;
+            totalMatches.value = 0;
             return;
         }
 //        if (!obj.isContainer()) {
@@ -127,14 +128,10 @@ public class ContentDirectory extends ServiceImpl {
         } else if (browseFlag.equals("BrowseDirectChildren") && obj.isContainer()) {
             List<CdsObject> children = obj.getChildren();
             CdsObject child = null;
-            int responseCount = children.size();
+            int responseCount = children.size() - startingIndex;
             if (requestedCount > 0 && responseCount > requestedCount) {
                 responseCount = requestedCount;
             }
-            // TODO: temp fix to avoid chunking
-//            if (responseCount > 21) {
-//                responseCount = 20;
-//            }
             for (int i = startingIndex; i < startingIndex + responseCount; i++) {
                 child = children.get(i);
                 if (child.isContainer()) {
