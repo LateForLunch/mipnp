@@ -30,11 +30,21 @@ package com.googlecode.mipnp.mediaserver.cds;
  */
 public interface CdsConstants {
 
+    /*
+     * Containers
+     */
     public static final String UPNP_CLASS_CONTAINER = "object.container";
     public static final String UPNP_CLASS_STORAGE_FOLDER = UPNP_CLASS_CONTAINER + ".storageFolder";
     public static final String UPNP_CLASS_ALBUM = UPNP_CLASS_CONTAINER + ".album";
     public static final String UPNP_CLASS_MUSIC_ALBUM = UPNP_CLASS_ALBUM + ".musicAlbum";
+    public static final String UPNP_CLASS_GENRE = UPNP_CLASS_CONTAINER + ".genre";
+    public static final String UPNP_CLASS_MUSIC_GENRE = UPNP_CLASS_GENRE + ".musicGenre";
+    public static final String UPNP_CLASS_PERSON = UPNP_CLASS_CONTAINER + ".person";
+    public static final String UPNP_CLASS_MUSIC_ARTIST = UPNP_CLASS_PERSON + ".musicArtist";
 
+    /*
+     * Items
+     */
     public static final String UPNP_CLASS_ITEM = "object.item";
     public static final String UPNP_CLASS_IMAGE_ITEM = UPNP_CLASS_ITEM + ".imageItem";
     public static final String UPNP_CLASS_PHOTO = UPNP_CLASS_IMAGE_ITEM + ".photo";
@@ -43,17 +53,29 @@ public interface CdsConstants {
     public static final String UPNP_CLASS_VIDEO_ITEM = UPNP_CLASS_ITEM + ".videoItem";
     public static final String UPNP_CLASS_MOVIE = UPNP_CLASS_VIDEO_ITEM + ".movie";
 
+    /*
+     * Base properties
+     */
     public static final String PROPERTY_ID = "id";
     public static final String PROPERTY_FOLDER = "folder";
     public static final String PROPERTY_TITLE = "dc:title";
     public static final String PROPERTY_CREATOR = "dc:creator";
+    public static final String PROPERTY_RES = "res";
     public static final String PROPERTY_CLASS = "upnp:class";
     public static final String PROPERTY_SEARCHABLE = "searchable";
     public static final String PROPERTY_PARENT_ID = "parentID";
     public static final String PROPERTY_RESTRICTED = "restricted";
     public static final String PROPERTY_CHILD_COUNT = "childCount";
 
-    public static final String PROPERTY_GENRE = "upnp:genre";
     public static final String PROPERTY_ARTIST = "upnp:artist";
+    public static final String PROPERTY_GENRE = "upnp:genre";
     public static final String PROPERTY_ALBUM = "upnp:album";
+
+    /*
+     * Resource properties
+     */
+    public static final String PROPERTY_SIZE = "res@size"; // In bytes
+    public static final String PROPERTY_DURATION = "res@duration"; // Format: H+:MM:SS[.F+] or H+:MM:SS[.F0/F1]
+    public static final String PROPERTY_BITRATE = "res@bitrate"; // In bytes/second
+    public static final String PROPERTY_SAMPLE_FREQUENCY = "res@sampleFrequency"; // In Hz
 }

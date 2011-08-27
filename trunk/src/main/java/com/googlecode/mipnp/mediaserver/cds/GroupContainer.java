@@ -19,7 +19,7 @@
  */
 
 /*
- * GroupStorageFolder.java
+ * GroupContainer.java
  * Created on Aug 24, 2011, 3:50:27 PM
  */
 package com.googlecode.mipnp.mediaserver.cds;
@@ -28,23 +28,23 @@ package com.googlecode.mipnp.mediaserver.cds;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class GroupStorageFolder extends CdsObject {
+public class GroupContainer extends CdsObject {
 
     private String groupProperty;
     private String childClass;
     private boolean globalSetParent;
 
-    public GroupStorageFolder(String id, String title, String groupProperty) {
+    public GroupContainer(String id, String title, String groupProperty) {
         this(id, title, groupProperty, UPNP_CLASS_STORAGE_FOLDER);
     }
 
-    public GroupStorageFolder(
+    public GroupContainer(
             String id, String title, String groupProperty, String childClass) {
 
         this(id, title, groupProperty, childClass, false);
     }
 
-    public GroupStorageFolder(
+    public GroupContainer(
             String id, String title, String groupProperty,
             String childClass, boolean setParent) {
 
@@ -56,20 +56,19 @@ public class GroupStorageFolder extends CdsObject {
 
     @Override
     public void addChild(CdsObject child, boolean setParent) {
-        String property = child.getProperty(groupProperty);
+        String propertyValue = child.getProperty(groupProperty);
+        if (propertyValue == null || propertyValue.equals("")) {
+            propertyValue = "Unknown";
+        }
         for (CdsObject group : getChildren()) {
-            if (group.getTitle().equals(property)) {
+            if (group.getTitle().equals(propertyValue)) {
                 group.addChild(child, (globalSetParent && setParent));
                 return;
             }
         }
 //        CdsObject group = CdsObjectFactory.createStorageFolder();
         CdsObject group = new CdsObject(childClass);
-        String title = property;
-        if (title == null || title.equals("")) {
-            title = "Unknown";
-        }
-        group.setTitle(title);
+        group.setTitle(propertyValue);
         group.addChild(child, (globalSetParent && setParent));
         super.addChild(group, true);
     }

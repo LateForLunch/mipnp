@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -124,6 +125,10 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
 
     public boolean containsProperty(String property) {
         return properties.containsKey(property);
+    }
+
+    public Set<String> getProperties() {
+        return properties.keySet();
     }
 
     public void addChild(CdsObject child) {
