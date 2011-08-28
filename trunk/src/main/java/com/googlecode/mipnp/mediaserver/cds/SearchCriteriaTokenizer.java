@@ -25,6 +25,7 @@
 package com.googlecode.mipnp.mediaserver.cds;
 
 import java.util.Enumeration;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -62,7 +63,7 @@ class SearchCriteriaTokenizer implements Enumeration<SearchCriteriaToken> {
             token += str.substring(index, index + 1);
             index++;
         }
-        while (str.substring(index).matches("^\\s+\\S+")) {
+        while (str.substring(index).matches("^\\s+\\S+.*")) {
             index++;
         }
         this.nextElement = new SearchCriteriaToken(token.trim());

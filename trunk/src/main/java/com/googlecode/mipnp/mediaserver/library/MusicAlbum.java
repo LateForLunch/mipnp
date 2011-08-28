@@ -19,18 +19,29 @@
  */
 
 /*
- * MediaSource.java
- * Created on Aug 25, 2011, 3:05:27 PM
+ * MusicAlbum.java
+ * Created on Aug 28, 2011, 3:00:46 PM
  */
-package com.googlecode.mipnp.mediaserver.cds;
+package com.googlecode.mipnp.mediaserver.library;
 
-import java.util.List;
+import com.googlecode.mipnp.mediaserver.cds.CdsObject;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface MediaSource {
+public class MusicAlbum extends CdsObject {
 
-    public List<CdsObject> getItems();
+    public MusicAlbum(String title) {
+        super(UPNP_CLASS_MUSIC_ALBUM);
+        setTitle(title);
+    }
+
+    public String getArtist() {
+        return getProperty(PROPERTY_ARTIST);
+    }
+
+    public void setArtist(String artist) {
+        setProperty(PROPERTY_ARTIST, artist);
+    }
 }

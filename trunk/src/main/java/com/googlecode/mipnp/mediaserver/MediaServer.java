@@ -24,7 +24,7 @@
  */
 package com.googlecode.mipnp.mediaserver;
 
-import com.googlecode.mipnp.mediaserver.cds.MediaLibrary;
+import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.upnp.AbstractRootDevice;
 import java.net.URL;
 import java.util.UUID;

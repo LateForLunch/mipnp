@@ -22,9 +22,12 @@
  * MediaLibrary.java
  * Created on Jul 27, 2011, 1:42:13 PM
  */
-package com.googlecode.mipnp.mediaserver.cds;
+package com.googlecode.mipnp.mediaserver.library;
 
-import java.io.File;
+import com.googlecode.mipnp.mediaserver.cds.CdsObjectFactory;
+import com.googlecode.mipnp.mediaserver.cds.CdsObject;
+import com.googlecode.mipnp.mediaserver.cds.CdsConstants;
+import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +41,11 @@ public class MediaLibrary {
 
     public static final String ID_MUSIC = "1";
     public static final String ID_MUSIC_ALL = "4";
-    public static final String ID_MUSIC_GENRE = "5";
+//    public static final String ID_MUSIC_GENRE = "5";
     public static final String ID_MUSIC_ARTIST = "6";
     public static final String ID_MUSIC_ALBUM = "7";
 //    public static final String ID_MUSIC_PLAYLISTS = "F";
-    public static final String ID_MUSIC_FOLDERS = "14";
+//    public static final String ID_MUSIC_FOLDERS = "14";
 
     public static final String ID_VIDEO = "2";
     public static final String ID_VIDEO_ALL = "8";
@@ -62,6 +65,9 @@ public class MediaLibrary {
 
     private CdsObject root;
     private CdsObject music;
+    private CdsObject musicAll;
+    private CdsObject musicArtist;
+    private CdsObject musicAlbum;
     private CdsObject video;
     private CdsObject pictures;
 
@@ -69,19 +75,19 @@ public class MediaLibrary {
         init();
     }
 
-    public void addMedia(File mediaFile) {
-        if (mediaFile.isDirectory()) {
-            for (CdsObject item : CdsObjectFactory.createItems(mediaFile)) {
-                addItem(item);
+    public void addMusic(MusicSource source) {
+        for (MusicTrack track : source.getMusicTracks()) {
+            musicAll.addChild(track);
+            MusicArtist artist = track.getArtist();
+            if (artist != null) {
+                artist.addChild(track, false);
+                this.musicArtist.addChild(artist);
             }
-        } else {
-            addItem(CdsObjectFactory.createItem(mediaFile));
-        }
-    }
-
-    public void addMedia(MediaSource source) {
-        for (CdsObject item : source.getItems()) {
-            addItem(item);
+            MusicAlbum album = track.getAlbum();
+            if (album != null) {
+                album.addChild(track, false);
+                this.musicAlbum.addChild(album);
+            }
         }
     }
 
@@ -89,21 +95,19 @@ public class MediaLibrary {
         if (id.equals(ID_ROOT)) {
             return root;
         }
-        return root.getObjectById(id);
-    }
-
-    public List<CdsObject> search(SearchCriteria sc) {
-        return search(root, sc);
-    }
-
-    public List<CdsObject> search(CdsObject obj, SearchCriteria sc) {
-        List<CdsObject> result = new ArrayList<CdsObject>();
-        if (sc.meetsCriteria(obj)) {
-            result.add(obj);
+        for (CdsObject obj : root) {
+            if (id.equals(obj.getId())) {
+                return obj;
+            }
         }
-        if (obj.isContainer()) {
-            for (CdsObject child : obj.getChildren()) {
-                result.addAll(search(child, sc));
+        return null;
+    }
+
+    public List<CdsObject> search(CdsObject start, SearchCriteria sc) {
+        List<CdsObject> result = new ArrayList<CdsObject>();
+        for (CdsObject obj : start) {
+            if (sc.meetsCriteria(obj)) {
+                result.add(obj);
             }
         }
         return result;
@@ -119,7 +123,7 @@ public class MediaLibrary {
         for (int i = 0; i < level; i++) {
             str += " ";
         }
-        String parent = (obj.getParent() == null ? "-1" : obj.getParent().getId());
+        String parent = obj.getParentId();
         str += "(ID: " + obj.getId() + ", parentID: " + parent + ") " + obj.getTitle() + "\n";
 //        str += obj.getTitle() + "\n";
         if (obj.isContainer()) {
@@ -139,19 +143,17 @@ public class MediaLibrary {
         /*
          * Music
          */
-        this.music = CdsObjectFactory.createStorageFolder(ID_MUSIC, "Music");
-        music.addChild(new GroupContainer(
-                ID_MUSIC_GENRE, "Genre", CdsConstants.PROPERTY_GENRE,
-                CdsConstants.UPNP_CLASS_MUSIC_GENRE));
-        music.addChild(new GroupContainer(
-                ID_MUSIC_ARTIST, "Artist", CdsConstants.PROPERTY_ARTIST,
-                CdsConstants.UPNP_CLASS_MUSIC_ARTIST));
-        music.addChild(new GroupContainer(
-                ID_MUSIC_ALBUM, "Album", CdsConstants.PROPERTY_ALBUM,
-                CdsConstants.UPNP_CLASS_MUSIC_ALBUM));
-        music.addChild(new GroupContainer(
-                ID_MUSIC_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER,
-                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true)); // TODO: let all music be parent
+        this.music = CdsObjectFactory.createStorageFolder(
+                ID_MUSIC, "Music");
+        this.musicAll = CdsObjectFactory.createStorageFolder(
+                ID_MUSIC_ALL, "All Music");
+        this.musicArtist = CdsObjectFactory.createStorageFolder(
+                ID_MUSIC_ARTIST, "Artist");
+        this.musicAlbum = CdsObjectFactory.createStorageFolder(
+                ID_MUSIC_ALBUM, "Album");
+        music.addChild(musicAll);
+        music.addChild(musicArtist);
+        music.addChild(musicAlbum);
 
         /*
          * Video

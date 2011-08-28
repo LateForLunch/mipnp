@@ -39,24 +39,21 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
 
     private static int nextId = 1000;
 
-    private String upnpClass;
-    private String id;
-    private CdsObject parent;
-    private String title;
     private boolean container;
     private List<CdsObject> children;
-    private FileResource resource;
+    private Resource resource;
     private Map<String, String> properties;
 
+    // TODO: change public to protected
     public CdsObject(String upnpClass) {
         this(upnpClass, null);
     }
 
-    public CdsObject(String upnpClass, String id) {
+    protected CdsObject(String upnpClass, String id) {
         this(upnpClass, id, null);
     }
 
-    public CdsObject(String upnpClass, String id, String title) {
+    protected CdsObject(String upnpClass, String id, String title) {
         if (!upnpClass.startsWith(UPNP_CLASS_ITEM) &&
                 !upnpClass.startsWith(UPNP_CLASS_CONTAINER)) {
 
@@ -66,15 +63,15 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
                     UPNP_CLASS_CONTAINER + "\".");
         }
 
-        this.upnpClass = upnpClass;
+        this.properties = new HashMap<String, String>();
+        properties.put(PROPERTY_CLASS, upnpClass);
         if (id == null) {
-            this.id = String.valueOf(nextId);
+            properties.put(PROPERTY_ID, String.valueOf(nextId));
             nextId++;
         } else {
-            this.id = id;
+            properties.put(PROPERTY_ID, id);
         }
-        this.title = title;
-        this.properties = new HashMap<String, String>();
+        properties.put(PROPERTY_TITLE, title);
         if (upnpClass.startsWith(UPNP_CLASS_ITEM)) {
             this.container = false;
         } else {
@@ -84,27 +81,31 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
     }
 
     public String getUpnpClass() {
-        return upnpClass;
+        return getProperty(PROPERTY_CLASS);
     }
 
     public String getId() {
-        return id;
+        return getProperty(PROPERTY_ID);
     }
 
-    public CdsObject getParent() {
-        return parent;
+    public String getParentId() {
+        String parentId = getProperty(PROPERTY_PARENT_ID);
+        if (parentId == null) {
+            return "-1";
+        }
+        return parentId;
     }
 
-    protected void setParent(CdsObject parent) {
-        this.parent = parent;
+    protected void setParentId(String parentId) {
+        setProperty(PROPERTY_PARENT_ID, parentId);
     }
 
     public String getTitle() {
-        return title;
+        return getProperty(PROPERTY_TITLE);
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        setProperty(PROPERTY_TITLE, title);
     }
 
     public boolean isContainer() {
@@ -137,29 +138,16 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
 
     public void addChild(CdsObject child, boolean setParent) {
         if (isContainer() && child != null) {
-            children.add(child);
             if (setParent) {
-                child.setParent(this);
+                child.setParentId(getId());
             }
-        }
-    }
-
-    public CdsObject getObjectById(String id) {
-        if (isContainer()) {
-            for (CdsObject child : getChildren()) {
-                if (child.getId().equals(id)) {
-                    return child;
+            for (CdsObject ch : getChildren()) {
+                if (ch.equals(child)) {
+                    return;
                 }
             }
-            CdsObject result = null;
-            for (CdsObject child : getChildren()) {
-                result = child.getObjectById(id);
-                if (result != null) {
-                    return result;
-                }
-            }
+            children.add(child);
         }
-        return null;
     }
 
     public int getNumberOfChildren() {
@@ -174,28 +162,12 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
         return children;
     }
 
-    public FileResource getResource() {
+    public Resource getResource() {
         return resource;
     }
 
-    public void setResource(FileResource resource) {
+    public void setResource(Resource resource) {
         this.resource = resource;
-    }
-
-    public boolean containsUpnpClass(String upnpClass) {
-        if (isItem()) {
-            return false;
-        }
-        for (CdsObject child : getChildren()) {
-            if (child.isContainer()) {
-                if (child.containsUpnpClass(upnpClass)) {
-                    return true;
-                }
-            } else if (child.getUpnpClass().startsWith(upnpClass)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public Iterator<CdsObject> iterator() {

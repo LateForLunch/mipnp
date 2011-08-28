@@ -106,10 +106,7 @@ public class SearchCriteria implements CdsConstants {
     }
 
     private SearchCriteriaToken replaceValue(SearchCriteriaToken arg, CdsObject obj) {
-        // TODO: add more properties
-        if (arg.getToken().equals(PROPERTY_CLASS)) {
-            return new SearchCriteriaToken("\"" + obj.getUpnpClass() + "\"");
-        } else if (obj.containsProperty(arg.getToken())) {
+        if (obj.containsProperty(arg.getToken())) {
             return new SearchCriteriaToken("\"" + obj.getProperty(arg.getToken()) + "\"");
         }
         return arg;

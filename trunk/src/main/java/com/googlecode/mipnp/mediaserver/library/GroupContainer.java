@@ -22,7 +22,9 @@
  * GroupContainer.java
  * Created on Aug 24, 2011, 3:50:27 PM
  */
-package com.googlecode.mipnp.mediaserver.cds;
+package com.googlecode.mipnp.mediaserver.library;
+
+import com.googlecode.mipnp.mediaserver.cds.CdsObject;
 
 /**
  *
@@ -66,7 +68,6 @@ public class GroupContainer extends CdsObject {
                 return;
             }
         }
-//        CdsObject group = CdsObjectFactory.createStorageFolder();
         CdsObject group = new CdsObject(childClass);
         group.setTitle(propertyValue);
         group.addChild(child, (globalSetParent && setParent));

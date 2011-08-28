@@ -21,8 +21,8 @@ package com.googlecode.mipnp;
 
 import com.googlecode.mipnp.upnp.UpnpServer;
 import com.googlecode.mipnp.mediaserver.MediaServer;
-import com.googlecode.mipnp.mediaserver.cds.MediaLibrary;
-import com.googlecode.mipnp.mediaserver.cds.MediaServlet;
+import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
+import com.googlecode.mipnp.mediaserver.library.MediaServlet;
 import com.googlecode.mipnp.plugins.banshee.BansheePlugin;
 import com.googlecode.mipnp.tools.InetTools;
 import java.io.File;
@@ -64,7 +64,7 @@ public class App {
             MediaLibrary library = new MediaLibrary();
 //            library.addMedia(new File("/home/jochem/ushare/"));
             File bansheeDb = new File("src/main/resources/banshee/banshee.db");
-            library.addMedia(new BansheePlugin(bansheeDb));
+            library.addMusic(new BansheePlugin(bansheeDb));
 //            System.out.println(library.toString());
             String mediaServletLocation = "/cds";
             MediaServer mediaServer = new MediaServer(uuid, library);
