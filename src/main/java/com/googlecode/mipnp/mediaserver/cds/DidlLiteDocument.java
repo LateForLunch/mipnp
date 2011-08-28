@@ -46,17 +46,19 @@ public class DidlLiteDocument {
             Namespace.getNamespace("upnp", "urn:schemas-upnp-org:metadata-1-0/upnp/");
 
     private URL mediaLocation;
+    private String filter;
     private Document document;
 
-    public DidlLiteDocument(URL mediaLocation) {
+    public DidlLiteDocument(URL mediaLocation, String filter) {
         this.mediaLocation = mediaLocation;
+        this.filter = filter;
         Element root = new Element("DIDL-Lite", NS_DEFAULT);
         root.addNamespaceDeclaration(NS_DC);
         root.addNamespaceDeclaration(NS_UPNP);
         this.document = new Document(root);
     }
 
-    public void addCdsObject(CdsObject obj, String filter) {
+    public void addCdsObject(CdsObject obj) {
         Element element = null;
         if (obj.isContainer()) {
             element = new Element("container", NS_DEFAULT);
@@ -66,11 +68,7 @@ public class DidlLiteDocument {
         }
 
         element.setAttribute(CdsConstants.PROPERTY_ID, obj.getId());
-        String parentId = "-1";
-        if (obj.getParent() != null) {
-            parentId = obj.getParent().getId();
-        }
-        element.setAttribute(CdsConstants.PROPERTY_PARENT_ID, parentId);
+        element.setAttribute(CdsConstants.PROPERTY_PARENT_ID, obj.getParentId());
         element.setAttribute(CdsConstants.PROPERTY_RESTRICTED, "true");
 
         Element upnpClass = new Element(
@@ -86,8 +84,11 @@ public class DidlLiteDocument {
         element.addContent(title);
 
         // TODO: temp fix, res location should be added to CdsObject as a property
-        if (filter.equals("*") || filter.contains("res")) {
+        Resource res = obj.getResource();
+        if (res != null && (filter.equals("*") || filter.contains("res"))) {
             Element resEl = new Element(CdsConstants.PROPERTY_RES, NS_DEFAULT);
+            resEl.setAttribute(
+                    "protocolInfo", "http-get:*:" + res.getMimeType() + ":*");
             resEl.setText(mediaLocation.toString() + "/" + obj.getId());
             element.addContent(resEl);
         }
@@ -109,8 +110,8 @@ public class DidlLiteDocument {
 
     @Override
     public String toString() {
-//        Format format = Format.getRawFormat();
-        Format format = Format.getPrettyFormat();
+        Format format = Format.getRawFormat();
+//        Format format = Format.getPrettyFormat();
         format.setOmitDeclaration(true);
         XMLOutputter outputter = new XMLOutputter(format);
         return outputter.outputString(document);
@@ -157,11 +158,12 @@ public class DidlLiteDocument {
     }
 
     public static void main(String[] args) throws MalformedURLException {
-        DidlLiteDocument doc = new DidlLiteDocument(new URL("http://localhost:9090"));
+        DidlLiteDocument doc = new DidlLiteDocument(
+                new URL("http://localhost:9090"), "upnp:artist@role");
         CdsObject obj = new CdsObject(
                 CdsConstants.UPNP_CLASS_STORAGE_FOLDER, "1", "testTitle");
         obj.setProperty("upnp:artist@role", "someRole");
-        doc.addCdsObject(obj, "upnp:artist@role");
+        doc.addCdsObject(obj);
         System.out.println(doc.toString());
     }
 }

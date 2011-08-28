@@ -26,6 +26,8 @@ package com.googlecode.mipnp.mediaserver;
 
 import com.googlecode.mipnp.upnp.ServiceImpl;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -42,6 +44,20 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
 
     private static final String XML_SERVICE_DESCRIPTION =
             "src/main/resources/mediaserver/MSContentDirectory-1.xml";
+
+    private static final List<String> browseInsteadOfSearch =
+            Arrays.asList(
+            // Music
+            "4", "5", "6", "7", "F", "14",
+            "100", "101", "102", "103", "104", "105", "106", "107", "108",
+            // Video
+            "8", "9", "A", "E", "10", "15",
+            "200", "201", "202", "203", "204", "205",
+            // Pictures
+            "B", "C", "D", "D2", "11", "16",
+            "300", "301", "302", "303", "304", "305", "306",
+            // Playlists
+            "13", "17");
 
     private ContentDirectory cd;
 
@@ -107,15 +123,15 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
-//        List<String> musicContainers = Arrays.asList(
-//                "4", "5", "6", "7", "F",
-//                "100", "101", "102", "103", "104", "105", "106", "107", "108");
-//        if (musicContainers.contains(containerId)) {
-//            containerId = "14";
-//        }
-        cd.browse(containerId, "BrowseDirectChildren", filter, startingIndex,
-                requestedCount, sortCriteria, result, numberReturned,
-                totalMatches, updateId);
+        if (browseInsteadOfSearch.contains(containerId)) {
+            cd.browse(containerId, "BrowseDirectChildren", filter, startingIndex,
+                    requestedCount, sortCriteria, result, numberReturned,
+                    totalMatches, updateId);
+        } else {
+            cd.search(containerId, searchCriteria, filter, startingIndex,
+                    requestedCount, sortCriteria, result, numberReturned,
+                    totalMatches, updateId);
+        }
     }
 
     @WebMethod(operationName="GetSystemUpdateID")

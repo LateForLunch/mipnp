@@ -27,26 +27,12 @@ package com.googlecode.mipnp.mediaserver.cds;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.activation.MimetypesFileTypeMap;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class CdsObjectFactory implements CdsConstants {
-
-    private static final MimetypesFileTypeMap MIMETYPES = new MimetypesFileTypeMap();
-
-    static {
-        MIMETYPES.addMimeTypes("audio/x-ms-wma wma WMA");
-        MIMETYPES.addMimeTypes("audio/mpeg mp3 MP3");
-        MIMETYPES.addMimeTypes("audio/wav wav WAV");
-        MIMETYPES.addMimeTypes("image/jpeg jpg JPG jpeg JPEG");
-        MIMETYPES.addMimeTypes("image/png png PNG");
-        MIMETYPES.addMimeTypes("video/x-ms-wmv wmv WMV");
-        MIMETYPES.addMimeTypes("video/mpeg mpg MPG mpeg MPEG");
-        MIMETYPES.addMimeTypes("video/avi avi AVI");
-    }
 
     public static List<CdsObject> createItems(File directory) {
         if (directory == null || directory.isFile()) {
@@ -100,7 +86,7 @@ public class CdsObjectFactory implements CdsConstants {
         title = title.substring(0, title.lastIndexOf('.'));
         obj.setTitle(title);
         obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-        FileResource res = new FileResource(file, mimeType);
+        Resource res = new Resource(file, mimeType);
         obj.setResource(res);
         return obj;
     }
@@ -111,7 +97,7 @@ public class CdsObjectFactory implements CdsConstants {
         title = title.substring(0, title.lastIndexOf('.'));
         obj.setTitle(title);
         obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-        FileResource res = new FileResource(file, mimeType);
+        Resource res = new Resource(file, mimeType);
         obj.setResource(res);
         return obj;
     }
@@ -122,7 +108,7 @@ public class CdsObjectFactory implements CdsConstants {
         title = title.substring(0, title.lastIndexOf('.'));
         obj.setTitle(title);
         obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-        FileResource res = new FileResource(file, mimeType);
+        Resource res = new Resource(file, mimeType);
         obj.setResource(res);
         return obj;
     }

@@ -19,31 +19,18 @@
  */
 
 /*
- * SearchResult.java
- * Created on Jul 28, 2011, 7:18:48 PM
+ * MediaSource.java
+ * Created on Aug 25, 2011, 3:05:27 PM
  */
-package com.googlecode.mipnp.mediaserver.cds;
+package com.googlecode.mipnp.mediaserver.library;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class SearchResult {
+public interface MusicSource {
 
-    private List<CdsObject> objects;
-
-    public SearchResult() {
-        this.objects = new ArrayList<CdsObject>();
-    }
-
-    public void addObject(CdsObject obj) {
-        objects.add(obj);
-    }
-
-    public String toDidlLite() {
-        return null;
-    }
+    public List<MusicTrack> getMusicTracks();
 }

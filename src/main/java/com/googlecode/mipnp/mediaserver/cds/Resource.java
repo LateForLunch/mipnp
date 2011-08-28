@@ -19,7 +19,7 @@
  */
 
 /*
- * FileResource.java
+ * Resource.java
  * Created on Aug 2, 2011, 3:34:56 PM
  */
 package com.googlecode.mipnp.mediaserver.cds;
@@ -32,12 +32,16 @@ import java.io.RandomAccessFile;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class FileResource {
+public class Resource {
 
     private File file;
     private String mimeType;
 
-    public FileResource(File file, String mimeType) {
+    public Resource(File file) {
+        this(file, CdsConstants.MIMETYPES.getContentType(file));
+    }
+
+    public Resource(File file, String mimeType) {
         this.file = file;
         this.mimeType = mimeType;
     }

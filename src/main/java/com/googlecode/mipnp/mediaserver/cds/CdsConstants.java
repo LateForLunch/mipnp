@@ -24,6 +24,8 @@
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
+import javax.activation.MimetypesFileTypeMap;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
@@ -78,4 +80,17 @@ public interface CdsConstants {
     public static final String PROPERTY_DURATION = "res@duration"; // Format: H+:MM:SS[.F+] or H+:MM:SS[.F0/F1]
     public static final String PROPERTY_BITRATE = "res@bitrate"; // In bytes/second
     public static final String PROPERTY_SAMPLE_FREQUENCY = "res@sampleFrequency"; // In Hz
+
+    public static final MimetypesFileTypeMap MIMETYPES = new MimetypesFileTypeMap() {
+        {
+            addMimeTypes("audio/x-ms-wma wma WMA");
+            addMimeTypes("audio/mpeg mp3 MP3");
+            addMimeTypes("audio/wav wav WAV");
+            addMimeTypes("image/jpeg jpg JPG jpeg JPEG");
+            addMimeTypes("image/png png PNG");
+            addMimeTypes("video/x-ms-wmv wmv WMV");
+            addMimeTypes("video/mpeg mpg MPG mpeg MPEG");
+            addMimeTypes("video/avi avi AVI");
+        }
+    };
 }

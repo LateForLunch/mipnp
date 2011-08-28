@@ -25,12 +25,14 @@
 package com.googlecode.mipnp.mediaserver;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
-import com.googlecode.mipnp.mediaserver.cds.FileResource;
-import com.googlecode.mipnp.mediaserver.cds.MediaLibrary;
+import com.googlecode.mipnp.mediaserver.cds.CdsObjectComparator;
+import com.googlecode.mipnp.mediaserver.cds.DidlLiteDocument;
+import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import com.googlecode.mipnp.upnp.ServiceImpl;
 import java.io.File;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -86,47 +88,30 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
+        DidlLiteDocument doc = new DidlLiteDocument(mediaLocation, filter);
+
         CdsObject obj = library.getObjectById(objectId);
         if (obj == null) {
             // TODO: Someone is asking an object we don't have
+            // This should throw a SOAP fault
+            result.value = doc.toString();
             numberReturned.value = 0;
             totalMatches.value = 0;
+            updateId.value = 0;
             return;
         }
+
 //        if (!obj.isContainer()) {
 //            return; // TODO: SOAP fault
 //        }
 
-        result.value = "<DIDL-Lite ";
-        result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
-        result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
-        result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
-
         if (browseFlag.equals("BrowseMetadata")) {
-            if (obj.isContainer()) {
-                result.value += "<container searchable=\"true\" ";
-            } else {
-                result.value += "<item ";
-            }
-            result.value += "id=\"" + obj.getId();
-            CdsObject parent = obj.getParent();
-            String parentId = "-1";
-            if (parent != null) {
-                parentId = parent.getId();
-            }
-            result.value += "\" parentID=\"" + parentId;
-            result.value += "\" restricted=\"true\">";
-            result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
-            result.value += "<dc:title>" + obj.getTitle() + "</dc:title>";
-            if (obj.isContainer()) {
-                result.value += "</container>";
-            } else {
-                result.value += "</item>";
-            }
+            doc.addCdsObject(obj);
             numberReturned.value = 1;
             totalMatches.value = 1;
         } else if (browseFlag.equals("BrowseDirectChildren") && obj.isContainer()) {
             List<CdsObject> children = obj.getChildren();
+            Collections.sort(children, new CdsObjectComparator(sortCriteria));
             CdsObject child = null;
             int responseCount = children.size() - startingIndex;
             if (requestedCount > 0 && responseCount > requestedCount) {
@@ -134,36 +119,7 @@ public class ContentDirectory extends ServiceImpl {
             }
             for (int i = startingIndex; i < startingIndex + responseCount; i++) {
                 child = children.get(i);
-                if (child.isContainer()) {
-                    result.value += "<container childCount=\"";
-                    result.value += child.getNumberOfChildren() + "\"";
-                } else {
-                    result.value += "<item";
-                }
-                result.value += " id=\"" + child.getId();
-                CdsObject parent = child.getParent();
-                String parentId = "-1";
-                if (parent != null) {
-                    parentId = parent.getId();
-                }
-                result.value += "\" parentID=\"" + parentId;
-                result.value += "\" restricted=\"true\">";
-                result.value += "<upnp:class>" + child.getUpnpClass() + "</upnp:class>";
-                result.value += "<dc:title>" + child.getTitle() + "</dc:title>";
-                if (child.isContainer()) {
-                    result.value += "</container>";
-                } else {
-                    if (filter.contains("res") || filter.equals("*")) {
-                        FileResource res = child.getResource();
-                        if (res != null) {
-                            result.value += "<res protocolInfo=\"http-get:*:";
-                            result.value += res.getMimeType() + ":*\">";
-                            result.value += mediaLocation.toString() + "/" + child.getId();
-                            result.value += "</res>";
-                        }
-                    }
-                    result.value += "</item>";
-                }
+                doc.addCdsObject(child);
             }
             numberReturned.value = responseCount;
             totalMatches.value = children.size();
@@ -172,7 +128,7 @@ public class ContentDirectory extends ServiceImpl {
             return;
         }
 
-        result.value += "</DIDL-Lite>";
+        result.value = doc.toString();
         updateId.value = 0;
     }
 
@@ -199,40 +155,59 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
+        DidlLiteDocument doc = new DidlLiteDocument(mediaLocation, filter);
+
+        CdsObject start = library.getObjectById(containerId);
+        if (start == null || start.isItem()) {
+            // TODO: SOAP fault
+            result.value = doc.toString();
+            numberReturned.value = 0;
+            totalMatches.value = 0;
+            updateId.value = 0;
+            return;
+        }
+
         SearchCriteria sc = new SearchCriteria(searchCriteria);
-        List<CdsObject> searchResult = library.search(sc);
-        result.value = "<DIDL-Lite ";
-        result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
-        result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
-        result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
+        List<CdsObject> searchResult = library.search(start, sc);
+        Collections.sort(searchResult, new CdsObjectComparator(sortCriteria));
+//        result.value = "<DIDL-Lite ";
+//        result.value += "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" ";
+//        result.value += "xmlns:dc=\"http://purl.org/dc/elements/1.1/\" ";
+//        result.value += "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\">";
 
         CdsObject obj = null;
-        int responseCount = searchResult.size();
+        int responseCount = searchResult.size() - startingIndex;
         if (requestedCount > 0 && responseCount > requestedCount) {
             responseCount = requestedCount;
         }
         for (int i = startingIndex; i < startingIndex + responseCount; i++) {
             obj = searchResult.get(i);
-            result.value += "<item id=\"" + obj.getId();
-            CdsObject parent = obj.getParent();
-            String parentId = "-1";
-            if (parent != null) {
-                parentId = parent.getId();
-            }
-            result.value += "\" parentID=\"" + parentId + "\" restricted=\"true\">";
-            result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
-            result.value += "<dc:title>" + obj.getTitle() + "</dc:title>";
-            if (filter.contains("res")) {
-                FileResource res = obj.getResource();
-                if (res != null) {
-                    result.value += "<res protocolInfo=\"http-get:*:" + res.getMimeType() + ":*\">";
-                    result.value += mediaLocation.toString() + "/" + obj.getId();
-                    result.value += "</res>";
-                }
-            }
-            result.value += "</item>";
+            doc.addCdsObject(obj);
         }
-        result.value += "</DIDL-Lite>";
+//        for (int i = startingIndex; i < startingIndex + responseCount; i++) {
+//            obj = searchResult.get(i);
+//            result.value += "<item id=\"" + obj.getId();
+//            CdsObject parent = obj.getParent();
+//            String parentId = "-1";
+//            if (parent != null) {
+//                parentId = parent.getId();
+//            }
+//            result.value += "\" parentID=\"" + parentId + "\" restricted=\"true\">";
+//            result.value += "<upnp:class>" + obj.getUpnpClass() + "</upnp:class>";
+//            result.value += "<dc:title>" + obj.getTitle() + "</dc:title>";
+//            if (filter.contains("res")) {
+//                FileResource res = obj.getResource();
+//                if (res != null) {
+//                    result.value += "<res protocolInfo=\"http-get:*:" + res.getMimeType() + ":*\">";
+//                    result.value += mediaLocation.toString() + "/" + obj.getId();
+//                    result.value += "</res>";
+//                }
+//            }
+//            result.value += "</item>";
+//        }
+
+//        result.value += "</DIDL-Lite>";
+        result.value = doc.toString();
         numberReturned.value = responseCount;
         totalMatches.value = searchResult.size();
         updateId.value = 0;

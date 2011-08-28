@@ -22,8 +22,10 @@
  * MediaServlet.java
  * Created on Jul 28, 2011, 1:18:52 PM
  */
-package com.googlecode.mipnp.mediaserver.cds;
+package com.googlecode.mipnp.mediaserver.library;
 
+import com.googlecode.mipnp.mediaserver.cds.Resource;
+import com.googlecode.mipnp.mediaserver.cds.CdsObject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
@@ -61,7 +63,7 @@ public class MediaServlet extends HttpServlet {
             return;
         }
 
-        FileResource res = obj.getResource();
+        Resource res = obj.getResource();
         if (res == null) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
