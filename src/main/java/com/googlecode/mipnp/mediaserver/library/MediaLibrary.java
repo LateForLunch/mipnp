@@ -26,7 +26,6 @@ package com.googlecode.mipnp.mediaserver.library;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsObjectFactory;
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
-import com.googlecode.mipnp.mediaserver.cds.CdsConstants;
 import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +52,7 @@ public class MediaLibrary {
 //    public static final String ID_VIDEO_ACTOR = "A";
 //    public static final String ID_VIDEO_SERIES = "E";
 //    public static final String ID_VIDEO_PLAYLISTS = "10";
-    public static final String ID_VIDEO_FOLDERS = "15";
+//    public static final String ID_VIDEO_FOLDERS = "15";
 
     public static final String ID_PICTURES = "3";
     public static final String ID_PICTURES_ALL = "B";
@@ -61,16 +60,21 @@ public class MediaLibrary {
 //    public static final String ID_PICTURES_ALBUMS = "D";
 //    public static final String ID_PICTURES_KEYWORD = "D2";
 //    public static final String ID_PICTURES_PLAYLISTS = "11";
-    public static final String ID_PICTURES_FOLDERS = "16";
+//    public static final String ID_PICTURES_FOLDERS = "16";
 
     private CdsObject root;
+
     private CdsObject music;
     private CdsObject musicAll;
     private CdsObject musicGenre;
     private CdsObject musicArtist;
     private CdsObject musicAlbum;
+
     private CdsObject video;
+    private CdsObject videoAll;
+
     private CdsObject pictures;
+    private CdsObject picturesAll;
 
     public MediaLibrary() {
         init();
@@ -160,46 +164,30 @@ public class MediaLibrary {
         this.musicAlbum = CdsObjectFactory.createStorageFolder(
                 ID_MUSIC_ALBUM, "Album");
         music.addChild(musicAll);
+        music.addChild(musicGenre);
         music.addChild(musicArtist);
         music.addChild(musicAlbum);
 
         /*
          * Video
          */
-        this.video = CdsObjectFactory.createStorageFolder(ID_VIDEO, "Video");
-        video.addChild(new GroupContainer(
-                ID_VIDEO_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER,
-                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true)); // TODO: let all video be parent
+        this.video = CdsObjectFactory.createStorageFolder(
+                ID_VIDEO, "Video");
+        this.videoAll = CdsObjectFactory.createStorageFolder(
+                ID_VIDEO_ALL, "All Video");
+        video.addChild(videoAll);
 
         /*
          * Pictures
          */
-        this.pictures = CdsObjectFactory.createStorageFolder(ID_PICTURES, "Pictures");
-        pictures.addChild(new GroupContainer(
-                ID_PICTURES_FOLDERS, "Folders", CdsConstants.PROPERTY_FOLDER,
-                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, true)); // TODO: let all pictures be parent
+        this.pictures = CdsObjectFactory.createStorageFolder(
+                ID_PICTURES, "Pictures");
+        this.picturesAll = CdsObjectFactory.createStorageFolder(
+                ID_PICTURES_ALL, "All Pictures");
+        pictures.addChild(picturesAll);
 
         root.addChild(music);
         root.addChild(video);
         root.addChild(pictures);
-    }
-
-    private void addItem(CdsObject item) {
-        if (item == null) {
-            return;
-        }
-        if (item.getUpnpClass().startsWith(CdsConstants.UPNP_CLASS_AUDIO_ITEM)) {
-            for (CdsObject group : music.getChildren()) {
-                group.addChild(item);
-            }
-        } else if (item.getUpnpClass().startsWith(CdsConstants.UPNP_CLASS_VIDEO_ITEM)) {
-            for (CdsObject group : video.getChildren()) {
-                group.addChild(item);
-            }
-        } else if (item.getUpnpClass().startsWith(CdsConstants.UPNP_CLASS_IMAGE_ITEM)) {
-            for (CdsObject group : pictures.getChildren()) {
-                group.addChild(item);
-            }
-        }
     }
 }
