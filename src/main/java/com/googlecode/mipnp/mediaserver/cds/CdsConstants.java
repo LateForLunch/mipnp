@@ -72,6 +72,7 @@ public interface CdsConstants {
     public static final String PROPERTY_ARTIST = "upnp:artist";
     public static final String PROPERTY_GENRE = "upnp:genre";
     public static final String PROPERTY_ALBUM = "upnp:album";
+    public static final String PROPERTY_ORIGINAL_TRACK_NUMBER = "upnp:originalTrackNumber";
 
     /*
      * Resource properties
@@ -83,14 +84,26 @@ public interface CdsConstants {
 
     public static final MimetypesFileTypeMap MIMETYPES = new MimetypesFileTypeMap() {
         {
+            /*
+             * Audio
+             */
             addMimeTypes("audio/x-ms-wma wma WMA");
             addMimeTypes("audio/mpeg mp3 MP3");
             addMimeTypes("audio/wav wav WAV");
-            addMimeTypes("image/jpeg jpg JPG jpeg JPEG");
-            addMimeTypes("image/png png PNG");
+            addMimeTypes("audio/mp4 m4a M4A");
+            /*
+             * Video
+             */
             addMimeTypes("video/x-ms-wmv wmv WMV");
             addMimeTypes("video/mpeg mpg MPG mpeg MPEG");
             addMimeTypes("video/avi avi AVI");
+            addMimeTypes("video/mp4 mp4 MP4 m4v M4V mp4v MP4V");
+            addMimeTypes("video/quicktime mov MOV");
+            /*
+             * Image
+             */
+            addMimeTypes("image/jpeg jpg JPG jpeg JPEG");
+            addMimeTypes("image/png png PNG");
         }
     };
 }

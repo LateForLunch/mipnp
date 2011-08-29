@@ -41,7 +41,7 @@ public class MediaLibrary {
 
     public static final String ID_MUSIC = "1";
     public static final String ID_MUSIC_ALL = "4";
-//    public static final String ID_MUSIC_GENRE = "5";
+    public static final String ID_MUSIC_GENRE = "5";
     public static final String ID_MUSIC_ARTIST = "6";
     public static final String ID_MUSIC_ALBUM = "7";
 //    public static final String ID_MUSIC_PLAYLISTS = "F";
@@ -66,6 +66,7 @@ public class MediaLibrary {
     private CdsObject root;
     private CdsObject music;
     private CdsObject musicAll;
+    private CdsObject musicGenre;
     private CdsObject musicArtist;
     private CdsObject musicAlbum;
     private CdsObject video;
@@ -78,6 +79,11 @@ public class MediaLibrary {
     public void addMusic(MusicSource source) {
         for (MusicTrack track : source.getMusicTracks()) {
             musicAll.addChild(track);
+            MusicGenre genre = track.getGenre();
+            if (genre != null) {
+                genre.addChild(track, false);
+                this.musicGenre.addChild(genre);
+            }
             MusicArtist artist = track.getArtist();
             if (artist != null) {
                 artist.addChild(track, false);
@@ -147,6 +153,8 @@ public class MediaLibrary {
                 ID_MUSIC, "Music");
         this.musicAll = CdsObjectFactory.createStorageFolder(
                 ID_MUSIC_ALL, "All Music");
+        this.musicGenre = CdsObjectFactory.createStorageFolder(
+                ID_MUSIC_GENRE, "Genre");
         this.musicArtist = CdsObjectFactory.createStorageFolder(
                 ID_MUSIC_ARTIST, "Artist");
         this.musicAlbum = CdsObjectFactory.createStorageFolder(

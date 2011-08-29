@@ -27,6 +27,9 @@ package com.googlecode.mipnp.mediaserver.library;
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
 import com.googlecode.mipnp.mediaserver.cds.Resource;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  *
@@ -36,6 +39,7 @@ public class MusicTrack extends CdsObject {
 
     private MusicArtist artist;
     private MusicAlbum album;
+    private MusicGenre genre;
 
     public MusicTrack(String title, File musicTrack) {
         super(UPNP_CLASS_MUSIC_TRACK);
@@ -59,5 +63,44 @@ public class MusicTrack extends CdsObject {
     public void setAlbum(MusicAlbum album) {
         this.album = album;
         setProperty(PROPERTY_ALBUM, album.getTitle());
+    }
+
+    public MusicGenre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(MusicGenre genre) {
+        this.genre = genre;
+        setProperty(PROPERTY_GENRE, genre.getTitle());
+    }
+
+    public String getDuration() {
+        return getProperty(PROPERTY_DURATION);
+    }
+
+    public void setDuration(int duration) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        setDuration(format.format(new Date(duration)));
+    }
+
+    public void setDuration(String duration) {
+        setProperty(PROPERTY_DURATION, duration);
+    }
+
+    public int getTrackNumber() {
+        return Integer.parseInt(getProperty(PROPERTY_ORIGINAL_TRACK_NUMBER));
+    }
+
+    public void setTrackNumber(int nr) {
+        setProperty(PROPERTY_ORIGINAL_TRACK_NUMBER, String.valueOf(nr));
+    }
+
+    public int getBitRate() {
+        return Integer.parseInt(getProperty(PROPERTY_BITRATE));
+    }
+
+    public void setBitRate(int bitrate) {
+        setProperty(PROPERTY_BITRATE, String.valueOf(bitrate));
     }
 }
