@@ -26,6 +26,7 @@ package com.googlecode.mipnp.plugins.banshee;
 
 import com.googlecode.mipnp.mediaserver.library.MusicAlbum;
 import com.googlecode.mipnp.mediaserver.library.MusicArtist;
+import com.googlecode.mipnp.mediaserver.library.MusicGenre;
 import com.googlecode.mipnp.mediaserver.library.MusicSource;
 import com.googlecode.mipnp.mediaserver.library.MusicTrack;
 import java.io.File;
@@ -56,10 +57,12 @@ public class BansheePlugin implements MusicSource {
             "al.ArtistName AS artist " +
             "FROM CoreAlbums AS al;";
 
-    private static final String SELECT_TRACKS_V43 =
+    private static final String SELECT_MUSIC_TRACKS_V43 =
             "SELECT tr.ArtistID AS artistId, tr.AlbumID AS albumId, " +
-            "tr.Uri AS uri, tr.Title AS title " +
-            "FROM CoreTracks AS tr";
+            "tr.Uri AS uri, tr.Title AS title, tr.Genre AS genre, "+
+            "tr.TrackNumber AS nr, tr.Duration AS duration, tr.BitRate AS bitrate " +
+            "FROM CoreTracks AS tr " +
+            "WHERE tr.MimeType='taglib/mp3' OR tr.MimeType='taglib/m4a';";
 
     private File db;
 
@@ -79,15 +82,20 @@ public class BansheePlugin implements MusicSource {
 
             Map<Integer, MusicArtist> artists = getArtists(connection);
             Map<Integer, MusicAlbum> albums = getAlbums(connection);
+            List<MusicGenre> genres = new ArrayList<MusicGenre>();
 
             statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(SELECT_TRACKS_V43);
+            ResultSet rs = statement.executeQuery(SELECT_MUSIC_TRACKS_V43);
             while (rs.next()) {
                 try {
                     int artistId = rs.getInt("artistId");
                     int albumId = rs.getInt("albumId");
                     File file = new File(new URI(rs.getString("uri")));
                     String title = rs.getString("title");
+                    String genreStr = rs.getString("genre");
+                    int trackNumber = rs.getInt("nr");
+                    int duration = rs.getInt("duration");
+                    int bitrate = rs.getInt("bitrate");
                     MusicTrack track = new MusicTrack(title, file);
                     MusicArtist artist = artists.get(artistId);
                     if (artist != null) {
@@ -96,6 +104,29 @@ public class BansheePlugin implements MusicSource {
                     MusicAlbum album = albums.get(albumId);
                     if (album != null) {
                         track.setAlbum(album);
+                    }
+                    if (genreStr != null && !genreStr.equals("")) {
+                        MusicGenre genre = null;
+                        for (MusicGenre g : genres) {
+                            if (g.getTitle().equals(genreStr)) {
+                                genre = g;
+                                break;
+                            }
+                        }
+                        if (genre == null) {
+                            genre = new MusicGenre(genreStr);
+                            genres.add(genre);
+                        }
+                        track.setGenre(genre);
+                    }
+                    if (trackNumber > 0) {
+                        track.setTrackNumber(trackNumber);
+                    }
+                    if (duration > 0) {
+                        track.setDuration(duration);
+                    }
+                    if (bitrate > 0) {
+                        track.setBitRate(bitrate);
                     }
                     tracks.add(track);
                 } catch (URISyntaxException ex) {
@@ -169,5 +200,16 @@ public class BansheePlugin implements MusicSource {
             }
         }
         return albums;
+    }
+
+    private MusicGenre getGenre(List<MusicGenre> genres, String genre) {
+        for (MusicGenre g : genres) {
+            if (g.getTitle().equals(genre)) {
+                return g;
+            }
+        }
+        MusicGenre g = new MusicGenre(genre);
+        genres.add(g);
+        return g;
     }
 }
