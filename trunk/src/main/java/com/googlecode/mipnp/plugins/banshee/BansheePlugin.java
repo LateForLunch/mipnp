@@ -201,15 +201,4 @@ public class BansheePlugin implements MusicSource {
         }
         return albums;
     }
-
-    private MusicGenre getGenre(List<MusicGenre> genres, String genre) {
-        for (MusicGenre g : genres) {
-            if (g.getTitle().equals(genre)) {
-                return g;
-            }
-        }
-        MusicGenre g = new MusicGenre(genre);
-        genres.add(g);
-        return g;
-    }
 }
