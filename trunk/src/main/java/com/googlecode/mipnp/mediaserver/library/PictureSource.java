@@ -24,9 +24,13 @@
  */
 package com.googlecode.mipnp.mediaserver.library;
 
+import java.util.List;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class PictureSource {
+public interface PictureSource {
+
+    public List<Picture> getPictures();
 }
