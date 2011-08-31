@@ -19,18 +19,24 @@
  */
 
 /*
- * VideoSource.java
- * Created on Aug 29, 2011, 12:50:59 PM
+ * Picture.java
+ * Created on Aug 31, 2011, 11:49:39 AM
  */
 package com.googlecode.mipnp.mediaserver.library;
 
-import java.util.List;
+import com.googlecode.mipnp.mediaserver.cds.CdsObject;
+import com.googlecode.mipnp.mediaserver.cds.Resource;
+import java.io.File;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface VideoSource {
+public class Picture extends CdsObject {
 
-    public List<Video> getVideos();
+    public Picture(String title, File pictureFile) {
+        super(UPNP_CLASS_PHOTO);
+        setTitle(title);
+        setResource(new Resource(pictureFile));
+    }
 }
