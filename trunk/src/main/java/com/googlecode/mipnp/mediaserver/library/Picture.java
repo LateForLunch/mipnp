@@ -25,7 +25,7 @@
 package com.googlecode.mipnp.mediaserver.library;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
-import com.googlecode.mipnp.mediaserver.cds.Resource;
+import com.googlecode.mipnp.mediaserver.cds.FileResource;
 import java.io.File;
 
 /**
@@ -37,6 +37,6 @@ public class Picture extends CdsObject {
     public Picture(String title, File pictureFile) {
         super(UPNP_CLASS_PHOTO);
         setTitle(title);
-        setResource(new Resource(pictureFile));
+        setResource(new FileResource(pictureFile));
     }
 }

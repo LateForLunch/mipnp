@@ -27,8 +27,8 @@ package com.googlecode.mipnp.mediaserver.library;
 import com.googlecode.mipnp.mediaserver.cds.Resource;
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +39,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class MediaServlet extends HttpServlet {
+
+    private static final int BUFFER_SIZE = 10240;
 
     private MediaLibrary library;
 
@@ -94,36 +96,48 @@ public class MediaServlet extends HttpServlet {
             response.setHeader("Content-Range",
                     "bytes " + start + "-" + end + "/" + res.getContentLength());
         }
+        response.setBufferSize(BUFFER_SIZE);
         response.setContentType(res.getMimeType());
         response.setHeader("Content-Length", String.valueOf(res.getContentLength()));
         response.setDateHeader("Date", System.currentTimeMillis());
         response.setDateHeader("Last-Modified", res.getLastModified());
 
-//        InputStream in = res.getInputStream();
-        RandomAccessFile in = res.getRandomAccessFile();
-        OutputStream out = response.getOutputStream();
+        InputStream in = null;
+        OutputStream out = null;
 
-//        for (int i = 0; i < start; i++) {
-//            in.read();
-//        }
-        if (start > 0) {
-            in.seek(start);
-        }
+        try {
+            in = res.getInputStream();
+            out = response.getOutputStream();
 
-        byte[] buf = new byte[1024];
-        int count = 0;
-        long todo = (end - start) + 1;
-        while ((count = in.read(buf)) > 0) {
-            todo -= count;
-            if (todo > 0) {
-                out.write(buf, 0, count);
-            } else {
-                out.write(buf, 0, (int) todo + count);
-                break;
+            if (start > 0) {
+                in.skip(start);
+            }
+
+            byte[] buf = new byte[BUFFER_SIZE];
+            int count = 0;
+            long todo = (end - start) + 1;
+            while ((count = in.read(buf)) > 0) {
+                todo -= count;
+                if (todo > 0) {
+                    out.write(buf, 0, count);
+                } else {
+                    out.write(buf, 0, (int) todo + count);
+                    break;
+                }
+            }
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ex) {
+                }
             }
         }
-
-        in.close();
-        out.close();
     }
 }

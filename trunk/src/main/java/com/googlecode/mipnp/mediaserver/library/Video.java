@@ -25,8 +25,11 @@
 package com.googlecode.mipnp.mediaserver.library;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
-import com.googlecode.mipnp.mediaserver.cds.Resource;
+import com.googlecode.mipnp.mediaserver.cds.FileResource;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  *
@@ -37,6 +40,20 @@ public class Video extends CdsObject {
     public Video(String title, File videoFile) {
         super(UPNP_CLASS_VIDEO_ITEM);
         setTitle(title);
-        setResource(new Resource(videoFile));
+        setResource(new FileResource(videoFile));
+    }
+
+    public String getDuration() {
+        return getProperty(PROPERTY_DURATION);
+    }
+
+    public void setDuration(int duration) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        setDuration(format.format(new Date(duration)));
+    }
+
+    public void setDuration(String duration) {
+        setProperty(PROPERTY_DURATION, duration);
     }
 }

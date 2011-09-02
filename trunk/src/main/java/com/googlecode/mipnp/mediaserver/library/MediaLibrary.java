@@ -52,7 +52,7 @@ public class MediaLibrary {
 //    public static final String ID_VIDEO_ACTOR = "A";
 //    public static final String ID_VIDEO_SERIES = "E";
 //    public static final String ID_VIDEO_PLAYLISTS = "10";
-//    public static final String ID_VIDEO_FOLDERS = "15";
+    public static final String ID_VIDEO_FOLDERS = "15";
 
     public static final String ID_PICTURES = "3";
     public static final String ID_PICTURES_ALL = "B";
@@ -60,7 +60,7 @@ public class MediaLibrary {
 //    public static final String ID_PICTURES_ALBUMS = "D";
 //    public static final String ID_PICTURES_KEYWORD = "D2";
 //    public static final String ID_PICTURES_PLAYLISTS = "11";
-//    public static final String ID_PICTURES_FOLDERS = "16";
+    public static final String ID_PICTURES_FOLDERS = "16";
 
     private CdsObject root;
 
@@ -72,9 +72,11 @@ public class MediaLibrary {
 
     private CdsObject video;
     private CdsObject videoAll;
+    private CdsObject videoFolders;
 
     private CdsObject pictures;
     private CdsObject picturesAll;
+    private CdsObject picturesFolders;
 
     public MediaLibrary() {
         init();
@@ -98,6 +100,20 @@ public class MediaLibrary {
                 album.addChild(track, false);
                 this.musicAlbum.addChild(album);
             }
+        }
+    }
+
+    public void addVideos(VideoSource source) {
+        for (Video v : source.getVideos()) {
+            videoAll.addChild(v);
+            videoFolders.addChild(v);
+        }
+    }
+
+    public void addPictures(PictureSource source) {
+        for (Picture p : source.getPictures()) {
+            picturesAll.addChild(p);
+            picturesFolders.addChild(p);
         }
     }
 
@@ -175,6 +191,14 @@ public class MediaLibrary {
                 ID_VIDEO, "Video");
         this.videoAll = CdsObjectFactory.createStorageFolder(
                 ID_VIDEO_ALL, "All Video");
+        // TODO: temp fix
+        CdsObject videoFoldersTemp = CdsObjectFactory.createStorageFolder(
+                ID_VIDEO_FOLDERS, "Folders");
+        this.videoFolders = CdsObjectFactory.createStorageFolder();
+        videoFolders.setTitle("All Videos");
+        videoFoldersTemp.addChild(videoFolders);
+        video.addChild(videoFoldersTemp);
+        // End temp fix
         video.addChild(videoAll);
 
         /*
@@ -184,6 +208,14 @@ public class MediaLibrary {
                 ID_PICTURES, "Pictures");
         this.picturesAll = CdsObjectFactory.createStorageFolder(
                 ID_PICTURES_ALL, "All Pictures");
+        // TODO: temp fix
+        CdsObject picturesFoldersTemp = CdsObjectFactory.createStorageFolder(
+                ID_PICTURES_FOLDERS, "Folders");
+        this.picturesFolders = CdsObjectFactory.createStorageFolder();
+        picturesFolders.setTitle("All Pictures");
+        picturesFoldersTemp.addChild(picturesFolders);
+        pictures.addChild(picturesFoldersTemp);
+        // End temp fix
         pictures.addChild(picturesAll);
 
         root.addChild(music);

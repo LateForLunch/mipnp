@@ -62,9 +62,10 @@ public class App {
             InetAddress localHost = InetTools.getLocalHost();
             UUID uuid = getUuid();
             MediaLibrary library = new MediaLibrary();
-//            library.addMedia(new File("/home/jochem/ushare/"));
             File bansheeDb = new File("src/main/resources/banshee/banshee.db");
-            library.addMusic(new BansheePlugin(bansheeDb));
+            BansheePlugin bansheePlugin = new BansheePlugin(bansheeDb);
+            library.addMusic(bansheePlugin);
+            library.addVideos(bansheePlugin);
 //            System.out.println(library.toString());
             String mediaServletLocation = "/cds";
             MediaServer mediaServer = new MediaServer(uuid, library);
