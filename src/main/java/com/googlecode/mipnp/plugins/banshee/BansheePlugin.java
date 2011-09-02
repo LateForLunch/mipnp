@@ -29,6 +29,8 @@ import com.googlecode.mipnp.mediaserver.library.MusicArtist;
 import com.googlecode.mipnp.mediaserver.library.MusicGenre;
 import com.googlecode.mipnp.mediaserver.library.MusicSource;
 import com.googlecode.mipnp.mediaserver.library.MusicTrack;
+import com.googlecode.mipnp.mediaserver.library.Video;
+import com.googlecode.mipnp.mediaserver.library.VideoSource;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,12 +43,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class BansheePlugin implements MusicSource {
+public class BansheePlugin implements MusicSource, VideoSource {
 
     private static final String SELECT_ARTISTS_V43 =
             "SELECT ar.ArtistID AS id, ar.Name AS name " +
@@ -63,6 +67,11 @@ public class BansheePlugin implements MusicSource {
             "tr.TrackNumber AS nr, tr.Duration AS duration, tr.BitRate AS bitrate " +
             "FROM CoreTracks AS tr " +
             "WHERE tr.MimeType='taglib/mp3' OR tr.MimeType='taglib/m4a';";
+
+    private static final String SELECT_VIDEOS_V43 =
+            "SELECT tr.Uri AS uri, tr.Title AS title, tr.Duration AS duration " +
+            "FROM CoreTracks AS tr " +
+            "WHERE tr.MimeType='taglib/avi';";
 
     private File db;
 
@@ -150,6 +159,50 @@ public class BansheePlugin implements MusicSource {
             }
         }
         return tracks;
+    }
+
+    public List<Video> getVideos() {
+        List<Video> videos = new ArrayList<Video>();
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            connection = DriverManager.getConnection(
+                    "jdbc:sqlite:" + db.getAbsolutePath());
+
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(SELECT_VIDEOS_V43);
+            while (rs.next()) {
+                try {
+                    File file = new File(new URI(rs.getString("uri")));
+                    String title = rs.getString("title");
+                    int duration = rs.getInt("duration");
+                    Video video = new Video(title, file);
+                    if (duration > 0) {
+                        video.setDuration(duration);
+                    }
+                    videos.add(video);
+                } catch (URISyntaxException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // TODO
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+        return videos;
     }
 
     private Map<Integer, MusicArtist> getArtists(Connection connection)

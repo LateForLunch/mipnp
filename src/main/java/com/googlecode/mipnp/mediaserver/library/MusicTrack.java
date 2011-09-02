@@ -25,7 +25,7 @@
 package com.googlecode.mipnp.mediaserver.library;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
-import com.googlecode.mipnp.mediaserver.cds.Resource;
+import com.googlecode.mipnp.mediaserver.cds.FileResource;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,7 +44,7 @@ public class MusicTrack extends CdsObject {
     public MusicTrack(String title, File musicTrack) {
         super(UPNP_CLASS_MUSIC_TRACK);
         setTitle(title);
-        setResource(new Resource(musicTrack));
+        setResource(new FileResource(musicTrack));
     }
 
     public MusicArtist getArtist() {

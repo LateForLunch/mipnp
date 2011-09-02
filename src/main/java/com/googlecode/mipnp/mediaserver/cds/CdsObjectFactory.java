@@ -24,49 +24,45 @@
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class CdsObjectFactory implements CdsConstants {
 
-    public static List<CdsObject> createItems(File directory) {
-        if (directory == null || directory.isFile()) {
-            throw new IllegalArgumentException(
-                    "directory may not be null or a file.");
-        }
-        List<CdsObject> items = new ArrayList<CdsObject>();
-        File[] files = directory.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()) {
-                items.addAll(createItems(files[i]));
-            } else {
-                items.add(createItem(files[i]));
-            }
-        }
-        return items;
-    }
+//    public static List<CdsObject> createItems(File directory) {
+//        if (directory == null || directory.isFile()) {
+//            throw new IllegalArgumentException(
+//                    "directory may not be null or a file.");
+//        }
+//        List<CdsObject> items = new ArrayList<CdsObject>();
+//        File[] files = directory.listFiles();
+//        for (int i = 0; i < files.length; i++) {
+//            if (files[i].isDirectory()) {
+//                items.addAll(createItems(files[i]));
+//            } else {
+//                items.add(createItem(files[i]));
+//            }
+//        }
+//        return items;
+//    }
 
-    public static CdsObject createItem(File file) {
-        if (file == null || file.isDirectory()) {
-            throw new IllegalArgumentException(
-                    "file may not be null or a directory.");
-        }
-        String mimeType = MIMETYPES.getContentType(file);
-        if (mimeType.startsWith("audio")) {
-            return createMusicTrack(file, mimeType);
-        } else if (mimeType.startsWith("video")) {
-            return createVideoItem(file, mimeType);
-        } else if (mimeType.startsWith("image")) {
-            return createPhoto(file, mimeType);
-        } else {
-            return null;
-        }
-    }
+//    public static CdsObject createItem(File file) {
+//        if (file == null || file.isDirectory()) {
+//            throw new IllegalArgumentException(
+//                    "file may not be null or a directory.");
+//        }
+//        String mimeType = MIMETYPES.getContentType(file);
+//        if (mimeType.startsWith("audio")) {
+//            return createMusicTrack(file, mimeType);
+//        } else if (mimeType.startsWith("video")) {
+//            return createVideoItem(file, mimeType);
+//        } else if (mimeType.startsWith("image")) {
+//            return createPhoto(file, mimeType);
+//        } else {
+//            return null;
+//        }
+//    }
 
     public static CdsObject createStorageFolder() {
         return new CdsObject(UPNP_CLASS_STORAGE_FOLDER);
@@ -80,36 +76,36 @@ public class CdsObjectFactory implements CdsConstants {
         return new CdsObject(UPNP_CLASS_STORAGE_FOLDER, id, title);
     }
 
-    public static CdsObject createMusicTrack(File file, String mimeType) {
-        CdsObject obj = new CdsObject(UPNP_CLASS_MUSIC_TRACK);
-        String title = file.getName();
-        title = title.substring(0, title.lastIndexOf('.'));
-        obj.setTitle(title);
-        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-        Resource res = new Resource(file, mimeType);
-        obj.setResource(res);
-        return obj;
-    }
+//    public static CdsObject createMusicTrack(File file, String mimeType) {
+//        CdsObject obj = new CdsObject(UPNP_CLASS_MUSIC_TRACK);
+//        String title = file.getName();
+//        title = title.substring(0, title.lastIndexOf('.'));
+//        obj.setTitle(title);
+//        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
+//        Resource res = new Resource(file, mimeType);
+//        obj.setResource(res);
+//        return obj;
+//    }
 
-    public static CdsObject createPhoto(File file, String mimeType) {
-        CdsObject obj = new CdsObject(UPNP_CLASS_PHOTO);
-        String title = file.getName();
-        title = title.substring(0, title.lastIndexOf('.'));
-        obj.setTitle(title);
-        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-        Resource res = new Resource(file, mimeType);
-        obj.setResource(res);
-        return obj;
-    }
+//    public static CdsObject createPhoto(File file, String mimeType) {
+//        CdsObject obj = new CdsObject(UPNP_CLASS_PHOTO);
+//        String title = file.getName();
+//        title = title.substring(0, title.lastIndexOf('.'));
+//        obj.setTitle(title);
+//        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
+//        Resource res = new Resource(file, mimeType);
+//        obj.setResource(res);
+//        return obj;
+//    }
 
-    public static CdsObject createVideoItem(File file, String mimeType) {
-        CdsObject obj = new CdsObject(UPNP_CLASS_VIDEO_ITEM);
-        String title = file.getName();
-        title = title.substring(0, title.lastIndexOf('.'));
-        obj.setTitle(title);
-        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-        Resource res = new Resource(file, mimeType);
-        obj.setResource(res);
-        return obj;
-    }
+//    public static CdsObject createVideoItem(File file, String mimeType) {
+//        CdsObject obj = new CdsObject(UPNP_CLASS_VIDEO_ITEM);
+//        String title = file.getName();
+//        title = title.substring(0, title.lastIndexOf('.'));
+//        obj.setTitle(title);
+//        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
+//        Resource res = new Resource(file, mimeType);
+//        obj.setResource(res);
+//        return obj;
+//    }
 }

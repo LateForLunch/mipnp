@@ -19,36 +19,50 @@
  */
 
 /*
- * Resource.java
- * Created on Aug 2, 2011, 3:34:56 PM
+ * FileResource.java
+ * Created on Sep 2, 2011, 11:31:04 AM
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public abstract class Resource {
+public class FileResource extends Resource {
 
-    private String mimeType;
+    private File file;
 
-    public Resource(String mimeType) {
-        this.mimeType = mimeType;
+    public FileResource(File file) {
+        this(file, CdsConstants.MIMETYPES.getContentType(file));
     }
 
-    public abstract InputStream getInputStream();
-
-    public abstract long getContentLength();
-
-    public abstract long getLastModified();
-
-    public String getMimeType() {
-        return mimeType;
+    public FileResource(File file, String mimeType) {
+        super(mimeType);
+        this.file = file;
     }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
+    @Override
+    public InputStream getInputStream() {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+        } catch (FileNotFoundException ex) {
+        }
+        return fis;
+    }
+
+    @Override
+    public long getContentLength() {
+        return file.length();
+    }
+
+    @Override
+    public long getLastModified() {
+        return file.lastModified();
     }
 }
