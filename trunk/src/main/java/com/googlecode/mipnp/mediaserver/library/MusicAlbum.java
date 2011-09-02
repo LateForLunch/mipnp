@@ -24,24 +24,36 @@
  */
 package com.googlecode.mipnp.mediaserver.library;
 
-import com.googlecode.mipnp.mediaserver.cds.CdsObject;
-
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class MusicAlbum extends CdsObject {
+public class MusicAlbum {
 
-    public MusicAlbum(String title) {
-        super(UPNP_CLASS_MUSIC_ALBUM);
-        setTitle(title);
+    private String title;
+    private String artist;
+
+    public MusicAlbum() {
+    }
+
+    public MusicAlbum(String title, String artist) {
+        this.title = title;
+        this.artist = artist;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getArtist() {
-        return getProperty(PROPERTY_ARTIST);
+        return artist;
     }
 
     public void setArtist(String artist) {
-        setProperty(PROPERTY_ARTIST, artist);
+        this.artist = artist;
     }
 }

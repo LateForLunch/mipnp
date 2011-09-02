@@ -24,8 +24,6 @@
  */
 package com.googlecode.mipnp.mediaserver.library;
 
-import com.googlecode.mipnp.mediaserver.cds.CdsObject;
-import com.googlecode.mipnp.mediaserver.cds.FileResource;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,25 +33,39 @@ import java.util.TimeZone;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class MusicTrack extends CdsObject {
+public class MusicTrack {
 
-    private MusicArtist artist;
+    private String title;
+    private String artist;
     private MusicAlbum album;
-    private MusicGenre genre;
+    private String genre;
+    private String duration;
+    private int trackNumber;
+    private int bitRate;
+    private File file;
 
-    public MusicTrack(String title, File musicTrack) {
-        super(UPNP_CLASS_MUSIC_TRACK);
-        setTitle(title);
-        setResource(new FileResource(musicTrack));
+    public MusicTrack() {
     }
 
-    public MusicArtist getArtist() {
+    public MusicTrack(String title, File file) {
+        this.title = title;
+        this.file = file;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getArtist() {
         return artist;
     }
 
-    public void setArtist(MusicArtist artist) {
+    public void setArtist(String artist) {
         this.artist = artist;
-        setProperty(PROPERTY_ARTIST, artist.getTitle());
     }
 
     public MusicAlbum getAlbum() {
@@ -62,20 +74,18 @@ public class MusicTrack extends CdsObject {
 
     public void setAlbum(MusicAlbum album) {
         this.album = album;
-        setProperty(PROPERTY_ALBUM, album.getTitle());
     }
 
-    public MusicGenre getGenre() {
+    public String getGenre() {
         return genre;
     }
 
-    public void setGenre(MusicGenre genre) {
+    public void setGenre(String genre) {
         this.genre = genre;
-        setProperty(PROPERTY_GENRE, genre.getTitle());
     }
 
     public String getDuration() {
-        return getProperty(PROPERTY_DURATION);
+        return duration;
     }
 
     public void setDuration(int duration) {
@@ -85,22 +95,30 @@ public class MusicTrack extends CdsObject {
     }
 
     public void setDuration(String duration) {
-        setProperty(PROPERTY_DURATION, duration);
+        this.duration = duration;
     }
 
     public int getTrackNumber() {
-        return Integer.parseInt(getProperty(PROPERTY_ORIGINAL_TRACK_NUMBER));
+        return trackNumber;
     }
 
-    public void setTrackNumber(int nr) {
-        setProperty(PROPERTY_ORIGINAL_TRACK_NUMBER, String.valueOf(nr));
+    public void setTrackNumber(int trackNumber) {
+        this.trackNumber = trackNumber;
     }
 
     public int getBitRate() {
-        return Integer.parseInt(getProperty(PROPERTY_BITRATE));
+        return bitRate;
     }
 
-    public void setBitRate(int bitrate) {
-        setProperty(PROPERTY_BITRATE, String.valueOf(bitrate));
+    public void setBitRate(int bitRate) {
+        this.bitRate = bitRate;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }

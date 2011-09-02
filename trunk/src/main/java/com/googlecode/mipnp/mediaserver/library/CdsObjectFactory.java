@@ -22,7 +22,11 @@
  * CdsObjectFactory.java
  * Created on Jul 28, 2011, 5:12:15 PM
  */
-package com.googlecode.mipnp.mediaserver.cds;
+package com.googlecode.mipnp.mediaserver.library;
+
+import com.googlecode.mipnp.mediaserver.cds.CdsConstants;
+import com.googlecode.mipnp.mediaserver.cds.CdsObject;
+import com.googlecode.mipnp.mediaserver.cds.FileResource;
 
 /**
  *
@@ -76,36 +80,54 @@ public class CdsObjectFactory implements CdsConstants {
         return new CdsObject(UPNP_CLASS_STORAGE_FOLDER, id, title);
     }
 
-//    public static CdsObject createMusicTrack(File file, String mimeType) {
-//        CdsObject obj = new CdsObject(UPNP_CLASS_MUSIC_TRACK);
-//        String title = file.getName();
-//        title = title.substring(0, title.lastIndexOf('.'));
-//        obj.setTitle(title);
-//        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-//        Resource res = new Resource(file, mimeType);
-//        obj.setResource(res);
-//        return obj;
-//    }
+    public static CdsObject createMusicItem(MusicTrack track) {
+        CdsObject item = new CdsObject(UPNP_CLASS_MUSIC_TRACK);
+        item.setTitle(track.getTitle());
+        item.setProperty(PROPERTY_ARTIST, track.getArtist());
+        MusicAlbum album = track.getAlbum();
+        if (album != null) {
+            item.setProperty(PROPERTY_ALBUM, album.getTitle());
+        }
+        item.setProperty(PROPERTY_GENRE, track.getGenre());
+        item.setProperty(PROPERTY_DURATION, track.getDuration());
+        if (track.getTrackNumber() > 0) {
+            item.setProperty(
+                    PROPERTY_ORIGINAL_TRACK_NUMBER,
+                    String.valueOf(track.getTrackNumber()));
+        }
+        if (track.getBitRate() > 0) {
+            item.setProperty(
+                    PROPERTY_BITRATE,
+                    String.valueOf(track.getBitRate()));
+        }
+        item.setResource(new FileResource(track.getFile()));
+        return item;
+    }
 
-//    public static CdsObject createPhoto(File file, String mimeType) {
-//        CdsObject obj = new CdsObject(UPNP_CLASS_PHOTO);
-//        String title = file.getName();
-//        title = title.substring(0, title.lastIndexOf('.'));
-//        obj.setTitle(title);
-//        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-//        Resource res = new Resource(file, mimeType);
-//        obj.setResource(res);
-//        return obj;
-//    }
+    public static CdsObject createMusicGenre(String name) {
+        CdsObject obj = new CdsObject(UPNP_CLASS_MUSIC_GENRE);
+        obj.setTitle(name);
+        return obj;
+    }
 
-//    public static CdsObject createVideoItem(File file, String mimeType) {
-//        CdsObject obj = new CdsObject(UPNP_CLASS_VIDEO_ITEM);
-//        String title = file.getName();
-//        title = title.substring(0, title.lastIndexOf('.'));
-//        obj.setTitle(title);
-//        obj.setProperty(PROPERTY_FOLDER, file.getParentFile().getName());
-//        Resource res = new Resource(file, mimeType);
-//        obj.setResource(res);
-//        return obj;
-//    }
+    public static CdsObject createMusicArtist(String name) {
+        CdsObject obj = new CdsObject(UPNP_CLASS_MUSIC_ARTIST);
+        obj.setTitle(name);
+        return obj;
+    }
+
+    public static CdsObject createMusicAlbum(MusicAlbum album) {
+        CdsObject obj = new CdsObject(UPNP_CLASS_MUSIC_ALBUM);
+        obj.setTitle(album.getTitle());
+        obj.setProperty(PROPERTY_ARTIST, album.getArtist());
+        return obj;
+    }
+
+    public static CdsObject createVideoItem(Video video) {
+        CdsObject item = new CdsObject(UPNP_CLASS_VIDEO_ITEM);
+        item.setTitle(video.getTitle());
+        item.setProperty(PROPERTY_DURATION, video.getDuration());
+        item.setResource(new FileResource(video.getFile()));
+        return item;
+    }
 }

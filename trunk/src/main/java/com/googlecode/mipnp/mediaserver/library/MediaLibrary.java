@@ -24,7 +24,6 @@
  */
 package com.googlecode.mipnp.mediaserver.library;
 
-import com.googlecode.mipnp.mediaserver.cds.CdsObjectFactory;
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
 import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import java.util.ArrayList;
@@ -84,29 +83,31 @@ public class MediaLibrary {
 
     public void addMusic(MusicSource source) {
         for (MusicTrack track : source.getMusicTracks()) {
-            musicAll.addChild(track);
-            MusicGenre genre = track.getGenre();
+            CdsObject item = CdsObjectFactory.createMusicItem(track);
+            musicAll.addChild(item);
+
+            CdsObject genre = getMusicGenre(track.getGenre());
             if (genre != null) {
-                genre.addChild(track, false);
-                this.musicGenre.addChild(genre);
+                genre.addChild(item, false);
             }
-            MusicArtist artist = track.getArtist();
+
+            CdsObject artist = getMusicArtist(track.getArtist());
             if (artist != null) {
-                artist.addChild(track, false);
-                this.musicArtist.addChild(artist);
+                artist.addChild(item, false);
             }
-            MusicAlbum album = track.getAlbum();
+
+            CdsObject album = getMusicAlbum(track.getAlbum());
             if (album != null) {
-                album.addChild(track, false);
-                this.musicAlbum.addChild(album);
+                album.addChild(item, false);
             }
         }
     }
 
     public void addVideos(VideoSource source) {
         for (Video v : source.getVideos()) {
-            videoAll.addChild(v);
-            videoFolders.addChild(v);
+            CdsObject item = CdsObjectFactory.createVideoItem(v);
+            videoAll.addChild(item);
+            videoFolders.addChild(item, false);
         }
     }
 
@@ -221,5 +222,51 @@ public class MediaLibrary {
         root.addChild(music);
         root.addChild(video);
         root.addChild(pictures);
+    }
+
+    private CdsObject getMusicGenre(String genre) {
+        if (genre == null || genre.equals("")) {
+            return null;
+        }
+        for (CdsObject obj : musicGenre.getChildren()) {
+            if (obj.getTitle().equals(genre)) {
+                return obj;
+            }
+        }
+        CdsObject obj = CdsObjectFactory.createMusicGenre(genre);
+        musicGenre.addChild(obj);
+        return obj;
+    }
+
+    private CdsObject getMusicArtist(String name) {
+        if (name == null || name.equals("")) {
+            return null;
+        }
+        for (CdsObject obj : musicArtist.getChildren()) {
+            if (obj.getTitle().equals(name)) {
+                return obj;
+            }
+        }
+        CdsObject obj = CdsObjectFactory.createMusicArtist(name);
+        musicArtist.addChild(obj);
+        return obj;
+    }
+
+    private CdsObject getMusicAlbum(MusicAlbum album) {
+        if (album == null) {
+            return null;
+        }
+        String title = album.getTitle();
+        if (title == null || title.equals("")) {
+            return null;
+        }
+        for (CdsObject obj : musicAlbum.getChildren()) {
+            if (obj.getTitle().equals(title)) {
+                return obj;
+            }
+        }
+        CdsObject obj = CdsObjectFactory.createMusicAlbum(album);
+        musicAlbum.addChild(obj);
+        return obj;
     }
 }
