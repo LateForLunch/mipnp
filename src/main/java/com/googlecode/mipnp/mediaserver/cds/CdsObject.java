@@ -44,16 +44,15 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
     private Resource resource;
     private Map<String, String> properties;
 
-    // TODO: change public to protected
     public CdsObject(String upnpClass) {
         this(upnpClass, null);
     }
 
-    protected CdsObject(String upnpClass, String id) {
+    public CdsObject(String upnpClass, String id) {
         this(upnpClass, id, null);
     }
 
-    protected CdsObject(String upnpClass, String id, String title) {
+    public CdsObject(String upnpClass, String id, String title) {
         if (!upnpClass.startsWith(UPNP_CLASS_ITEM) &&
                 !upnpClass.startsWith(UPNP_CLASS_CONTAINER)) {
 

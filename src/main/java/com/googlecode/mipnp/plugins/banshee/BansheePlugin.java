@@ -25,8 +25,6 @@
 package com.googlecode.mipnp.plugins.banshee;
 
 import com.googlecode.mipnp.mediaserver.library.MusicAlbum;
-import com.googlecode.mipnp.mediaserver.library.MusicArtist;
-import com.googlecode.mipnp.mediaserver.library.MusicGenre;
 import com.googlecode.mipnp.mediaserver.library.MusicSource;
 import com.googlecode.mipnp.mediaserver.library.MusicTrack;
 import com.googlecode.mipnp.mediaserver.library.Video;
@@ -43,8 +41,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -52,20 +48,19 @@ import java.util.logging.Logger;
  */
 public class BansheePlugin implements MusicSource, VideoSource {
 
-    private static final String SELECT_ARTISTS_V43 =
-            "SELECT ar.ArtistID AS id, ar.Name AS name " +
-            "FROM CoreArtists AS ar;";
-
     private static final String SELECT_ALBUMS_V43 =
             "SELECT al.AlbumID AS id, al.Title AS title, " +
             "al.ArtistName AS artist " +
-            "FROM CoreAlbums AS al;";
+            "FROM CoreAlbums AS al " +
+            "WHERE al.Title IS NOT NULL;";
 
     private static final String SELECT_MUSIC_TRACKS_V43 =
-            "SELECT tr.ArtistID AS artistId, tr.AlbumID AS albumId, " +
-            "tr.Uri AS uri, tr.Title AS title, tr.Genre AS genre, "+
-            "tr.TrackNumber AS nr, tr.Duration AS duration, tr.BitRate AS bitrate " +
+            "SELECT tr.Title AS title, ar.Name AS artist, tr.AlbumID AS albumId, " +
+            "tr.Genre AS genre, tr.Duration AS duration, tr.TrackNumber AS nr, " +
+            "tr.BitRate AS bitRate, tr.Uri AS uri " +
             "FROM CoreTracks AS tr " +
+            "LEFT JOIN CoreArtists AS ar " +
+            "ON tr.ArtistID=ar.ArtistID " +
             "WHERE tr.MimeType='taglib/mp3' OR tr.MimeType='taglib/m4a';";
 
     private static final String SELECT_VIDEOS_V43 =
@@ -86,78 +81,33 @@ public class BansheePlugin implements MusicSource, VideoSource {
         Statement statement = null;
 
         try {
-            connection = DriverManager.getConnection(
-                    "jdbc:sqlite:" + db.getAbsolutePath());
-
-            Map<Integer, MusicArtist> artists = getArtists(connection);
+            connection = getConnection();
             Map<Integer, MusicAlbum> albums = getAlbums(connection);
-            List<MusicGenre> genres = new ArrayList<MusicGenre>();
-
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(SELECT_MUSIC_TRACKS_V43);
+
             while (rs.next()) {
                 try {
-                    int artistId = rs.getInt("artistId");
-                    int albumId = rs.getInt("albumId");
-                    File file = new File(new URI(rs.getString("uri")));
-                    String title = rs.getString("title");
-                    String genreStr = rs.getString("genre");
-                    int trackNumber = rs.getInt("nr");
-                    int duration = rs.getInt("duration");
-                    int bitrate = rs.getInt("bitrate");
-                    MusicTrack track = new MusicTrack(title, file);
-                    MusicArtist artist = artists.get(artistId);
-                    if (artist != null) {
-                        track.setArtist(artist);
-                    }
-                    MusicAlbum album = albums.get(albumId);
-                    if (album != null) {
-                        track.setAlbum(album);
-                    }
-                    if (genreStr != null && !genreStr.equals("")) {
-                        MusicGenre genre = null;
-                        for (MusicGenre g : genres) {
-                            if (g.getTitle().equals(genreStr)) {
-                                genre = g;
-                                break;
-                            }
-                        }
-                        if (genre == null) {
-                            genre = new MusicGenre(genreStr);
-                            genres.add(genre);
-                        }
-                        track.setGenre(genre);
-                    }
-                    if (trackNumber > 0) {
-                        track.setTrackNumber(trackNumber);
-                    }
-                    if (duration > 0) {
-                        track.setDuration(duration);
-                    }
-                    if (bitrate > 0) {
-                        track.setBitRate(bitrate);
-                    }
+                    MusicTrack track = new MusicTrack();
+                    track.setTitle(rs.getString("title"));
+                    track.setArtist(rs.getString("artist"));
+                    track.setAlbum(albums.get(rs.getInt("albumId")));
+                    track.setGenre(rs.getString("genre"));
+                    track.setDuration(rs.getInt("duration"));
+                    track.setTrackNumber(rs.getInt("nr"));
+                    track.setBitRate(rs.getInt("bitRate"));
+                    track.setFile(new File(new URI(rs.getString("uri"))));
                     tracks.add(track);
                 } catch (URISyntaxException ex) {
-                    ex.printStackTrace(); // TODO
+                    // Ignore record
                 }
             }
         } catch (SQLException ex) {
-            ex.printStackTrace(); // TODO
         } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException ex) {
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                }
-            }
+            close(statement);
+            close(connection);
         }
+
         return tracks;
     }
 
@@ -167,66 +117,27 @@ public class BansheePlugin implements MusicSource, VideoSource {
         Statement statement = null;
 
         try {
-            connection = DriverManager.getConnection(
-                    "jdbc:sqlite:" + db.getAbsolutePath());
-
+            connection = getConnection();
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(SELECT_VIDEOS_V43);
+
             while (rs.next()) {
                 try {
-                    File file = new File(new URI(rs.getString("uri")));
-                    String title = rs.getString("title");
-                    int duration = rs.getInt("duration");
-                    Video video = new Video(title, file);
-                    if (duration > 0) {
-                        video.setDuration(duration);
-                    }
+                    Video video = new Video();
+                    video.setTitle(rs.getString("title"));
+                    video.setFile(new File(new URI(rs.getString("uri"))));
                     videos.add(video);
                 } catch (URISyntaxException ex) {
-                    ex.printStackTrace();
+                    // Ignore record
                 }
             }
         } catch (SQLException ex) {
-            ex.printStackTrace(); // TODO
         } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException ex) {
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                }
-            }
+            close(statement);
+            close(connection);
         }
+
         return videos;
-    }
-
-    private Map<Integer, MusicArtist> getArtists(Connection connection)
-            throws SQLException {
-
-        Map<Integer, MusicArtist> artists = new HashMap<Integer, MusicArtist>();
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(SELECT_ARTISTS_V43);
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                if (name != null && !name.equals("")) {
-                    MusicArtist artist = new MusicArtist(name);
-                    artists.put(id, artist);
-                }
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
-        return artists;
     }
 
     private Map<Integer, MusicAlbum> getAlbums(Connection connection)
@@ -234,24 +145,44 @@ public class BansheePlugin implements MusicSource, VideoSource {
 
         Map<Integer, MusicAlbum> albums = new HashMap<Integer, MusicAlbum>();
         Statement statement = null;
+
         try {
             statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(SELECT_ALBUMS_V43);
+
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String title = rs.getString("title");
-                String artistName = rs.getString("artist");
-                if (title != null && !title.equals("")) {
-                    MusicAlbum album = new MusicAlbum(title);
-                    album.setArtist(artistName);
-                    albums.put(id, album);
-                }
+                MusicAlbum album = new MusicAlbum();
+                album.setTitle(rs.getString("title"));
+                album.setArtist(rs.getString("artist"));
+                albums.put(rs.getInt("id"), album);
             }
         } finally {
-            if (statement != null) {
+            close(statement);
+        }
+
+        return albums;
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                "jdbc:sqlite:" + db.getAbsolutePath());
+    }
+
+    private void close(Statement statement) {
+        if (statement != null) {
+            try {
                 statement.close();
+            } catch (SQLException ex) {
             }
         }
-        return albums;
+    }
+
+    private void close(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+            }
+        }
     }
 }
