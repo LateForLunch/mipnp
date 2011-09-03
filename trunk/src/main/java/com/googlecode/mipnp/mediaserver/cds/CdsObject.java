@@ -120,7 +120,9 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
     }
 
     public void setProperty(String property, String value) {
-        properties.put(property, value);
+        if (value != null) {
+            properties.put(property, value);
+        }
     }
 
     public boolean containsProperty(String property) {
