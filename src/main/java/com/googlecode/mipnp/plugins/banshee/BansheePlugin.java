@@ -126,6 +126,7 @@ public class BansheePlugin implements MusicSource, VideoSource {
                     Video video = new Video();
                     video.setTitle(rs.getString("title"));
                     video.setFile(new File(new URI(rs.getString("uri"))));
+                    video.setDuration(1000); // TODO
                     videos.add(video);
                 } catch (URISyntaxException ex) {
                     // Ignore record
