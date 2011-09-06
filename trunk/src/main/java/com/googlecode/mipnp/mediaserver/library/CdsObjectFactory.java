@@ -57,12 +57,14 @@ public class CdsObjectFactory implements CdsConstants {
 //                    "file may not be null or a directory.");
 //        }
 //        String mimeType = MIMETYPES.getContentType(file);
+//        String title = file.getName();
+//        title = title.substring(0, title.lastIndexOf('.'));
 //        if (mimeType.startsWith("audio")) {
-//            return createMusicTrack(file, mimeType);
+//            return createMusicItem(new MusicTrack(title, file));
 //        } else if (mimeType.startsWith("video")) {
-//            return createVideoItem(file, mimeType);
+//            return createVideoItem(new Video(title, file));
 //        } else if (mimeType.startsWith("image")) {
-//            return createPhoto(file, mimeType);
+//            return null; // TODO: createPhoto(file, mimeType);
 //        } else {
 //            return null;
 //        }
