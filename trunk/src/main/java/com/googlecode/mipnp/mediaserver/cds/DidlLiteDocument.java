@@ -24,8 +24,9 @@
  */
 package com.googlecode.mipnp.mediaserver.cds;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -45,6 +46,14 @@ public class DidlLiteDocument {
     private static final Namespace NS_UPNP =
             Namespace.getNamespace("upnp", "urn:schemas-upnp-org:metadata-1-0/upnp/");
 
+    private static final List<String> REQUIRED_PROPERTIES = Arrays.asList(
+            CdsConstants.PROPERTY_ID,
+            CdsConstants.PROPERTY_PARENT_ID,
+            CdsConstants.PROPERTY_TITLE,
+            CdsConstants.PROPERTY_CLASS,
+            CdsConstants.PROPERTY_RESTRICTED
+    );
+
     private URL mediaLocation;
     private String filter;
     private Document document;
@@ -62,26 +71,14 @@ public class DidlLiteDocument {
         Element element = null;
         if (obj.isContainer()) {
             element = new Element("container", NS_DEFAULT);
-            element.setAttribute(CdsConstants.PROPERTY_SEARCHABLE, "true");
+            addProperty(element, obj, CdsConstants.PROPERTY_SEARCHABLE, "true");
         } else {
             element = new Element("item", NS_DEFAULT);
         }
 
-        element.setAttribute(CdsConstants.PROPERTY_ID, obj.getId());
-        element.setAttribute(CdsConstants.PROPERTY_PARENT_ID, obj.getParentId());
-        element.setAttribute(CdsConstants.PROPERTY_RESTRICTED, "true");
-
-        Element upnpClass = new Element(
-                removePrefix(CdsConstants.PROPERTY_CLASS),
-                getNamespace(CdsConstants.PROPERTY_CLASS));
-        upnpClass.setText(obj.getUpnpClass());
-        element.addContent(upnpClass);
-
-        Element title = new Element(
-                removePrefix(CdsConstants.PROPERTY_TITLE),
-                getNamespace(CdsConstants.PROPERTY_TITLE));
-        title.setText(obj.getTitle());
-        element.addContent(title);
+        for (String reqProp : REQUIRED_PROPERTIES) {
+            addProperty(element, obj, reqProp);
+        }
 
         // TODO: temp fix, res location should be added to CdsObject as a property
         Resource res = obj.getResource();
@@ -92,16 +89,21 @@ public class DidlLiteDocument {
             resEl.setText(mediaLocation.toString() + "/" + obj.getId());
             element.addContent(resEl);
         }
+        // END temp fix
 
         if (filter.equals("*")) {
             for (String property : obj.getProperties()) {
-                addProperty(element, obj, property);
+                if (!REQUIRED_PROPERTIES.contains(property)) {
+                    addProperty(element, obj, property);
+                }
             }
         } else {
             String[] filterParts = filter.split("(?<!\\\\),");
             for (int i = 0; i < filterParts.length; i++) {
                 filterParts[i] = filterParts[i].replaceAll("\\\\,", ",");
-                addProperty(element, obj, filterParts[i]);
+                if (!REQUIRED_PROPERTIES.contains(filterParts[i])) {
+                    addProperty(element, obj, filterParts[i]);
+                }
             }
         }
 
@@ -111,7 +113,6 @@ public class DidlLiteDocument {
     @Override
     public String toString() {
         Format format = Format.getRawFormat();
-//        Format format = Format.getPrettyFormat();
         format.setOmitDeclaration(true);
         XMLOutputter outputter = new XMLOutputter(format);
         return outputter.outputString(document);
@@ -135,35 +136,39 @@ public class DidlLiteDocument {
         if (!obj.containsProperty(property)) {
             return;
         }
-        String propertyValue = obj.getProperty(property);
-        String strParentElement = property;
-        if (strParentElement.contains("@")) {
-            strParentElement =
-                    strParentElement.substring(0, strParentElement.indexOf('@'));
-        }
-        Element parentElement = element.getChild(
-                removePrefix(strParentElement), getNamespace(strParentElement));
-        if (parentElement == null) {
-            parentElement = new Element(
-                    removePrefix(strParentElement),
-                    getNamespace(strParentElement));
-            parentElement.setText(obj.getProperty(strParentElement));
-            element.addContent(parentElement);
-        }
+        addProperty(element, obj, property, obj.getProperty(property));
+    }
+
+    private void addProperty(
+            Element element, CdsObject obj,
+            String property, String propertyValue) {
+
         if (property.contains("@")) {
+            Element parentElement = null;
+            String strParentElement = property.substring(0, property.indexOf('@'));
+            if (strParentElement.equals("")) {
+                parentElement = element;
+            } else {
+                parentElement = element.getChild(
+                        removePrefix(strParentElement),
+                        getNamespace(strParentElement));
+                if (parentElement == null) {
+                    parentElement = new Element(
+                            removePrefix(strParentElement),
+                            getNamespace(strParentElement));
+                    parentElement.setText(obj.getProperty(strParentElement));
+                    element.addContent(parentElement);
+                }
+            }
             parentElement.setAttribute(
                     property.substring(property.indexOf('@') + 1),
                     propertyValue);
+        } else {
+            Element newElement = new Element(
+                    removePrefix(property),
+                    getNamespace(property));
+            newElement.setText(propertyValue);
+            element.addContent(newElement);
         }
-    }
-
-    public static void main(String[] args) throws MalformedURLException {
-        DidlLiteDocument doc = new DidlLiteDocument(
-                new URL("http://localhost:9090"), "upnp:artist@role");
-        CdsObject obj = new CdsObject(
-                CdsConstants.UPNP_CLASS_STORAGE_FOLDER, "1", "testTitle");
-        obj.setProperty("upnp:artist@role", "someRole");
-        doc.addCdsObject(obj);
-        System.out.println(doc.toString());
     }
 }

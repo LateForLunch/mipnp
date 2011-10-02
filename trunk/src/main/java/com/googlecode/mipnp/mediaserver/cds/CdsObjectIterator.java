@@ -34,19 +34,17 @@ import java.util.LinkedList;
 public class CdsObjectIterator implements Iterator<CdsObject> {
 
     private LinkedList<CdsObject> cache;
-    private LinkedList<CdsObject> containers;
 
     public CdsObjectIterator(CdsObject start) {
         if (start.isItem()) {
             throw new IllegalArgumentException("Can't iterate an item");
         }
         this.cache = new LinkedList<CdsObject>();
-        this.containers = new LinkedList<CdsObject>();
         addObjects(start);
     }
 
     public boolean hasNext() {
-        if (cache.isEmpty() && containers.isEmpty()) {
+        if (cache.isEmpty()) {
             return false;
         }
         return true;
@@ -54,22 +52,19 @@ public class CdsObjectIterator implements Iterator<CdsObject> {
 
     public CdsObject next() {
         CdsObject next = cache.poll();
-        if (cache.isEmpty() && !containers.isEmpty()) {
-            addObjects(containers.poll());
+        if (next.isContainer()) {
+            addObjects(next);
         }
         return next;
     }
 
     public void remove() {
-        throw new UnsupportedOperationException("Not supported.");
+        throw new UnsupportedOperationException("Remove is not supported.");
     }
 
     private void addObjects(CdsObject container) {
         for (CdsObject child : container.getChildren()) {
             cache.add(child);
-            if (child.isContainer()) {
-                containers.add(child);
-            }
         }
     }
 }

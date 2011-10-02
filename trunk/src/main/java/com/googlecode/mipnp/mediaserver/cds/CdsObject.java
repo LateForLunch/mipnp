@@ -71,11 +71,13 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
             properties.put(PROPERTY_ID, id);
         }
         properties.put(PROPERTY_TITLE, title);
+        properties.put(PROPERTY_RESTRICTED, "true");
         if (upnpClass.startsWith(UPNP_CLASS_ITEM)) {
             this.container = false;
         } else {
             this.container = true;
             this.children = new ArrayList<CdsObject>();
+            properties.put(PROPERTY_SEARCHABLE, "true");
         }
     }
 
@@ -148,6 +150,7 @@ public class CdsObject implements CdsConstants, Iterable<CdsObject> {
                 }
             }
             children.add(child);
+            setProperty(PROPERTY_CHILD_COUNT, String.valueOf(children.size()));
         }
     }
 

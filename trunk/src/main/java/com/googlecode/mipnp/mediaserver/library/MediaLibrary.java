@@ -25,6 +25,7 @@
 package com.googlecode.mipnp.mediaserver.library;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
+import com.googlecode.mipnp.mediaserver.cds.CdsObjectIterator;
 import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +124,7 @@ public class MediaLibrary {
             return root;
         }
         for (CdsObject obj : root) {
-            if (id.equals(obj.getId())) {
+            if (obj.getId().equals(id)) {
                 return obj;
             }
         }
