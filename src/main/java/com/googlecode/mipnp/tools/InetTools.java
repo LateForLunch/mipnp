@@ -70,6 +70,11 @@ public class InetTools {
             nis = NetworkInterface.getNetworkInterfaces();
             while (nis.hasMoreElements()) {
                 NetworkInterface ni = nis.nextElement();
+                // TODO: temp fix
+                if (!ni.getDisplayName().startsWith("eth")) {
+                    continue;
+                }
+                // END temp fix
                 Enumeration<InetAddress> ias = ni.getInetAddresses();
                 while (ias.hasMoreElements()) {
                     InetAddress ia = ias.nextElement();
