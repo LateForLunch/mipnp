@@ -33,22 +33,31 @@ import java.util.LinkedList;
  */
 public class CdsObjectIterator implements Iterator<CdsObject> {
 
-    private LinkedList<CdsObject> objects;
+    private LinkedList<CdsObject> cache;
+    private LinkedList<CdsObject> containers;
 
     public CdsObjectIterator(CdsObject start) {
         if (start.isItem()) {
             throw new IllegalArgumentException("Can't iterate an item");
         }
-        this.objects = new LinkedList<CdsObject>();
+        this.cache = new LinkedList<CdsObject>();
+        this.containers = new LinkedList<CdsObject>();
         addObjects(start);
     }
 
     public boolean hasNext() {
-        return !objects.isEmpty();
+        if (cache.isEmpty() && containers.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     public CdsObject next() {
-        return objects.poll();
+        CdsObject next = cache.poll();
+        if (cache.isEmpty() && !containers.isEmpty()) {
+            addObjects(containers.poll());
+        }
+        return next;
     }
 
     public void remove() {
@@ -56,10 +65,10 @@ public class CdsObjectIterator implements Iterator<CdsObject> {
     }
 
     private void addObjects(CdsObject container) {
-        objects.addAll(container.getChildren());
-        for (CdsObject obj : container.getChildren()) {
-            if (obj.isContainer()) {
-                addObjects(obj);
+        for (CdsObject child : container.getChildren()) {
+            cache.add(child);
+            if (child.isContainer()) {
+                containers.add(child);
             }
         }
     }
