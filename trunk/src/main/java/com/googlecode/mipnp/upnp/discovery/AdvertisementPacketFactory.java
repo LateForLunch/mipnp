@@ -26,7 +26,7 @@ package com.googlecode.mipnp.upnp.discovery;
 
 import com.googlecode.mipnp.ssdp.SsdpConstants;
 import com.googlecode.mipnp.ssdp.SsdpRequest;
-import com.googlecode.mipnp.tools.ServerTools;
+import com.googlecode.mipnp.tools.OsTools;
 import com.googlecode.mipnp.upnp.Device;
 import com.googlecode.mipnp.upnp.RootDevice;
 import com.googlecode.mipnp.upnp.Service;
@@ -132,7 +132,7 @@ class AdvertisementPacketFactory implements SsdpConstants {
         request.setHeader("NT", notificationType);
         request.setHeader("NTS", "ssdp:alive");
         request.setHeader("SERVER",
-                ServerTools.getOsName() + "/" + ServerTools.getOsVersion() +
+                OsTools.getOsName() + "/" + OsTools.getOsVersion() +
                 " UPnP/1.1 MiPnP/1.0"); // TODO: UPnP version and MiPnP version
         request.setHeader("USN", uniqueServiceName);
         request.setHeader("BOOTID.UPNP.ORG", String.valueOf(bootId));

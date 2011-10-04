@@ -19,7 +19,7 @@
  */
 
 /*
- * MediaServer.java
+ * MediaServerDevice.java
  * Created on Jun 26, 2011, 4:39:23 PM
  */
 package com.googlecode.mipnp.mediaserver;
@@ -33,11 +33,11 @@ import java.util.UUID;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class MediaServer extends AbstractRootDevice {
+public class MediaServerDevice extends AbstractRootDevice {
 
     private ContentDirectory cd;
 
-    public MediaServer(UUID uuid, MediaLibrary library) {
+    public MediaServerDevice(UUID uuid, MediaLibrary library) {
         setMajorUpnpVersion(1);
         setMinorUpnpVersion(1);
         setVendorDomainName("upnp.org");
@@ -62,7 +62,7 @@ public class MediaServer extends AbstractRootDevice {
         addService(new MSContentDirectoryWrapper(cd));
     }
 
-    public void setMediaLocation(URL location) {
-        cd.setMediaLocation(location);
+    public void setMediaServletPath(URL path) {
+        cd.setMediaServletPath(path);
     }
 }

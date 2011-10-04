@@ -52,7 +52,7 @@ public class ContentDirectory extends ServiceImpl {
             "src/main/resources/mediaserver/ContentDirectory-1.xml";
 
     private MediaLibrary library;
-    private URL mediaLocation;
+    private URL mediaServletPath;
 
     public ContentDirectory(MediaLibrary library) {
         super("ContentDirectory", "ContentDirectory", 1);
@@ -88,7 +88,7 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
-        DidlLiteDocument doc = new DidlLiteDocument(mediaLocation, filter);
+        DidlLiteDocument doc = new DidlLiteDocument(mediaServletPath, filter);
 
         CdsObject obj = library.getObjectById(objectId);
         if (obj == null) {
@@ -155,7 +155,7 @@ public class ContentDirectory extends ServiceImpl {
             @WebParam(name="UpdateID", mode=WebParam.Mode.OUT)
             Holder<Integer> updateId) {
 
-        DidlLiteDocument doc = new DidlLiteDocument(mediaLocation, filter);
+        DidlLiteDocument doc = new DidlLiteDocument(mediaServletPath, filter);
 
         CdsObject start = library.getObjectById(containerId);
         if (start == null || start.isItem()) {
@@ -257,11 +257,11 @@ public class ContentDirectory extends ServiceImpl {
         System.out.println("TODO: implement ContentDirectory.updateObject"); // TODO
     }
 
-    public URL getMediaLocation() {
-        return mediaLocation;
+    public URL getMediaServletPath() {
+        return mediaServletPath;
     }
 
-    public void setMediaLocation(URL location) {
-        this.mediaLocation = location;
+    public void setMediaServletPath(URL path) {
+        this.mediaServletPath = path;
     }
 }

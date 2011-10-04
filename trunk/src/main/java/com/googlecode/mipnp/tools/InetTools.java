@@ -48,43 +48,54 @@ public class InetTools {
     public static InetAddress getLocalHost() throws UnknownHostException {
         InetAddress localHost = InetAddress.getLocalHost();
         if (localHost.isLoopbackAddress()) {
-            InetAddress[] addrs = getAllAddresses();
-            for (int i = 0; i < addrs.length; i++) {
-                if (!addrs[i].isLoopbackAddress()) {
-                    return addrs[i];
+            InetAddress[] addrs;
+            try {
+                addrs = getInetAddresses();
+                for (int i = 0; i < addrs.length; i++) {
+                    if (!addrs[i].isLoopbackAddress()) {
+                        return addrs[i];
+                    }
                 }
+            } catch (SocketException ex) {
             }
         }
         return localHost;
     }
 
     /**
+     * Gets the first IPv4 address of a network interface that can be found.
+     * @param ni the network interface
+     * @return the fist IPv4 address of the given network interface or null
+     */
+    public static InetAddress getInetAddress(NetworkInterface ni) {
+        Enumeration<InetAddress> addrs = ni.getInetAddresses();
+        while (addrs.hasMoreElements()) {
+            InetAddress addr = addrs.nextElement();
+            if (isIPv4(addr.getAddress())) {
+                return addr;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns all available IPv4 addresses.
      * @return all available IPv4 addresses
      */
-    public static InetAddress[] getAllAddresses() {
+    public static InetAddress[] getInetAddresses() throws SocketException {
         List<InetAddress> addresses = new ArrayList<InetAddress>();
         Enumeration<NetworkInterface> nis;
 
-        try {
-            nis = NetworkInterface.getNetworkInterfaces();
-            while (nis.hasMoreElements()) {
-                NetworkInterface ni = nis.nextElement();
-                // TODO: temp fix
-                if (!ni.getDisplayName().startsWith("eth")) {
-                    continue;
-                }
-                // END temp fix
-                Enumeration<InetAddress> ias = ni.getInetAddresses();
-                while (ias.hasMoreElements()) {
-                    InetAddress ia = ias.nextElement();
-                    if (isIPv4(ia.getAddress())) {
-                        addresses.add(ia);
-                    }
+        nis = NetworkInterface.getNetworkInterfaces();
+        while (nis.hasMoreElements()) {
+            NetworkInterface ni = nis.nextElement();
+            Enumeration<InetAddress> ias = ni.getInetAddresses();
+            while (ias.hasMoreElements()) {
+                InetAddress ia = ias.nextElement();
+                if (isIPv4(ia.getAddress())) {
+                    addresses.add(ia);
                 }
             }
-        } catch (SocketException ex) {
-            ex.printStackTrace();
         }
 
         InetAddress[] ret = new InetAddress[addresses.size()];
@@ -100,22 +111,4 @@ public class InetTools {
     public static boolean isIPv4(byte[] ip) {
         return (ip.length == 4 ? true : false);
     }
-
-    /*
-     * Get the IP address of a network interface.
-     * @param interf the network interface
-     * @return the IP address of the given network interface or null if nothing was found
-     * @throws SocketException if there was an error while retrieving the network interface
-     */
-//    public static InetAddress interfaceToIp(NetworkInterface nic) {
-//        Enumeration<InetAddress> ias = nic.getInetAddresses();
-//        while (ias.hasMoreElements()) {
-//            InetAddress ia = ias.nextElement();
-//            // Only support for IPv4 for now
-//            if (isIPv4(ia.getAddress())) {
-//                return ia;
-//            }
-//        }
-//        return null;
-//    }
 }

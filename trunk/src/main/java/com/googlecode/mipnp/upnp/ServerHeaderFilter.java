@@ -24,7 +24,7 @@
  */
 package com.googlecode.mipnp.upnp;
 
-import com.googlecode.mipnp.tools.ServerTools;
+import com.googlecode.mipnp.tools.OsTools;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -43,7 +43,7 @@ class ServerHeaderFilter implements Filter {
     private String server;
 
     public ServerHeaderFilter(RootDevice rootDevice) {
-        this.server = ServerTools.getOsName() + "/" + ServerTools.getOsVersion();
+        this.server = OsTools.getOsName() + "/" + OsTools.getOsVersion();
         server += " UPnP/" + rootDevice.getMajorUpnpVersion() + ".";
         server += rootDevice.getMinorUpnpVersion();
         server += " MiPnP/1.0"; // TODO: MiPnP version
