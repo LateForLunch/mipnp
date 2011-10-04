@@ -20,10 +20,11 @@
 
 /*
  * MainController.java
- * Created on Oct 4, 2011, 2:43:03 PM
+ * Created on Oct 4, 2011, 4:58:30 PM
  */
-package com.googlecode.mipnp.cli;
+package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.cli.MainCli;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.library.MediaServlet;
@@ -38,6 +39,7 @@ import java.io.ObjectOutputStream;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -51,8 +53,11 @@ public class MainController {
     private UpnpServer upnpServer;
     private MediaServerDevice mediaServerDevice;
     private MediaLibrary mediaLibrary;
+    private Properties properties;
 
-    public MainController() {
+    public MainController(String[] args) {
+        // TODO: parse args
+        MainCli mainCli = new MainCli(this);
     }
 
     public void init()
@@ -94,6 +99,22 @@ public class MainController {
     public void stop() throws Exception {
         upnpServer.stop();
         upnpServer.join();
+    }
+
+    protected String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+
+    protected void setProperty(String key, String value) {
+        properties.setProperty(key, value);
+    }
+
+    protected void loadProperties() {
+        // TODO
+    }
+
+    protected void storeProperties() {
+        // TODO
     }
 
     /*

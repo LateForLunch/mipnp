@@ -17,16 +17,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * MiPnP.java
+ * Created on Oct 4, 2011, 5:20:15 PM
+ */
 package com.googlecode.mipnp;
 
-import com.googlecode.mipnp.cli.MainCli;
-import com.googlecode.mipnp.cli.MainController;
+import com.googlecode.mipnp.controller.MainController;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class App {
+public class MiPnP {
 
     public static void main(String[] args) {
 //        String busFactory =
@@ -34,8 +38,7 @@ public class App {
 //        System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
 //                "org.apache.cxf.bus.CXFBusFactory");
 
-        MainController controller = new MainController();
-        MainCli cli = new MainCli(controller);
+        MainController controller = new MainController(args);
 
 //            File mediaDir = new File("/home/jochem/ushare");
 //            FileSystemSource fss = new FileSystemSource(mediaDir);
