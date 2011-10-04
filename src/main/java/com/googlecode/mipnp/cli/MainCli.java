@@ -24,6 +24,7 @@
  */
 package com.googlecode.mipnp.cli;
 
+import com.googlecode.mipnp.controller.MainController;
 import java.util.Scanner;
 
 /**
