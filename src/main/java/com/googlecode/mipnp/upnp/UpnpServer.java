@@ -24,6 +24,7 @@
  */
 package com.googlecode.mipnp.upnp;
 
+import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.discovery.DiscoveryServer;
 import com.googlecode.mipnp.upnp.description.DeviceDescriptionServlet;
 import com.googlecode.mipnp.upnp.description.ServiceDescriptionServlet;
@@ -56,6 +57,7 @@ public class UpnpServer {
     private static final String CONTROL = "/control";
 
     private RootDevice rootDevice;
+    private NetworkInterface networkInterface;
     private InetAddress bindAddr;
 
     private Server httpServer;
@@ -64,10 +66,26 @@ public class UpnpServer {
 
     public UpnpServer(
             RootDevice rootDevice,
+            NetworkInterface networkInterface) {
+
+        this(rootDevice, networkInterface, InetTools.getInetAddress(networkInterface));
+    }
+
+    public UpnpServer(
+            RootDevice rootDevice,
             InetAddress bindAddr)
             throws SocketException {
 
+        this(rootDevice, NetworkInterface.getByInetAddress(bindAddr), bindAddr);
+    }
+
+    public UpnpServer(
+            RootDevice rootDevice,
+            NetworkInterface networkInterface,
+            InetAddress bindAddr) {
+
         this.rootDevice = rootDevice;
+        this.networkInterface = networkInterface;
         this.bindAddr = bindAddr;
 
         initHttpServer();
@@ -123,10 +141,10 @@ public class UpnpServer {
         this.httpServer = new Server(httpBindAddr);
         context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
-//        EnumSet<DispatcherType> set = EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR);
-        EnumSet<DispatcherType> set = EnumSet.allOf(DispatcherType.class);
+        EnumSet<DispatcherType> dispatches = EnumSet.allOf(DispatcherType.class);
         context.addFilter(
-                new FilterHolder(new ServerHeaderFilter(rootDevice)), "/*", set);
+                new FilterHolder(new ServerHeaderFilter(rootDevice)),
+                "/*", dispatches);
         httpServer.setHandler(context);
 
         Servlet descriptionServlet = new DeviceDescriptionServlet(rootDevice);
@@ -135,27 +153,22 @@ public class UpnpServer {
                 DEVICE_DESCRIPTION);
 
         for (Service service : rootDevice.getServices()) {
-            URI serviceDescUri = null;
             try {
-                serviceDescUri =
+                URI serviceDescUri =
                         new URI("/" + service.getId().toLowerCase() + ".xml");
+                service.setDescriptionUri(serviceDescUri);
+                context.addServlet(new ServletHolder(
+                        new ServiceDescriptionServlet(rootDevice, service)),
+                        serviceDescUri.toASCIIString());
             } catch (URISyntaxException ex) {
-                // TODO: check if this can happen
-                ex.printStackTrace();
+                // Ignore service
             }
-            service.setDescriptionUri(serviceDescUri);
-            context.addServlet(new ServletHolder(
-                    new ServiceDescriptionServlet(rootDevice, service)),
-                    serviceDescUri.toASCIIString());
         }
 
         // TODO: ServiceDescriptionServlet for services from embedded devices
 
         CXFNonSpringServlet cxf = new CXFNonSpringServlet();
         ServletHolder servletHolder = new ServletHolder(cxf);
-//        servletHolder.setName("soap");
-//        servletHolder.setForcedPath("soap");
-//        context.addServlet(servletHolder, "/*");
         servletHolder.setName("action");
         servletHolder.setForcedPath("action");
         context.addServlet(servletHolder, CONTROL + "/*");
@@ -164,9 +177,7 @@ public class UpnpServer {
         BusFactory.setDefaultBus(bus);
     }
 
-    private void initAdvertiser() throws SocketException {
-        NetworkInterface ni = NetworkInterface.getByInetAddress(bindAddr);
-        System.out.println("NetworkInterface: " + ni.getName());
-        this.advertiser = new DiscoveryServer(rootDevice, bindAddr, ni);
+    private void initAdvertiser() {
+        this.advertiser = new DiscoveryServer(rootDevice, bindAddr, networkInterface);
     }
 }

@@ -19,7 +19,7 @@
  */
 
 /*
- * ServerTools.java
+ * OsTools.java
  * Created on Dec 5, 2010, 12:26:12 PM
  */
 package com.googlecode.mipnp.tools;
@@ -28,7 +28,7 @@ package com.googlecode.mipnp.tools;
  * This class provides static methods to get more info about the OS.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class ServerTools {
+public class OsTools {
 
     /**
      * Get the OS name.
