@@ -84,9 +84,8 @@ public class InetTools {
      */
     public static InetAddress[] getInetAddresses() throws SocketException {
         List<InetAddress> addresses = new ArrayList<InetAddress>();
-        Enumeration<NetworkInterface> nis;
+        Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
 
-        nis = NetworkInterface.getNetworkInterfaces();
         while (nis.hasMoreElements()) {
             NetworkInterface ni = nis.nextElement();
             Enumeration<InetAddress> ias = ni.getInetAddresses();
@@ -110,5 +109,25 @@ public class InetTools {
      */
     public static boolean isIPv4(byte[] ip) {
         return (ip.length == 4 ? true : false);
+    }
+
+    /**
+     * Returns the display names of the network interfaces.<br/>
+     * This method filters out the loopback interfaces.
+     * @return the display names of the network interfaces
+     * @throws SocketException if an I/O error occurs
+     */
+    public static String[] getNetworkInterfaceNames() throws SocketException {
+        List<String> result = new ArrayList<String>();
+        Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+
+        while (nis.hasMoreElements()) {
+            NetworkInterface ni = nis.nextElement();
+            if (!ni.isLoopback()) {
+                result.add(ni.getDisplayName());
+            }
+        }
+
+        return result.toArray(new String[result.size()]);
     }
 }

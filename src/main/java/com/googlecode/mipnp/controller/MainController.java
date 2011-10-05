@@ -25,10 +25,13 @@
 package com.googlecode.mipnp.controller;
 
 import com.googlecode.mipnp.cli.MainCli;
+import com.googlecode.mipnp.gui.ConfigFrame;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.library.MediaServlet;
+import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.UpnpServer;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,8 +42,11 @@ import java.io.ObjectOutputStream;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.UUID;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  *
@@ -56,8 +62,24 @@ public class MainController {
     private Properties properties;
 
     public MainController(String[] args) {
-        // TODO: parse args
-        MainCli mainCli = new MainCli(this);
+        // TODO: parse args and read config file
+        this.properties = new Properties();
+        // Test whether or not a display is supported
+        if (GraphicsEnvironment.isHeadless()) {
+            MainCli mainCli = new MainCli(this);
+        } else {
+            try {
+                // Set system look & feel
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                // Fall back to default look & feel
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    ConfigFrame frame = new ConfigFrame(MainController.this);
+                }
+            });
+        }
     }
 
     public void init()
@@ -99,6 +121,45 @@ public class MainController {
     public void stop() throws Exception {
         upnpServer.stop();
         upnpServer.join();
+    }
+
+    public String[] getNetworkInterfaces() throws SocketException {
+        return InetTools.getNetworkInterfaceNames();
+    }
+
+    public String getLocalHostNetworkInterface()
+            throws UnknownHostException, SocketException {
+
+        NetworkInterface ni =
+                NetworkInterface.getByInetAddress(InetTools.getLocalHost());
+        if (ni != null) {
+            return ni.getDisplayName();
+        } else {
+            return "";
+        }
+    }
+
+    public boolean isFirstRun() {
+        return getPropertyAsBoolean("first-run", false);
+    }
+
+    public boolean isDisplayConfigOnStartup() {
+        return getPropertyAsBoolean("display-config-on-startup", false);
+    }
+
+    protected boolean getPropertyAsBoolean(String key, boolean defaultValue) {
+        String value = getProperty(key);
+        if (value == null) {
+            return defaultValue;
+        } else {
+            if (value.equalsIgnoreCase("true")) {
+                return true;
+            } else if (value.equalsIgnoreCase("false")) {
+                return false;
+            } else {
+                return defaultValue;
+            }
+        }
     }
 
     protected String getProperty(String key) {
