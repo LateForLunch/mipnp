@@ -37,7 +37,8 @@ public class ConfigFrame extends JFrame {
     public ConfigFrame(MainController controller) throws HeadlessException {
         super("MiPnP");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        getContentPane().add(new ConfigPanel(controller));
+//        getContentPane().add(new ConfigPanel(controller));
+        getContentPane().add(new MediaPanel(controller));
         pack();
         setLocationRelativeTo(null);
         setVisible(true);

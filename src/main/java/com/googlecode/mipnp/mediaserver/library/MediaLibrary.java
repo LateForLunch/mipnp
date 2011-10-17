@@ -25,7 +25,6 @@
 package com.googlecode.mipnp.mediaserver.library;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
-import com.googlecode.mipnp.mediaserver.cds.CdsObjectIterator;
 import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import java.util.ArrayList;
 import java.util.List;

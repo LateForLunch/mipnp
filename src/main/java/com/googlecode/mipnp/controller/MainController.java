@@ -27,8 +27,10 @@ package com.googlecode.mipnp.controller;
 import com.googlecode.mipnp.cli.MainCli;
 import com.googlecode.mipnp.gui.ConfigFrame;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
+import com.googlecode.mipnp.mediaserver.library.FileSystemSource;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.library.MediaServlet;
+import com.googlecode.mipnp.plugins.banshee.BansheePlugin;
 import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import java.awt.GraphicsEnvironment;
@@ -92,6 +94,18 @@ public class MainController {
 //                "org.apache.cxf.bus.CXFBusFactory");
 
         this.mediaLibrary = new MediaLibrary();
+
+//        File bansheeDb = new File("src/main/resources/banshee/banshee.db");
+//        BansheePlugin bansheePlugin = new BansheePlugin(bansheeDb);
+//        mediaLibrary.addMusic(bansheePlugin);
+//        mediaLibrary.addVideos(bansheePlugin);
+
+//        File mediaDir = new File("/home/jochem/ushare");
+//        FileSystemSource fss = new FileSystemSource(mediaDir);
+//        mediaLibrary.addMusic(fss);
+//        mediaLibrary.addVideos(fss);
+//        mediaLibrary.addPictures(fss);
+
         this.mediaServerDevice = new MediaServerDevice(getUuid(), mediaLibrary);
         this.upnpServer = new UpnpServer(
                 mediaServerDevice, NetworkInterface.getByName("eth0"));
@@ -140,7 +154,7 @@ public class MainController {
     }
 
     public boolean isFirstRun() {
-        return getPropertyAsBoolean("first-run", false);
+        return getPropertyAsBoolean("first-run", true);
     }
 
     public boolean isDisplayConfigOnStartup() {
