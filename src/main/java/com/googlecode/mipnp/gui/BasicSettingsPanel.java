@@ -19,41 +19,43 @@
  */
 
 /*
- * ConfigFrame.java
- * Created on Oct 5, 2011, 3:26:34 PM
+ * BasicSettingsPanel.java
+ * Created on Oct 18, 2011, 1:44:31 PM
  */
 package com.googlecode.mipnp.gui;
 
 import com.googlecode.mipnp.controller.MainController;
-import java.awt.HeadlessException;
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class ConfigFrame extends JFrame {
+public class BasicSettingsPanel extends JPanel {
 
     private MainController controller;
 
-    public ConfigFrame(MainController controller) throws HeadlessException {
-        super("MiPnP");
+    public BasicSettingsPanel(MainController controller) {
         this.controller = controller;
         init();
     }
 
     private void init() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-        JTabbedPane tabbedPane = new JTabbedPane();
+        ListModel listModel = new DefaultListModel();
+        JList lst_media = new JList(listModel);
+        lst_media.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-//        getContentPane().add(new ConfigPanel(controller));
-//        getContentPane().add(new MediaPanel(controller));
-        getContentPane().add(tabbedPane);
-
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        JScrollPane listScrollPane = new JScrollPane(lst_media);
+        listScrollPane.setPreferredSize(new Dimension(400, 200));
+        add(listScrollPane, BorderLayout.CENTER);
     }
 }
