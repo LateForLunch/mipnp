@@ -20,7 +20,7 @@
 
 /*
  * MediaSource.java
- * Created on Aug 25, 2011, 3:05:27 PM
+ * Created on Oct 18, 2011, 2:16:22 PM
  */
 package com.googlecode.mipnp.mediaserver.library;
 
@@ -30,7 +30,11 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface MusicSource {
+public interface MediaSource {
 
     public List<MusicTrack> getMusicTracks();
+
+    public List<Video> getVideos();
+
+    public List<Picture> getPictures();
 }

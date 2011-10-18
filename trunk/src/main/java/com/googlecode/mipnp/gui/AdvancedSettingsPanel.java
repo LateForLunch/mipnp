@@ -19,7 +19,7 @@
  */
 
 /*
- * ConfigPanel.java
+ * AdvancedSettingsPanel.java
  * Created on Oct 5, 2011, 3:34:32 PM
  */
 package com.googlecode.mipnp.gui;
@@ -41,13 +41,13 @@ import javax.swing.JTextField;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class ConfigPanel extends JPanel {
+class AdvancedSettingsPanel extends JPanel {
 
     private static final Insets DEFAULT_INSETS = new Insets(5, 5, 5, 5);
 
     private MainController controller;
 
-    public ConfigPanel(MainController controller) {
+    public AdvancedSettingsPanel(MainController controller) {
         this.controller = controller;
         init();
     }
@@ -111,15 +111,6 @@ class ConfigPanel extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.weightx = 0.0;
         add(chk_display, gbc);
-
-        JButton btn_start = new JButton("Start");
-        gbc.gridy = 4;
-        gbc.gridwidth = 1;
-        add(btn_start, gbc);
-
-        JButton btn_cancel = new JButton("Cancel");
-        gbc.gridx = 1;
-        add(btn_cancel, gbc);
     }
 
     private void displayError(String message) {
