@@ -19,43 +19,45 @@
  */
 
 /*
- * ConfigFrame.java
- * Created on Oct 5, 2011, 3:26:34 PM
+ * SettingsPanel.java
+ * Created on Oct 18, 2011, 1:57:46 PM
  */
 package com.googlecode.mipnp.gui;
 
 import com.googlecode.mipnp.controller.MainController;
-import java.awt.HeadlessException;
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class ConfigFrame extends JFrame {
+public class SettingsPanel extends JPanel {
 
     private MainController controller;
 
-    public ConfigFrame(MainController controller) throws HeadlessException {
-        super("MiPnP");
+    public SettingsPanel(MainController controller) {
         this.controller = controller;
         init();
     }
 
     private void init() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-//        JTabbedPane tabbedPane = new JTabbedPane();
-//        tabbedPane.addTab("Basic Settings", new BasicSettingsPanel(controller));
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        tabbedPane.addTab("Basic Settings", new BasicSettingsPanel(controller));
+        tabbedPane.addTab("Advanced Settings", new AdvancedSettingsPanel(controller));
+        add(tabbedPane, BorderLayout.CENTER);
 
-//        getContentPane().add(new ConfigPanel(controller));
-//        getContentPane().add(new MediaPanel(controller));
-//        getContentPane().add(tabbedPane);
-        getContentPane().add(new SettingsPanel(controller));
-
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        JPanel pnl_pageEnd = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        pnl_pageEnd.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        JButton btn_close = new JButton("Close");
+        pnl_pageEnd.add(btn_close);
+        add(pnl_pageEnd, BorderLayout.PAGE_END);
     }
 }

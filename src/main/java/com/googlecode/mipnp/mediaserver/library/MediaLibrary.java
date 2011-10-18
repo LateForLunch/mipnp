@@ -81,41 +81,10 @@ public class MediaLibrary {
         init();
     }
 
-    public void addMusic(MusicSource source) {
-        for (MusicTrack track : source.getMusicTracks()) {
-            CdsObject item = CdsObjectFactory.createMusicItem(track);
-            musicAll.addChild(item);
-
-            CdsObject genre = getMusicGenre(track.getGenre());
-            if (genre != null) {
-                genre.addChild(item, false);
-            }
-
-            CdsObject artist = getMusicArtist(track.getArtist());
-            if (artist != null) {
-                artist.addChild(item, false);
-            }
-
-            CdsObject album = getMusicAlbum(track.getAlbum());
-            if (album != null) {
-                album.addChild(item, false);
-            }
-        }
-    }
-
-    public void addVideos(VideoSource source) {
-        for (Video v : source.getVideos()) {
-            CdsObject item = CdsObjectFactory.createVideoItem(v);
-            videoAll.addChild(item);
-            videoFolders.addChild(item, false);
-        }
-    }
-
-    public void addPictures(PictureSource source) {
-        for (Picture p : source.getPictures()) {
-            picturesAll.addChild(p);
-            picturesFolders.addChild(p);
-        }
+    public void addMedia(MediaSource source) {
+        addMusic(source);
+        addVideos(source);
+        addPictures(source);
     }
 
     public CdsObject getObjectById(String id) {
@@ -222,6 +191,55 @@ public class MediaLibrary {
         root.addChild(music);
         root.addChild(video);
         root.addChild(pictures);
+    }
+
+    private void addMusic(MediaSource source) {
+        List<MusicTrack> musicTracks = source.getMusicTracks();
+        if (musicTracks == null) {
+            return;
+        }
+        for (MusicTrack track : musicTracks) {
+            CdsObject item = CdsObjectFactory.createMusicItem(track);
+            musicAll.addChild(item);
+
+            CdsObject genre = getMusicGenre(track.getGenre());
+            if (genre != null) {
+                genre.addChild(item, false);
+            }
+
+            CdsObject artist = getMusicArtist(track.getArtist());
+            if (artist != null) {
+                artist.addChild(item, false);
+            }
+
+            CdsObject album = getMusicAlbum(track.getAlbum());
+            if (album != null) {
+                album.addChild(item, false);
+            }
+        }
+    }
+
+    private void addVideos(MediaSource source) {
+        List<Video> videos = source.getVideos();
+        if (videos == null) {
+            return;
+        }
+        for (Video v : videos) {
+            CdsObject item = CdsObjectFactory.createVideoItem(v);
+            videoAll.addChild(item);
+            videoFolders.addChild(item, false); // TODO: fix folders
+        }
+    }
+
+    private void addPictures(MediaSource source) {
+        List<Picture> pics = source.getPictures();
+        if (pics == null) {
+            return;
+        }
+        for (Picture p : pics) {
+            picturesAll.addChild(p);
+            picturesFolders.addChild(p); // TODO: fix folders
+        }
     }
 
     private CdsObject getMusicGenre(String genre) {

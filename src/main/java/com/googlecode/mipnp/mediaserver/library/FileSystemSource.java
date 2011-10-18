@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class FileSystemSource implements MusicSource, VideoSource, PictureSource {
+public class FileSystemSource implements MediaSource {
 
     private List<MusicTrack> musicTracks;
     private List<Video> videos;

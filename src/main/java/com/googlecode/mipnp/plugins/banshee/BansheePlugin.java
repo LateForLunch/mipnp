@@ -24,11 +24,11 @@
  */
 package com.googlecode.mipnp.plugins.banshee;
 
+import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.mediaserver.library.MusicAlbum;
-import com.googlecode.mipnp.mediaserver.library.MusicSource;
 import com.googlecode.mipnp.mediaserver.library.MusicTrack;
+import com.googlecode.mipnp.mediaserver.library.Picture;
 import com.googlecode.mipnp.mediaserver.library.Video;
-import com.googlecode.mipnp.mediaserver.library.VideoSource;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class BansheePlugin implements MusicSource, VideoSource {
+public class BansheePlugin implements MediaSource {
 
     private static final String SELECT_ALBUMS_V43 =
             "SELECT al.AlbumID AS id, al.Title AS title, " +
@@ -69,6 +69,10 @@ public class BansheePlugin implements MusicSource, VideoSource {
             "WHERE tr.MimeType='taglib/avi';";
 
     private File db;
+
+    public BansheePlugin() {
+        // TODO
+    }
 
     public BansheePlugin(File bansheeDb) throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
@@ -139,6 +143,10 @@ public class BansheePlugin implements MusicSource, VideoSource {
         }
 
         return videos;
+    }
+
+    public List<Picture> getPictures() {
+        return null;
     }
 
     private Map<Integer, MusicAlbum> getAlbums(Connection connection)

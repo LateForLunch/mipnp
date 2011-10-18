@@ -19,18 +19,34 @@
  */
 
 /*
- * VideoSource.java
- * Created on Aug 29, 2011, 12:50:59 PM
+ * PluginEngine.java
+ * Created on Oct 18, 2011, 2:29:13 PM
  */
-package com.googlecode.mipnp.mediaserver.library;
+package com.googlecode.mipnp.plugins;
 
-import java.util.List;
+import com.googlecode.mipnp.mediaserver.library.MediaSource;
+import com.googlecode.mipnp.plugins.banshee.BansheePlugin;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface VideoSource {
+public class PluginEngine {
 
-    public List<Video> getVideos();
+    /*
+     * TODO: dynamic plugin lookup/loading
+     */
+
+    private static final String[] PLUGINS = {"Banshee Plugin"};
+
+    public PluginEngine() {
+    }
+
+    public String[] getPluginNames() {
+        return PLUGINS;
+    }
+
+    public MediaSource loadPluginByName(String name) throws Exception {
+        return new BansheePlugin();
+    }
 }
