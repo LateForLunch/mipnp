@@ -27,6 +27,7 @@ package com.googlecode.mipnp.controller;
 import com.googlecode.mipnp.cli.MainCli;
 import com.googlecode.mipnp.gui.PreferencesFrame;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
+import com.googlecode.mipnp.mediaserver.library.FileSystemSource;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.library.MediaServlet;
 import com.googlecode.mipnp.tools.InetTools;
@@ -58,8 +59,11 @@ public class MainController {
     private static final String MEDIA_SERVLET_PATH = "/cds";
 
     private static final String PROPERTY_FIRST_RUN = "first-run";
-    private static final String PROPERTY_DISPLAY_CONFIG = "display-preferences";
+    private static final String PROPERTY_DISPLAY_PREFERENCES = "display-preferences";
     private static final String PROPERTY_MEDIA_DIRS = "media-dirs";
+    private static final String PROPERTY_FRIENDLY_NAME = "friendly-name";
+    private static final String PROPERTY_NETWORK_INTERFACE = "network-interface";
+    private static final String PROPERTY_HTTP_PORT = "http-port";
 
     private UpnpServer upnpServer;
     private MediaServerDevice mediaServerDevice;
@@ -67,27 +71,8 @@ public class MainController {
     private Properties properties;
 
     public MainController(String[] args) {
-        // TODO: parse args and read config file
         this.properties = new Properties();
-
-        // Test whether or not a display is supported
-        if (GraphicsEnvironment.isHeadless()) {
-            MainCli mainCli = new MainCli(this);
-        } else {
-            try {
-                // Set system look & feel
-                UIManager.setLookAndFeel(
-                        UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception ex) {
-                // Fall back to default look & feel
-            }
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    PreferencesFrame frame =
-                            new PreferencesFrame(MainController.this);
-                }
-            });
-        }
+        init();
     }
 
 //    public void init() {
@@ -116,14 +101,32 @@ public class MainController {
         }
 
         this.mediaLibrary = new MediaLibrary();
-        MediaServlet mediaServlet = new MediaServlet(mediaLibrary);
+
+        String str_mediaDirs = getProperty(PROPERTY_MEDIA_DIRS);
+        if (str_mediaDirs != null) {
+            String[] mediaDirs = str_mediaDirs.split(
+                    Pattern.quote(File.pathSeparator));
+            for (String mediaDir : mediaDirs) {
+                File mediaFile = new File(mediaDir);
+                if (mediaFile.exists() && mediaFile.isDirectory()) {
+                    FileSystemSource fss = new FileSystemSource(mediaFile);
+                    mediaLibrary.addMedia(fss);
+                }
+            }
+        }
 
         this.mediaServerDevice = new MediaServerDevice(getUuid(), mediaLibrary);
+        mediaServerDevice.setFriendlyName(getFriendlyName());
+
         this.upnpServer = new UpnpServer(
-                mediaServerDevice, NetworkInterface.getByName("eth0")); // TODO
+                mediaServerDevice,
+                NetworkInterface.getByName(getNetworkInterface()));
+
+        MediaServlet mediaServlet = new MediaServlet(mediaLibrary);
         upnpServer.addServlet(mediaServlet, MEDIA_SERVLET_PATH + "/*");
 
         upnpServer.start();
+
         URL mediaServletPath = new URL(
                 "http",
                 upnpServer.getHttpAddress().getHostAddress(),
@@ -172,9 +175,12 @@ public class MainController {
         }
     }
 
+    /*
+     * Properties
+     */
     public void addMediaDirectory(String path) {
         File directory = new File(path);
-        if (!directory.exists()) {
+        if (!directory.exists() || !directory.isDirectory()) {
             return;
         }
         String dirs = getProperty(PROPERTY_MEDIA_DIRS);
@@ -196,12 +202,47 @@ public class MainController {
         setProperty(PROPERTY_MEDIA_DIRS, dirs);
     }
 
-    public boolean isFirstRun() {
-        return getPropertyAsBoolean(PROPERTY_FIRST_RUN, true);
+    public String getFriendlyName() {
+        return getProperty(PROPERTY_FRIENDLY_NAME);
     }
 
-    public boolean isDisplayConfig() {
-        return getPropertyAsBoolean(PROPERTY_DISPLAY_CONFIG, false);
+    public void setFriendlyName(String friendlyName) {
+        setProperty(PROPERTY_FRIENDLY_NAME, friendlyName);
+    }
+
+    public String getNetworkInterface() {
+        return getProperty(PROPERTY_NETWORK_INTERFACE);
+    }
+
+    public void setNetworkInterface(String interf) {
+        setProperty(PROPERTY_NETWORK_INTERFACE, interf);
+    }
+
+    public int getHttpPort() {
+        String prop = getProperty(PROPERTY_HTTP_PORT);
+        int port = 0;
+        try {
+            port = Integer.parseInt(prop);
+        } catch (NumberFormatException ex) {
+        }
+        return port;
+    }
+
+    public void setHttpPort(int port) {
+        setProperty(PROPERTY_HTTP_PORT, String.valueOf(port));
+    }
+
+    public boolean getDisplayPreferences() {
+        return getPropertyAsBoolean(PROPERTY_DISPLAY_PREFERENCES, false);
+    }
+
+    public void setDisplayPreferences(boolean displayPreferences) {
+        setProperty(PROPERTY_DISPLAY_PREFERENCES,
+                String.valueOf(displayPreferences));
+    }
+
+    public boolean isFirstRun() {
+        return getPropertyAsBoolean(PROPERTY_FIRST_RUN, true);
     }
 
     protected boolean getPropertyAsBoolean(String key, boolean defaultValue) {
@@ -233,6 +274,29 @@ public class MainController {
 
     protected void storeProperties() {
         // TODO
+    }
+
+    private void init() {
+        // TODO: parse args and read config file
+
+        // Test whether or not a display is supported
+        if (GraphicsEnvironment.isHeadless()) {
+            MainCli mainCli = new MainCli(this);
+        } else {
+            try {
+                // Set system look & feel
+                UIManager.setLookAndFeel(
+                        UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                // Fall back to default look & feel
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    PreferencesFrame frame =
+                            new PreferencesFrame(MainController.this);
+                }
+            });
+        }
     }
 
     /*

@@ -40,11 +40,16 @@ import javax.swing.JTextField;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class AdvancedPreferencesPanel extends JPanel {
+class AdvancedPreferencesPanel
+extends JPanel implements PreferencesCloseListener {
 
     private static final Insets DEFAULT_INSETS = new Insets(5, 5, 5, 5);
 
     private MainController controller;
+    private JTextField txt_name;
+    private JComboBox cmb_networkinterface;
+    private JTextField txt_port;
+    private JCheckBox chk_displayWindow;
 
     public AdvancedPreferencesPanel(MainController controller) {
         this.controller = controller;
@@ -55,7 +60,7 @@ class AdvancedPreferencesPanel extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JLabel lbl_name = new JLabel("Display Name:");
+        JLabel lbl_name = new JLabel("Friendly Name:");
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.LINE_END;
@@ -66,11 +71,11 @@ class AdvancedPreferencesPanel extends JPanel {
         gbc.gridy = 1;
         add(lbl_networkinterface, gbc);
 
-        JLabel lbl_port = new JLabel("Port:");
+        JLabel lbl_port = new JLabel("HTTP Port:");
         gbc.gridy = 2;
         add(lbl_port, gbc);
 
-        JTextField txt_name = new JTextField("MiPnP", 12);
+        this.txt_name = new JTextField(controller.getFriendlyName(), 12);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -85,23 +90,20 @@ class AdvancedPreferencesPanel extends JPanel {
             nis = new String[] {"An error occurred"};
             displayError(ex.getMessage());
         }
-        JComboBox cmb_networkinterface = new JComboBox(nis);
-        try {
-            cmb_networkinterface.setSelectedItem(
-                    controller.getLocalHostNetworkInterface());
-        } catch (Exception ex) {
-            // Ignore
-        }
+        this.cmb_networkinterface = new JComboBox(nis);
+        cmb_networkinterface.setSelectedItem(
+                controller.getNetworkInterface());
         gbc.gridy = 1;
         add(cmb_networkinterface, gbc);
 
-        JTextField txt_port = new JTextField("0");
+        this.txt_port = new JTextField(
+                String.valueOf(controller.getHttpPort()));
         gbc.gridy = 2;
         add(txt_port, gbc);
 
-        JCheckBox chk_display = new JCheckBox("Display this window on startup");
-        if (!controller.isFirstRun() && controller.isDisplayConfig()) {
-            chk_display.setSelected(true);
+        this.chk_displayWindow = new JCheckBox("Display this window on startup");
+        if (!controller.isFirstRun() && controller.getDisplayPreferences()) {
+            chk_displayWindow.setSelected(true);
         }
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -109,13 +111,26 @@ class AdvancedPreferencesPanel extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.weightx = 0.0;
-        add(chk_display, gbc);
+        add(chk_displayWindow, gbc);
+    }
+
+    public void preferencesClosing() {
+        controller.setFriendlyName(txt_name.getText());
+        controller.setNetworkInterface(
+                (String) cmb_networkinterface.getSelectedItem());
+        try {
+            int port = Integer.parseInt(txt_port.getText());
+            controller.setHttpPort(port);
+        } catch (NumberFormatException ex) {
+        }
+        controller.setDisplayPreferences(chk_displayWindow.isSelected());
     }
 
     private void displayError(String message) {
         JOptionPane.showMessageDialog(
                 this,
-                "An error occurred. More info:\n" + message,
+                "An error occurred.\n" +
+                "Details: " + message,
                 "MiPnP - An Error Occurred",
                 JOptionPane.ERROR_MESSAGE);
     }
