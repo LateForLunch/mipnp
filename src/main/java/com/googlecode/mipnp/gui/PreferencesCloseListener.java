@@ -19,43 +19,16 @@
  */
 
 /*
- * PreferencesFrame.java
- * Created on Oct 5, 2011, 3:26:34 PM
+ * PreferencesCloseListener.java
+ * Created on Oct 21, 2011, 4:07:00 PM
  */
 package com.googlecode.mipnp.gui;
-
-import com.googlecode.mipnp.controller.MainController;
-import java.awt.HeadlessException;
-import javax.swing.JFrame;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class PreferencesFrame
-extends JFrame implements PreferencesCloseListener {
+public interface PreferencesCloseListener {
 
-    private MainController controller;
-
-    public PreferencesFrame(MainController controller) throws HeadlessException {
-        super("MiPnP - Preferences");
-        this.controller = controller;
-        init();
-    }
-
-    private void init() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        PreferencesPanel pnl_pref = new PreferencesPanel(controller);
-        pnl_pref.addPreferencesCloseListener(this);
-        getContentPane().add(pnl_pref);
-
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
-    public void preferencesClosing() {
-        setVisible(false);
-    }
+    public void preferencesClosing();
 }

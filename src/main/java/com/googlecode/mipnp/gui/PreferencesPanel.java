@@ -31,9 +31,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -45,11 +46,11 @@ import javax.swing.JTabbedPane;
 public class PreferencesPanel extends JPanel implements ActionListener {
 
     private MainController controller;
-    private JFrame parent;
+    private List<PreferencesCloseListener> listeners;
 
-    public PreferencesPanel(MainController controller, JFrame parent) {
+    public PreferencesPanel(MainController controller) {
         this.controller = controller;
-        this.parent = parent;
+        this.listeners = new ArrayList<PreferencesCloseListener>();
         init();
     }
 
@@ -66,7 +67,9 @@ public class PreferencesPanel extends JPanel implements ActionListener {
                 BorderFactory.createEmptyBorder(10, 10, 10, 10));
         tabbedPane.addTab(
                 "General", pnl_general);
-        JPanel pnl_advanced = new AdvancedPreferencesPanel(controller);
+        AdvancedPreferencesPanel pnl_advanced =
+                new AdvancedPreferencesPanel(controller);
+        addPreferencesCloseListener(pnl_advanced);
         pnl_advanced.setBorder(
                 BorderFactory.createEmptyBorder(10, 10, 10, 10));
         tabbedPane.addTab(
@@ -87,10 +90,25 @@ public class PreferencesPanel extends JPanel implements ActionListener {
         add(pnl_pageEnd, BorderLayout.PAGE_END);
     }
 
+    public boolean addPreferencesCloseListener(PreferencesCloseListener l) {
+        return listeners.add(l);
+    }
+
+    public boolean removePreferencesCloseListener(PreferencesCloseListener l) {
+        return listeners.remove(l);
+    }
+
+    protected void notifyPreferencesCloseListeners() {
+        for (PreferencesCloseListener l : listeners) {
+            l.preferencesClosing();
+        }
+    }
+
     public void actionPerformed(ActionEvent ae) {
         String ac = ae.getActionCommand();
 
         if (ac.equals("close")) {
+            notifyPreferencesCloseListeners();
             start();
         }
     }
@@ -98,7 +116,6 @@ public class PreferencesPanel extends JPanel implements ActionListener {
     private void start() {
         try {
             controller.restart();
-            parent.setVisible(false);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(
                     this,
