@@ -27,8 +27,14 @@ package com.googlecode.mipnp.gui;
 import com.googlecode.mipnp.controller.MainController;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -36,12 +42,14 @@ import javax.swing.JTabbedPane;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class PreferencesPanel extends JPanel {
+public class PreferencesPanel extends JPanel implements ActionListener {
 
     private MainController controller;
+    private JFrame parent;
 
-    public PreferencesPanel(MainController controller) {
+    public PreferencesPanel(MainController controller, JFrame parent) {
         this.controller = controller;
+        this.parent = parent;
         init();
     }
 
@@ -53,16 +61,16 @@ public class PreferencesPanel extends JPanel {
          */
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        JPanel pnl_basicSettings = new BasicPreferencesPanel(controller);
-        pnl_basicSettings.setBorder(
+        JPanel pnl_general = new BasicPreferencesPanel(controller);
+        pnl_general.setBorder(
                 BorderFactory.createEmptyBorder(10, 10, 10, 10));
         tabbedPane.addTab(
-                "Basic Settings", pnl_basicSettings);
-        JPanel pnl_advancedSettings = new AdvancedPreferencesPanel(controller);
-        pnl_advancedSettings.setBorder(
+                "General", pnl_general);
+        JPanel pnl_advanced = new AdvancedPreferencesPanel(controller);
+        pnl_advanced.setBorder(
                 BorderFactory.createEmptyBorder(10, 10, 10, 10));
         tabbedPane.addTab(
-                "Advanced Settings", pnl_advancedSettings);
+                "Advanced", pnl_advanced);
         add(tabbedPane, BorderLayout.CENTER);
 
         /*
@@ -71,9 +79,44 @@ public class PreferencesPanel extends JPanel {
         JPanel pnl_pageEnd = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         pnl_pageEnd.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
-        JButton btn_close = new JButton("Start");
+        JButton btn_close = new JButton("Close");
+        btn_close.setActionCommand("close");
+        btn_close.addActionListener(this);
         pnl_pageEnd.add(btn_close);
 
         add(pnl_pageEnd, BorderLayout.PAGE_END);
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+        String ac = ae.getActionCommand();
+
+        if (ac.equals("close")) {
+            start();
+        }
+    }
+
+    private void start() {
+        try {
+            controller.restart();
+            parent.setVisible(false);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "An I/O error occurred while starting MiPnP\n\n" +
+                    "Details: " + ex.getMessage(),
+                    "An I/O Error Occurred",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (InterruptedException ex) {
+            // This should not happen
+        } catch (URISyntaxException ex) {
+            // This should only happen if someone changed the UPnP service id's.
+            JOptionPane.showMessageDialog(
+                    this,
+                    "There is probably an illegal character " +
+                    "in one of the UPnP service identifiers.\n\n" +
+                    "Details: " + ex.getMessage(),
+                    "URI Syntax Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
