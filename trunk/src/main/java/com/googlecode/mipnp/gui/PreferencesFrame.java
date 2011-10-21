@@ -19,7 +19,7 @@
  */
 
 /*
- * ConfigFrame.java
+ * PreferencesFrame.java
  * Created on Oct 5, 2011, 3:26:34 PM
  */
 package com.googlecode.mipnp.gui;
@@ -27,18 +27,17 @@ package com.googlecode.mipnp.gui;
 import com.googlecode.mipnp.controller.MainController;
 import java.awt.HeadlessException;
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class ConfigFrame extends JFrame {
+public class PreferencesFrame extends JFrame {
 
     private MainController controller;
 
-    public ConfigFrame(MainController controller) throws HeadlessException {
-        super("MiPnP");
+    public PreferencesFrame(MainController controller) throws HeadlessException {
+        super("MiPnP - Preferences");
         this.controller = controller;
         init();
     }
@@ -52,7 +51,7 @@ public class ConfigFrame extends JFrame {
 //        getContentPane().add(new ConfigPanel(controller));
 //        getContentPane().add(new MediaPanel(controller));
 //        getContentPane().add(tabbedPane);
-        getContentPane().add(new SettingsPanel(controller));
+        getContentPane().add(new PreferencesPanel(controller));
 
         pack();
         setLocationRelativeTo(null);

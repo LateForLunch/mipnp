@@ -19,7 +19,7 @@
  */
 
 /*
- * AdvancedSettingsPanel.java
+ * AdvancedPreferencesPanel.java
  * Created on Oct 5, 2011, 3:34:32 PM
  */
 package com.googlecode.mipnp.gui;
@@ -29,7 +29,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.net.SocketException;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -41,13 +40,13 @@ import javax.swing.JTextField;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-class AdvancedSettingsPanel extends JPanel {
+class AdvancedPreferencesPanel extends JPanel {
 
     private static final Insets DEFAULT_INSETS = new Insets(5, 5, 5, 5);
 
     private MainController controller;
 
-    public AdvancedSettingsPanel(MainController controller) {
+    public AdvancedPreferencesPanel(MainController controller) {
         this.controller = controller;
         init();
     }
@@ -100,8 +99,8 @@ class AdvancedSettingsPanel extends JPanel {
         gbc.gridy = 2;
         add(txt_port, gbc);
 
-        JCheckBox chk_display = new JCheckBox("Display this screen on startup");
-        if (!controller.isFirstRun() && controller.isDisplayConfigOnStartup()) {
+        JCheckBox chk_display = new JCheckBox("Display this window on startup");
+        if (!controller.isFirstRun() && controller.isDisplayConfig()) {
             chk_display.setSelected(true);
         }
         gbc.gridx = 0;

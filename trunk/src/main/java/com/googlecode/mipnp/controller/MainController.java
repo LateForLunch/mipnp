@@ -25,12 +25,10 @@
 package com.googlecode.mipnp.controller;
 
 import com.googlecode.mipnp.cli.MainCli;
-import com.googlecode.mipnp.gui.ConfigFrame;
+import com.googlecode.mipnp.gui.PreferencesFrame;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
-import com.googlecode.mipnp.mediaserver.library.FileSystemSource;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.library.MediaServlet;
-import com.googlecode.mipnp.plugins.banshee.BansheePlugin;
 import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import java.awt.GraphicsEnvironment;
@@ -47,6 +45,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -58,6 +57,10 @@ public class MainController {
 
     private static final String MEDIA_SERVLET_PATH = "/cds";
 
+    private static final String PROPERTY_FIRST_RUN = "first-run";
+    private static final String PROPERTY_DISPLAY_CONFIG = "display-preferences";
+    private static final String PROPERTY_MEDIA_DIRS = "media-dirs";
+
     private UpnpServer upnpServer;
     private MediaServerDevice mediaServerDevice;
     private MediaLibrary mediaLibrary;
@@ -66,6 +69,7 @@ public class MainController {
     public MainController(String[] args) {
         // TODO: parse args and read config file
         this.properties = new Properties();
+
         // Test whether or not a display is supported
         if (GraphicsEnvironment.isHeadless()) {
             MainCli mainCli = new MainCli(this);
@@ -78,7 +82,7 @@ public class MainController {
             }
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    ConfigFrame frame = new ConfigFrame(MainController.this);
+                    PreferencesFrame frame = new PreferencesFrame(MainController.this);
                 }
             });
         }
@@ -153,12 +157,36 @@ public class MainController {
         }
     }
 
-    public boolean isFirstRun() {
-        return getPropertyAsBoolean("first-run", true);
+    public void addMediaDirectory(String path) {
+        File directory = new File(path);
+        if (!directory.exists()) {
+            return;
+        }
+        String dirs = getProperty(PROPERTY_MEDIA_DIRS);
+        if (dirs == null) {
+            dirs = "";
+        }
+        dirs += directory.getAbsolutePath();
+        dirs += File.pathSeparator;
+        setProperty(PROPERTY_MEDIA_DIRS, dirs);
     }
 
-    public boolean isDisplayConfigOnStartup() {
-        return getPropertyAsBoolean("display-config-on-startup", false);
+    public void removeMediaDirectory(String path) {
+        String dirs = getProperty(PROPERTY_MEDIA_DIRS);
+        if (dirs == null) {
+            return;
+        }
+        String remove = path + File.pathSeparator;
+        dirs = dirs.replaceAll(Pattern.quote(remove), "");
+        setProperty(PROPERTY_MEDIA_DIRS, dirs);
+    }
+
+    public boolean isFirstRun() {
+        return getPropertyAsBoolean(PROPERTY_FIRST_RUN, true);
+    }
+
+    public boolean isDisplayConfig() {
+        return getPropertyAsBoolean(PROPERTY_DISPLAY_CONFIG, false);
     }
 
     protected boolean getPropertyAsBoolean(String key, boolean defaultValue) {
