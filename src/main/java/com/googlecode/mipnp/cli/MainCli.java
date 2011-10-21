@@ -25,6 +25,8 @@
 package com.googlecode.mipnp.cli;
 
 import com.googlecode.mipnp.controller.MainController;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Scanner;
 
 /**
@@ -53,14 +55,16 @@ public class MainCli {
 
     private void start() {
         try {
-            controller.init();
             controller.start();
-
             System.out.println();
             System.out.println("MiPnP started");
-        } catch (Exception ex) {
-            System.out.println("An error occurred while starting MiPnP:");
-            System.out.println(ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("An I/O error occurred while starting MiPnP.");
+            System.out.println("Details: " + ex.getMessage());
+        } catch (URISyntaxException ex) {
+            System.out.println("There is probably an illegal character " +
+                    "in one of the UPnP service identifiers.");
+            System.out.println("Details: " + ex.getMessage());
         }
     }
 
@@ -75,9 +79,11 @@ public class MainCli {
     private void stop() {
         try {
             controller.stop();
-        } catch (Exception ex) {
-            System.out.println("An error occurred while stopping MiPnP:");
+        } catch (IOException ex) {
+            System.out.println("An I/O error occurred while stopping MiPnP:");
             System.out.println(ex.getMessage());
+        } catch (InterruptedException ex) {
+            // This should not happen
         }
     }
 }

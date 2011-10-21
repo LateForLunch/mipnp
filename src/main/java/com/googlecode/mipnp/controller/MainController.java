@@ -34,13 +34,13 @@ import com.googlecode.mipnp.upnp.UpnpServer;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Properties;
@@ -76,28 +76,25 @@ public class MainController {
         } else {
             try {
                 // Set system look & feel
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                UIManager.setLookAndFeel(
+                        UIManager.getSystemLookAndFeelClassName());
             } catch (Exception ex) {
                 // Fall back to default look & feel
             }
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    PreferencesFrame frame = new PreferencesFrame(MainController.this);
+                    PreferencesFrame frame =
+                            new PreferencesFrame(MainController.this);
                 }
             });
         }
     }
 
-    public void init()
-            throws SocketException, FileNotFoundException,
-            IOException, ClassNotFoundException {
-
+//    public void init() {
 //        String busFactory =
 //                System.getProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME);
 //        System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
 //                "org.apache.cxf.bus.CXFBusFactory");
-
-        this.mediaLibrary = new MediaLibrary();
 
 //        File bansheeDb = new File("src/main/resources/banshee/banshee.db");
 //        BansheePlugin bansheePlugin = new BansheePlugin(bansheeDb);
@@ -109,39 +106,48 @@ public class MainController {
 //        mediaLibrary.addMusic(fss);
 //        mediaLibrary.addVideos(fss);
 //        mediaLibrary.addPictures(fss);
+//    }
+
+    public void start()
+            throws URISyntaxException, IOException {
+
+        if (upnpServer != null) {
+            throw new IllegalStateException("UPnP server is already running.");
+        }
+
+        this.mediaLibrary = new MediaLibrary();
+        MediaServlet mediaServlet = new MediaServlet(mediaLibrary);
 
         this.mediaServerDevice = new MediaServerDevice(getUuid(), mediaLibrary);
         this.upnpServer = new UpnpServer(
-                mediaServerDevice, NetworkInterface.getByName("eth0"));
-
-        MediaServlet mediaServlet = new MediaServlet(mediaLibrary);
+                mediaServerDevice, NetworkInterface.getByName("eth0")); // TODO
         upnpServer.addServlet(mediaServlet, MEDIA_SERVLET_PATH + "/*");
+
+        upnpServer.start();
+        URL mediaServletPath = new URL(
+                "http",
+                upnpServer.getHttpAddress().getHostAddress(),
+                upnpServer.getHttpPort(),
+                MEDIA_SERVLET_PATH);
+        mediaServerDevice.setMediaServletPath(mediaServletPath);
     }
 
-    public void start() throws Exception {
-        try {
-            upnpServer.start();
-            URL mediaServletPath = new URL(
-                    "http",
-                    upnpServer.getHttpAddress().getHostAddress(),
-                    upnpServer.getHttpPort(),
-                    MEDIA_SERVLET_PATH);
-            mediaServerDevice.setMediaServletPath(mediaServletPath);
-        } catch (Exception ex) {
-            try {
-                stop();
-            } catch (Exception ex1) {
-            }
-            throw ex;
+    public void stop() throws IOException, InterruptedException {
+        if (upnpServer != null) {
+            upnpServer.stop();
+            upnpServer.join();
+            upnpServer = null;
         }
     }
 
-    public void stop() throws Exception {
-        upnpServer.stop();
-        upnpServer.join();
+    public void restart()
+            throws IOException, InterruptedException, URISyntaxException {
+
+        stop();
+        start();
     }
 
-    public String[] getNetworkInterfaces() throws SocketException {
+    public String[] getNetworkInterfaceNames() throws SocketException {
         return InetTools.getNetworkInterfaceNames();
     }
 
@@ -153,7 +159,7 @@ public class MainController {
         if (ni != null) {
             return ni.getDisplayName();
         } else {
-            return "";
+            return null;
         }
     }
 
@@ -223,36 +229,42 @@ public class MainController {
     /*
      * Temp methods
      */
-    private static UUID getUuid()
-            throws FileNotFoundException, IOException, ClassNotFoundException {
-
+    private static UUID getUuid() {
         File uuidFile = new File("src/main/resources/mediaserver/uuid.object");
         if (!uuidFile.exists()) {
             UUID uuid = UUID.randomUUID();
             writeUuidFile(uuidFile, uuid);
             return uuid;
         }
+
         ObjectInputStream ois = null;
         try {
             ois = new ObjectInputStream(new FileInputStream(uuidFile));
             return (UUID) ois.readObject();
+        } catch (Exception ex) {
+            return UUID.randomUUID();
         } finally {
             if (ois != null) {
-                ois.close();
+                try {
+                    ois.close();
+                } catch (IOException ex) {
+                }
             }
         }
     }
 
-    private static void writeUuidFile(File uuidFile, UUID uuid)
-            throws FileNotFoundException, IOException {
-
+    private static void writeUuidFile(File uuidFile, UUID uuid) {
         ObjectOutputStream oos = null;
         try {
             oos = new ObjectOutputStream(new FileOutputStream(uuidFile));
             oos.writeObject(uuid);
+        } catch (IOException ex) {
         } finally {
             if (oos != null) {
-                oos.close();
+                try {
+                    oos.close();
+                } catch (IOException ex) {
+                }
             }
         }
     }

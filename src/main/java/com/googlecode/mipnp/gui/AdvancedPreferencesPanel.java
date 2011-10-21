@@ -80,7 +80,7 @@ class AdvancedPreferencesPanel extends JPanel {
 
         String[] nis;
         try {
-            nis = controller.getNetworkInterfaces();
+            nis = controller.getNetworkInterfaceNames();
         } catch (SocketException ex) {
             nis = new String[] {"An error occurred"};
             displayError(ex.getMessage());

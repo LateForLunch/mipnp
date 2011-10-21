@@ -51,7 +51,7 @@ public class PreferencesFrame extends JFrame {
 //        getContentPane().add(new ConfigPanel(controller));
 //        getContentPane().add(new MediaPanel(controller));
 //        getContentPane().add(tabbedPane);
-        getContentPane().add(new PreferencesPanel(controller));
+        getContentPane().add(new PreferencesPanel(controller, this));
 
         pack();
         setLocationRelativeTo(null);

@@ -28,6 +28,7 @@ import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.discovery.DiscoveryServer;
 import com.googlecode.mipnp.upnp.description.DeviceDescriptionServlet;
 import com.googlecode.mipnp.upnp.description.ServiceDescriptionServlet;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -68,7 +69,8 @@ public class UpnpServer {
             RootDevice rootDevice,
             NetworkInterface networkInterface) {
 
-        this(rootDevice, networkInterface, InetTools.getInetAddress(networkInterface));
+        this(rootDevice, networkInterface,
+                InetTools.getInetAddress(networkInterface));
     }
 
     public UpnpServer(
@@ -92,8 +94,12 @@ public class UpnpServer {
         initAdvertiser();
     }
 
-    public void start() throws Exception {
-        httpServer.start();
+    public void start() throws IOException, URISyntaxException {
+        try {
+            httpServer.start();
+        } catch (Exception ex) {
+            throw new IOException(ex);
+        }
 
         for (Service service : rootDevice.getServices()) {
             URI fullServiceControlUri =
@@ -115,9 +121,13 @@ public class UpnpServer {
         advertiser.start();
     }
 
-    public void stop() throws Exception {
+    public void stop() throws IOException {
         advertiser.stop();
-        httpServer.stop();
+        try {
+            httpServer.stop();
+        } catch (Exception ex) {
+            throw new IOException(ex);
+        }
     }
 
     public void join() throws InterruptedException {
@@ -178,6 +188,7 @@ public class UpnpServer {
     }
 
     private void initAdvertiser() {
-        this.advertiser = new DiscoveryServer(rootDevice, bindAddr, networkInterface);
+        this.advertiser =
+                new DiscoveryServer(rootDevice, bindAddr, networkInterface);
     }
 }
