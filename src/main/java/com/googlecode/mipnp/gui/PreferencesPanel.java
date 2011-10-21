@@ -19,7 +19,7 @@
  */
 
 /*
- * SettingsPanel.java
+ * PreferencesPanel.java
  * Created on Oct 18, 2011, 1:57:46 PM
  */
 package com.googlecode.mipnp.gui;
@@ -36,11 +36,11 @@ import javax.swing.JTabbedPane;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class SettingsPanel extends JPanel {
+public class PreferencesPanel extends JPanel {
 
     private MainController controller;
 
-    public SettingsPanel(MainController controller) {
+    public PreferencesPanel(MainController controller) {
         this.controller = controller;
         init();
     }
@@ -48,16 +48,32 @@ public class SettingsPanel extends JPanel {
     private void init() {
         setLayout(new BorderLayout());
 
+        /*
+         * Center
+         */
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        tabbedPane.addTab("Basic Settings", new BasicSettingsPanel(controller));
-        tabbedPane.addTab("Advanced Settings", new AdvancedSettingsPanel(controller));
+        JPanel pnl_basicSettings = new BasicPreferencesPanel(controller);
+        pnl_basicSettings.setBorder(
+                BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        tabbedPane.addTab(
+                "Basic Settings", pnl_basicSettings);
+        JPanel pnl_advancedSettings = new AdvancedPreferencesPanel(controller);
+        pnl_advancedSettings.setBorder(
+                BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        tabbedPane.addTab(
+                "Advanced Settings", pnl_advancedSettings);
         add(tabbedPane, BorderLayout.CENTER);
 
+        /*
+         * Page End
+         */
         JPanel pnl_pageEnd = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         pnl_pageEnd.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-        JButton btn_close = new JButton("Close");
+
+        JButton btn_close = new JButton("Start");
         pnl_pageEnd.add(btn_close);
+
         add(pnl_pageEnd, BorderLayout.PAGE_END);
     }
 }
