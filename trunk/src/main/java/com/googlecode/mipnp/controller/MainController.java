@@ -147,6 +147,15 @@ public class MainController {
         start();
     }
 
+    public void exit() {
+        try {
+            stop();
+        } catch (Exception ex) {
+            // Nothing we can do
+        }
+        System.exit(0);
+    }
+
     public String[] getNetworkInterfaceNames() throws SocketException {
         return InetTools.getNetworkInterfaceNames();
     }

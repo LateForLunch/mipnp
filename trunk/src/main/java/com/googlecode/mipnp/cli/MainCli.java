@@ -85,5 +85,6 @@ public class MainCli {
         } catch (InterruptedException ex) {
             // This should not happen
         }
+        controller.exit();
     }
 }
