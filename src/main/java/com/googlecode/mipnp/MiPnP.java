@@ -24,7 +24,9 @@
  */
 package com.googlecode.mipnp;
 
-import com.googlecode.mipnp.controller.MainController;
+import com.googlecode.mipnp.view.cli.CliController;
+import com.googlecode.mipnp.view.gui.GuiController;
+import java.awt.GraphicsEnvironment;
 
 /**
  *
@@ -38,7 +40,24 @@ public class MiPnP {
 //        System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
 //                "org.apache.cxf.bus.CXFBusFactory");
 
-        MainController controller = new MainController(args);
+        if (GraphicsEnvironment.isHeadless()) {
+            CliController controller = new CliController();
+        } else {
+            GuiController controller = new GuiController();
+            /*try {
+            // Set system look & feel
+            UIManager.setLookAndFeel(
+            UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+            // Fall back to default look & feel
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+            preferencesFrame =
+            new PreferencesFrame(MainController.this);
+            }
+            });*/
+        }
 
 //            File mediaDir = new File("/home/jochem/ushare");
 //            FileSystemSource fss = new FileSystemSource(mediaDir);
