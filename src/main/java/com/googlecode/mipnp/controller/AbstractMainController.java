@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 /**
  *
@@ -106,20 +105,5 @@ public abstract class AbstractMainController implements MainController {
 
     public String[] getNetworkInterfaceNames() throws SocketException {
         return InetTools.getNetworkInterfaceNames();
-    }
-
-    public String getPreferedNetworkInterfaceName()
-            throws UnknownHostException, SocketException {
-
-        String interf = prefs.getNetworkInterface();
-        if (interf == null || interf.equals("")) {
-            NetworkInterface ni =
-                    NetworkInterface.getByInetAddress(InetTools.getLocalHost());
-            if (ni != null) {
-                interf = ni.getDisplayName();
-            }
-        }
-
-        return interf;
     }
 }

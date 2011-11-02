@@ -26,7 +26,6 @@ package com.googlecode.mipnp.controller;
 
 import java.io.IOException;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 /**
  *
@@ -41,7 +40,4 @@ public interface MainController {
     public void restart() throws IOException, InterruptedException;
 
     public String[] getNetworkInterfaceNames() throws SocketException;
-
-    public String getPreferedNetworkInterfaceName()
-            throws UnknownHostException, SocketException;
 }

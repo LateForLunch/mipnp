@@ -37,7 +37,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -191,15 +190,14 @@ public class PreferencesView implements ActionListener {
             nis = controller.getNetworkInterfaceNames();
         } catch (SocketException ex) {
             nis = new String[] {"An error occurred"};
-            displayError(ex.getMessage());
+            displayError(
+                    "An Error Occurred",
+                    "An error occurred while getting the " +
+                    "available network interfaces.", ex);
         }
         this.cmb_networkInterface = new JComboBox(nis);
-        try {
-            cmb_networkInterface.setSelectedItem(
-                    controller.getPreferedNetworkInterfaceName());
-        } catch (UnknownHostException ex) {
-        } catch (SocketException ex) {
-        }
+        cmb_networkInterface.setSelectedItem(
+                prefs.getNetworkInterface());
         gbc.gridy = 1;
         pnl_advanced.add(cmb_networkInterface, gbc);
 
@@ -251,12 +249,9 @@ public class PreferencesView implements ActionListener {
         try {
             controller.restart();
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "An I/O error occurred while starting MiPnP\n\n" +
-                    "Details: " + ex.getMessage(),
+            displayError(
                     "An I/O Error Occurred",
-                    JOptionPane.ERROR_MESSAGE);
+                    "An I/O error occurred while starting MiPnP", ex);
         } catch (InterruptedException ex) {
             // This should not happen
         }
@@ -283,20 +278,22 @@ public class PreferencesView implements ActionListener {
             String remove = (String) mediaListModel.remove(i);
             prefs.removeMediaDirectory(remove);
         } else {
-            JOptionPane.showMessageDialog(
-                    frame,
-                    "You must first select a directory to remove.",
+            displayError(
                     "Select a directory to remove",
-                    JOptionPane.ERROR_MESSAGE);
+                    "You must first select a directory to remove.", null);
         }
     }
 
-    private void displayError(String message) {
+    private void displayError(String title, String message, Exception ex) {
+        if (ex != null) {
+            message += "\n\nDetails: ";
+            message += ex.getMessage();
+        }
+
         JOptionPane.showMessageDialog(
                 frame,
-                "An error occurred.\n" +
-                "Details: " + message,
-                "MiPnP - An Error Occurred",
+                message,
+                title,
                 JOptionPane.ERROR_MESSAGE);
     }
 }

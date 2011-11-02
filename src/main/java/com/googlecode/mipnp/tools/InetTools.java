@@ -47,6 +47,7 @@ public class InetTools {
      */
     public static InetAddress getLocalHost() throws UnknownHostException {
         InetAddress localHost = InetAddress.getLocalHost();
+
         if (localHost.isLoopbackAddress()) {
             InetAddress[] addrs;
             try {
@@ -59,6 +60,7 @@ public class InetTools {
             } catch (SocketException ex) {
             }
         }
+
         return localHost;
     }
 
@@ -69,12 +71,14 @@ public class InetTools {
      */
     public static InetAddress getInetAddress(NetworkInterface ni) {
         Enumeration<InetAddress> addrs = ni.getInetAddresses();
+
         while (addrs.hasMoreElements()) {
             InetAddress addr = addrs.nextElement();
             if (isIPv4(addr.getAddress())) {
                 return addr;
             }
         }
+
         return null;
     }
 

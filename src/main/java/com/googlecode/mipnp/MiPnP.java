@@ -44,35 +44,7 @@ public class MiPnP {
             CliController controller = new CliController();
         } else {
             GuiController controller = new GuiController();
-            /*try {
-            // Set system look & feel
-            UIManager.setLookAndFeel(
-            UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception ex) {
-            // Fall back to default look & feel
-            }
-            SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-            preferencesFrame =
-            new PreferencesFrame(MainController.this);
-            }
-            });*/
         }
-
-//            File mediaDir = new File("/home/jochem/ushare");
-//            FileSystemSource fss = new FileSystemSource(mediaDir);
-//            library.addMusic(fss);
-//            library.addVideos(fss);
-//            library.addPictures(fss);
-//            File bansheeDb = new File("src/main/resources/banshee/banshee.db");
-//            BansheePlugin bansheePlugin = new BansheePlugin(bansheeDb);
-//            library.addMusic(bansheePlugin);
-//            library.addVideos(bansheePlugin);
-
-//            System.out.printf(
-//                    " - HTTP server listening on: %s:%d\n",
-//                    server.getHttpAddress().getHostAddress(), server.getHttpPort());
-//            System.out.println();
 
 //            if (busFactory != null) {
 //                System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
