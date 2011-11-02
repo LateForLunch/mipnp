@@ -24,12 +24,12 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.tools.InetTools;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -40,24 +40,44 @@ import java.util.regex.Pattern;
  */
 public class Preferences {
 
-    protected static final String PREF_FIRST_RUN = "first-run";
-    protected static final String PREF_DISPLAY_PREFERENCES = "display-preferences";
-    protected static final String PREF_MEDIA_DIRS = "media-directories";
-    protected static final String PREF_FRIENDLY_NAME = "friendly-name";
+    protected static final String PREF_UUID = "uuid";
     protected static final String PREF_NETWORK_INTERFACE = "network-interface";
     protected static final String PREF_HTTP_PORT = "http-port";
-    protected static final String PREF_UUID = "uuid";
+    protected static final String PREF_MEDIA_DIRS = "media-directories";
+    protected static final String PREF_FRIENDLY_NAME = "friendly-name";
+    protected static final String PREF_FIRST_RUN = "first-run";
+    protected static final String PREF_DISPLAY_PREFERENCES = "display-preferences";
 
     protected Properties prefs;
 
     public Preferences() {
-        this.prefs = new Properties();
+        this.prefs = new Properties(getDefaults());
+    }
+
+    public UUID getUuid() {
+        return UUID.fromString(getPreference(PREF_UUID));
+    }
+
+    public String getNetworkInterface() {
+        return getPreference(PREF_NETWORK_INTERFACE);
+    }
+
+    public void setNetworkInterface(String interf) {
+        setPreference(PREF_NETWORK_INTERFACE, interf);
+    }
+
+    public int getHttpPort() {
+        return getPreferenceAsInt(PREF_HTTP_PORT, 0);
+    }
+
+    public void setHttpPort(int port) {
+        setPreference(PREF_HTTP_PORT, String.valueOf(port));
     }
 
     public String[] getMediaDirectories() {
-        String str_mediaDirs = getPreference(PREF_MEDIA_DIRS);
-        if (str_mediaDirs != null) {
-            return str_mediaDirs.split(Pattern.quote(File.pathSeparator));
+        String dirs = getPreference(PREF_MEDIA_DIRS);
+        if (dirs != null) {
+            return dirs.split(Pattern.quote(File.pathSeparator));
         } else {
             return new String[0];
         }
@@ -91,24 +111,8 @@ public class Preferences {
         setPreference(PREF_FRIENDLY_NAME, friendlyName);
     }
 
-    public String getNetworkInterface() {
-        return getPreference(PREF_NETWORK_INTERFACE);
-    }
-
-    public void setNetworkInterface(String interf) {
-        setPreference(PREF_NETWORK_INTERFACE, interf);
-    }
-
-    public int getHttpPort() {
-        return getPreferenceAsInt(PREF_HTTP_PORT, 0);
-    }
-
-    public void setHttpPort(int port) {
-        setPreference(PREF_HTTP_PORT, String.valueOf(port));
-    }
-
-    public UUID getUuid() {
-        return getUuidFromFile(); // TODO
+    public boolean isFirstRun() {
+        return getPreferenceAsBoolean(PREF_FIRST_RUN, true);
     }
 
     public boolean getDisplayPreferences() {
@@ -117,10 +121,6 @@ public class Preferences {
 
     public void setDisplayPreferences(boolean b) {
         setPreference(PREF_DISPLAY_PREFERENCES, String.valueOf(b));
-    }
-
-    public boolean isFirstRun() {
-        return getPreferenceAsBoolean(PREF_FIRST_RUN, true);
     }
 
     protected String getPreference(String key) {
@@ -168,10 +168,36 @@ public class Preferences {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    private Properties getDefaults() {
+        Properties defaults = new Properties();
+
+        defaults.setProperty(PREF_UUID, UUID.randomUUID().toString());
+        try {
+            InetAddress localHost = InetTools.getLocalHost();
+            if (localHost != null) {
+                NetworkInterface ni =
+                        NetworkInterface.getByInetAddress(localHost);
+                if (ni != null) {
+                    defaults.setProperty(
+                            PREF_NETWORK_INTERFACE,
+                            ni.getDisplayName());
+                }
+            }
+        } catch (UnknownHostException ex) {
+        } catch (SocketException ex) {
+        }
+        defaults.setProperty(PREF_HTTP_PORT, String.valueOf(0));
+        defaults.setProperty(PREF_FRIENDLY_NAME, "MiPnP");
+        defaults.setProperty(PREF_FIRST_RUN, String.valueOf(true));
+        defaults.setProperty(PREF_DISPLAY_PREFERENCES, String.valueOf(false));
+
+        return defaults;
+    }
+
     /*
      * Temp methods
      */
-    private static UUID getUuidFromFile() {
+    /*private static UUID getUuidFromFile() {
         File uuidFile = new File("src/main/resources/mediaserver/uuid.object");
         if (!uuidFile.exists()) {
             UUID uuid = UUID.randomUUID();
@@ -209,5 +235,5 @@ public class Preferences {
                 }
             }
         }
-    }
+    }*/
 }
