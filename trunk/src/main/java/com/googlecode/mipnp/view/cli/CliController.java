@@ -19,29 +19,20 @@
  */
 
 /*
- * MainController.java
- * Created on Oct 4, 2011, 4:58:30 PM
+ * CliController.java
+ * Created on Oct 30, 2011, 11:29:04 AM
  */
-package com.googlecode.mipnp.controller;
+package com.googlecode.mipnp.view.cli;
 
-import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import com.googlecode.mipnp.controller.AbstractMainController;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface MainController {
+public class CliController extends AbstractMainController {
 
-    public void start() throws IOException;
-
-    public void stop() throws IOException, InterruptedException;
-
-    public void restart() throws IOException, InterruptedException;
-
-    public String[] getNetworkInterfaceNames() throws SocketException;
-
-    public String getPreferedNetworkInterfaceName()
-            throws UnknownHostException, SocketException;
+    public CliController() {
+        MainCli cli = new MainCli(this);
+    }
 }

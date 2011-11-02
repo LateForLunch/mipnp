@@ -94,7 +94,7 @@ public class UpnpServer {
         initAdvertiser();
     }
 
-    public void start() throws IOException, URISyntaxException {
+    public void start() throws IOException {
         try {
             httpServer.start();
         } catch (Exception ex) {
@@ -102,12 +102,25 @@ public class UpnpServer {
         }
 
         for (Service service : rootDevice.getServices()) {
-            URI fullServiceControlUri =
-                    new URI(CONTROL + "/" + service.getId().toLowerCase());
-            URI partialServiceControlUri =
-                    new URI("/" + service.getId().toLowerCase());
-            service.setControlUri(fullServiceControlUri);
-            Endpoint.publish(partialServiceControlUri.toASCIIString(), service);
+            URI fullServiceControlUri = null;
+            URI partialServiceControlUri = null;
+
+            try {
+                fullServiceControlUri =
+                        new URI(CONTROL + "/" + service.getId().toLowerCase());
+                partialServiceControlUri =
+                        new URI("/" + service.getId().toLowerCase());
+            } catch (URISyntaxException ex) {
+                // TODO: make sure this doesn't happen
+            }
+
+            if (fullServiceControlUri != null &&
+                    partialServiceControlUri != null) {
+
+                service.setControlUri(fullServiceControlUri);
+                Endpoint.publish(
+                        partialServiceControlUri.toASCIIString(), service);
+            }
         }
 
         URL deviceDescUrl = new URL(
