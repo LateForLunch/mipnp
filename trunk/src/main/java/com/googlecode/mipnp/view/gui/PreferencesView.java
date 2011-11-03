@@ -35,6 +35,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketException;
 import javax.swing.BorderFactory;
@@ -135,6 +136,10 @@ public class PreferencesView implements ActionListener {
         pnl_general.add(lbl_info, BorderLayout.PAGE_START);
 
         this.mediaListModel = new DefaultListModel();
+        for (String mediaDir : prefs.getMediaDirectories()) {
+            mediaListModel.addElement(mediaDir);
+        }
+
         this.lst_media = new JList(mediaListModel);
         lst_media.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -243,6 +248,14 @@ public class PreferencesView implements ActionListener {
         } catch (NumberFormatException ex) {
         }
         prefs.setDisplayPreferences(chk_displayPrefs.isSelected());
+
+        try {
+            prefs.storePreferences();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void startMediaServer() {
