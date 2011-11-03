@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="http-port">0</entry>
+<entry key="uuid">71947717-a2ef-4066-8968-3dfb89f6e00c</entry>
+<entry key="network-interface">eth0</entry>
+<entry key="display-preferences">false</entry>
+<entry key="media-directories"/>
+<entry key="friendly-name">MiPnP</entry>
+</properties>

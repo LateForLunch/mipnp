@@ -26,6 +26,10 @@ package com.googlecode.mipnp.controller;
 
 import com.googlecode.mipnp.tools.InetTools;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -40,6 +44,9 @@ import java.util.regex.Pattern;
  */
 public class Preferences {
 
+    protected static final File PREFERENCES_FILE =
+            new File("src/main/resources/mediaserver/preferences.xml");
+
     protected static final String PREF_UUID = "uuid";
     protected static final String PREF_NETWORK_INTERFACE = "network-interface";
     protected static final String PREF_HTTP_PORT = "http-port";
@@ -52,6 +59,22 @@ public class Preferences {
 
     public Preferences() {
         this.prefs = new Properties(getDefaults());
+    }
+
+    public void loadPreferences()
+            throws FileNotFoundException, IOException {
+
+        prefs.loadFromXML(new FileInputStream(PREFERENCES_FILE));
+    }
+
+    public void storePreferences()
+            throws FileNotFoundException, IOException {
+
+        if (!prefs.containsKey(PREF_UUID)) {
+            // Set the UUID from the defaults in prefs
+            prefs.setProperty(PREF_UUID, getPreference(PREF_UUID));
+        }
+        prefs.storeToXML(new FileOutputStream(PREFERENCES_FILE), null);
     }
 
     public UUID getUuid() {
@@ -158,14 +181,6 @@ public class Preferences {
             }
             return i;
         }
-    }
-
-    protected void loadPreferences() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    protected void storePreferences() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private Properties getDefaults() {

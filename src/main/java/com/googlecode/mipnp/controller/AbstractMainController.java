@@ -31,6 +31,7 @@ import com.googlecode.mipnp.mediaserver.library.MediaServlet;
 import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -52,6 +53,14 @@ public abstract class AbstractMainController implements MainController {
 
     public AbstractMainController() {
         this.prefs = new Preferences();
+
+        try {
+            prefs.loadPreferences();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void start() throws IOException {
