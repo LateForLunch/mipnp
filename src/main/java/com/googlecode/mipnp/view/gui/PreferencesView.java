@@ -250,7 +250,7 @@ public class PreferencesView implements ActionListener {
         prefs.setDisplayPreferences(chk_displayPrefs.isSelected());
 
         try {
-            prefs.storePreferences();
+            prefs.storePreferencesToFile();
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {

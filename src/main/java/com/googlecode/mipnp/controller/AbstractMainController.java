@@ -51,11 +51,11 @@ public abstract class AbstractMainController implements MainController {
     private MediaServerDevice mediaServerDevice;
     private MediaLibrary mediaLibrary;
 
-    public AbstractMainController() {
-        this.prefs = new Preferences();
+    public AbstractMainController(Preferences prefs) {
+        this.prefs = prefs;
 
         try {
-            prefs.loadPreferences();
+            prefs.loadPreferencesFile();
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {

@@ -55,26 +55,32 @@ public class Preferences {
     protected static final String PREF_FIRST_RUN = "first-run";
     protected static final String PREF_DISPLAY_PREFERENCES = "display-preferences";
 
+    protected Properties defaults;
+    protected Properties prefsFromFile;
     protected Properties prefs;
 
-    public Preferences() {
-        this.prefs = new Properties(getDefaults());
+    public Preferences(String[] args) {
+        initDefaults();
+        this.prefsFromFile = new Properties(defaults);
+        this.prefs = new Properties(prefsFromFile);
+        parseArgs(args);
     }
 
-    public void loadPreferences()
+    public void loadPreferencesFile()
             throws FileNotFoundException, IOException {
 
-        prefs.loadFromXML(new FileInputStream(PREFERENCES_FILE));
+        prefsFromFile.loadFromXML(new FileInputStream(PREFERENCES_FILE));
     }
 
-    public void storePreferences()
+    public void storePreferencesToFile()
             throws FileNotFoundException, IOException {
 
-        if (!prefs.containsKey(PREF_UUID)) {
+        if (!prefsFromFile.containsKey(PREF_UUID)) {
             // Set the UUID from the defaults in prefs
-            prefs.setProperty(PREF_UUID, getPreference(PREF_UUID));
+            prefsFromFile.setProperty(
+                    PREF_UUID, defaults.getProperty(PREF_UUID));
         }
-        prefs.storeToXML(new FileOutputStream(PREFERENCES_FILE), null);
+        prefsFromFile.storeToXML(new FileOutputStream(PREFERENCES_FILE), null);
     }
 
     public UUID getUuid() {
@@ -151,7 +157,8 @@ public class Preferences {
     }
 
     protected void setPreference(String key, String value) {
-        prefs.setProperty(key, value);
+        // Set the pref in prefsFromFile so it gets saved in the prefs file
+        prefsFromFile.setProperty(key, value);
     }
 
     protected boolean getPreferenceAsBoolean(String key, boolean defaultVal) {
@@ -183,8 +190,8 @@ public class Preferences {
         }
     }
 
-    private Properties getDefaults() {
-        Properties defaults = new Properties();
+    private void initDefaults() {
+        this.defaults = new Properties();
 
         defaults.setProperty(PREF_UUID, UUID.randomUUID().toString());
         try {
@@ -205,8 +212,29 @@ public class Preferences {
         defaults.setProperty(PREF_FRIENDLY_NAME, "MiPnP");
         defaults.setProperty(PREF_FIRST_RUN, String.valueOf(true));
         defaults.setProperty(PREF_DISPLAY_PREFERENCES, String.valueOf(false));
+    }
 
-        return defaults;
+    private void parseArgs(String[] args) {
+        // --name (-n) NAME
+        // --interface (-i) INTERFACE
+        // --port (-p) PORT
+        // --media (-m) DIRECTORIES
+
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("--name") || args[i].equals("-n")) {
+                i++;
+                prefs.setProperty(PREF_FRIENDLY_NAME, args[i]);
+            } else if (args[i].equals("--interface") || args[i].equals("-i")) {
+                i++;
+                prefs.setProperty(PREF_NETWORK_INTERFACE, args[i]);
+            } else if (args[i].equals("--port") || args[i].equals("-p")) {
+                i++;
+                prefs.setProperty(PREF_HTTP_PORT, args[i]);
+            } else if (args[i].equals("--media") || args[i].equals("-m")) {
+                i++;
+                prefs.setProperty(PREF_MEDIA_DIRS, args[i]);
+            }
+        }
     }
 
     /*

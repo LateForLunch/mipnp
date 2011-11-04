@@ -25,6 +25,7 @@
 package com.googlecode.mipnp.view.cli;
 
 import com.googlecode.mipnp.controller.AbstractMainController;
+import com.googlecode.mipnp.controller.Preferences;
 
 /**
  *
@@ -32,7 +33,8 @@ import com.googlecode.mipnp.controller.AbstractMainController;
  */
 public class CliController extends AbstractMainController {
 
-    public CliController() {
+    public CliController(Preferences prefs) {
+        super(prefs);
         MainCli cli = new MainCli(this);
     }
 }

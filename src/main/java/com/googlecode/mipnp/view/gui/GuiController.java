@@ -25,6 +25,7 @@
 package com.googlecode.mipnp.view.gui;
 
 import com.googlecode.mipnp.controller.AbstractMainController;
+import com.googlecode.mipnp.controller.Preferences;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -36,7 +37,9 @@ public class GuiController extends AbstractMainController {
 
     private PreferencesView view;
 
-    public GuiController() {
+    public GuiController(Preferences prefs) {
+        super(prefs);
+
         try {
             // Set system look & feel
             UIManager.setLookAndFeel(
