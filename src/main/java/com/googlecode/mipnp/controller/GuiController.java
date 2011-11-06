@@ -22,10 +22,9 @@
  * GuiController.java
  * Created on Oct 30, 2011, 11:29:47 AM
  */
-package com.googlecode.mipnp.view.gui;
+package com.googlecode.mipnp.controller;
 
-import com.googlecode.mipnp.controller.AbstractMainController;
-import com.googlecode.mipnp.controller.Preferences;
+import com.googlecode.mipnp.view.gui.PreferencesView;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -33,21 +32,13 @@ import javax.swing.UIManager;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class GuiController extends AbstractMainController {
+class GuiController extends AbstractMainController {
 
     private PreferencesView view;
 
     public GuiController(Preferences prefs) {
         super(prefs);
-
-        try {
-            // Set system look & feel
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            // Fall back to default look & feel
-        }
-
+        setSystemLookAndFeel();
         this.view = new PreferencesView(this, prefs);
 
         if (prefs.isFirstRun() || prefs.getDisplayPreferences()) {
@@ -56,6 +47,15 @@ public class GuiController extends AbstractMainController {
                     view.createView();
                 }
             });
+        }
+    }
+
+    private void setSystemLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            // Fall back to default look & feel
         }
     }
 }

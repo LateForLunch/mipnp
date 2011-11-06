@@ -80,6 +80,9 @@ public class Preferences {
             prefsFromFile.setProperty(
                     PREF_UUID, defaults.getProperty(PREF_UUID));
         }
+        if (!prefsFromFile.containsKey(PREF_FIRST_RUN)) {
+            prefsFromFile.setProperty(PREF_FIRST_RUN, String.valueOf(false));
+        }
         prefsFromFile.storeToXML(new FileOutputStream(PREFERENCES_FILE), null);
     }
 
@@ -219,6 +222,7 @@ public class Preferences {
         // --interface (-i) INTERFACE
         // --port (-p) PORT
         // --media (-m) DIRECTORIES
+        // --preferences (-P)
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--name") || args[i].equals("-n")) {
@@ -233,50 +237,9 @@ public class Preferences {
             } else if (args[i].equals("--media") || args[i].equals("-m")) {
                 i++;
                 prefs.setProperty(PREF_MEDIA_DIRS, args[i]);
+            } else if (args[i].equals("--preferences") || args[i].equals("-P")) {
+                prefs.setProperty(PREF_DISPLAY_PREFERENCES, String.valueOf(true));
             }
         }
     }
-
-    /*
-     * Temp methods
-     */
-    /*private static UUID getUuidFromFile() {
-        File uuidFile = new File("src/main/resources/mediaserver/uuid.object");
-        if (!uuidFile.exists()) {
-            UUID uuid = UUID.randomUUID();
-            writeUuidFile(uuidFile, uuid);
-            return uuid;
-        }
-
-        ObjectInputStream ois = null;
-        try {
-            ois = new ObjectInputStream(new FileInputStream(uuidFile));
-            return (UUID) ois.readObject();
-        } catch (Exception ex) {
-            return UUID.randomUUID();
-        } finally {
-            if (ois != null) {
-                try {
-                    ois.close();
-                } catch (IOException ex) {
-                }
-            }
-        }
-    }
-
-    private static void writeUuidFile(File uuidFile, UUID uuid) {
-        ObjectOutputStream oos = null;
-        try {
-            oos = new ObjectOutputStream(new FileOutputStream(uuidFile));
-            oos.writeObject(uuid);
-        } catch (IOException ex) {
-        } finally {
-            if (oos != null) {
-                try {
-                    oos.close();
-                } catch (IOException ex) {
-                }
-            }
-        }
-    }*/
 }

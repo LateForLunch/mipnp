@@ -25,9 +25,8 @@
 package com.googlecode.mipnp;
 
 import com.googlecode.mipnp.controller.Preferences;
-import com.googlecode.mipnp.view.cli.CliController;
-import com.googlecode.mipnp.view.gui.GuiController;
-import java.awt.GraphicsEnvironment;
+import com.googlecode.mipnp.controller.ControllerFactory;
+import com.googlecode.mipnp.instance.SingleInstance;
 
 /**
  *
@@ -41,13 +40,15 @@ public class MiPnP {
 //        System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
 //                "org.apache.cxf.bus.CXFBusFactory");
 
-        Preferences prefs = new Preferences(args);
-
-        if (GraphicsEnvironment.isHeadless()) {
-            CliController controller = new CliController(prefs);
-        } else {
-            GuiController controller = new GuiController(prefs);
+        SingleInstance singleInstance = SingleInstance.getInstance();
+        boolean lock = singleInstance.lock();
+        if (!lock) {
+            System.out.println("MiPnP is already running"); // TODO
+            System.exit(0);
         }
+
+        Preferences prefs = new Preferences(args);
+        ControllerFactory.createMainController(prefs);
 
 //            if (busFactory != null) {
 //                System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,

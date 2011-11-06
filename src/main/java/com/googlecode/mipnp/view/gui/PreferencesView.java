@@ -35,7 +35,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketException;
 import javax.swing.BorderFactory;
@@ -229,8 +228,7 @@ public class PreferencesView implements ActionListener {
             savePrefs();
             startMediaServer();
 
-            System.out.println("disposing frame...");
-//            frame.dispose(); // TODO
+            frame.dispose();
         } else if (event.getSource() == btn_addMedia) {
             addMediaDirectory();
         } else if (event.getSource() == btn_removeMedia) {
@@ -251,10 +249,8 @@ public class PreferencesView implements ActionListener {
 
         try {
             prefs.storePreferencesToFile();
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            // Ignore - preferences window will be shown again next time
         }
     }
 

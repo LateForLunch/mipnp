@@ -25,7 +25,6 @@
 package com.googlecode.mipnp.mediaserver.cds;
 
 import java.util.Enumeration;
-import java.util.regex.Pattern;
 
 /**
  *
