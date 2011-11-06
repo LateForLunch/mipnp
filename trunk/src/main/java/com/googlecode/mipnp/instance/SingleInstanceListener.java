@@ -19,22 +19,16 @@
  */
 
 /*
- * CliController.java
- * Created on Oct 30, 2011, 11:29:04 AM
+ * SingleInstanceListener.java
+ * Created on Nov 6, 2011, 10:16:39 AM
  */
-package com.googlecode.mipnp.view.cli;
-
-import com.googlecode.mipnp.controller.AbstractMainController;
-import com.googlecode.mipnp.controller.Preferences;
+package com.googlecode.mipnp.instance;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class CliController extends AbstractMainController {
+public interface SingleInstanceListener {
 
-    public CliController(Preferences prefs) {
-        super(prefs);
-        MainCli cli = new MainCli(this);
-    }
+    public void instanceStarted(String[] args);
 }
