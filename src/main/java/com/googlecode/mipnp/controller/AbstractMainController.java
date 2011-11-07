@@ -24,6 +24,7 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.instance.SingleInstanceListener;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
 import com.googlecode.mipnp.mediaserver.library.FileSystemSource;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
@@ -41,7 +42,8 @@ import java.net.URL;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public abstract class AbstractMainController implements MainController {
+public abstract class AbstractMainController
+        implements MainController, SingleInstanceListener {
 
     private static final String MEDIA_SERVLET_PATH = "/cds";
 
@@ -114,5 +116,11 @@ public abstract class AbstractMainController implements MainController {
 
     public String[] getNetworkInterfaceNames() throws SocketException {
         return InetTools.getNetworkInterfaceNames();
+    }
+
+    public void instanceStarted(String[] args) {
+    }
+
+    public void alreadyStarted() {
     }
 }

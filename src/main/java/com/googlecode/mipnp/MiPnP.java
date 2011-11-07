@@ -40,13 +40,6 @@ public class MiPnP {
 //        System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
 //                "org.apache.cxf.bus.CXFBusFactory");
 
-        SingleInstance singleInstance = SingleInstance.getInstance();
-        boolean lock = singleInstance.lock();
-        if (!lock) {
-            System.out.println("MiPnP is already running"); // TODO
-            System.exit(0);
-        }
-
         Preferences prefs = new Preferences(args);
         ControllerFactory.createMainController(prefs);
 
