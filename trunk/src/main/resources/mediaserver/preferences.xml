@@ -3,7 +3,8 @@
 <properties>
 <entry key="http-port">0</entry>
 <entry key="uuid">8a8d1a99-14ea-4811-af28-f91f850e535f</entry>
-<entry key="display-preferences">false</entry>
 <entry key="network-interface">eth0</entry>
+<entry key="display-preferences">false</entry>
 <entry key="friendly-name">MiPnP</entry>
+<entry key="first-run">false</entry>
 </properties>

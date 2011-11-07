@@ -24,6 +24,7 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.instance.SingleInstanceListener;
 import java.io.IOException;
 import java.net.SocketException;
 

@@ -24,6 +24,7 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.instance.SingleInstance;
 import java.awt.GraphicsEnvironment;
 
 /**
@@ -33,10 +34,21 @@ import java.awt.GraphicsEnvironment;
 public class ControllerFactory {
 
     public static MainController createMainController(Preferences prefs) {
-        if (GraphicsEnvironment.isHeadless()) {
-            return new CliController(prefs);
-        } else {
-            return new GuiController(prefs);
+        SingleInstance singleInstance = SingleInstance.getInstance();
+        boolean lock = singleInstance.lock();
+        if (!lock) {
+            singleInstance.notifyListeners();
+            System.exit(0);
         }
+
+        AbstractMainController controller = null;
+        if (GraphicsEnvironment.isHeadless()) {
+            controller = new CliController(prefs);
+        } else {
+            controller = new GuiController(prefs);
+        }
+        singleInstance.addSingleInstanceListener(controller);
+
+        return controller;
     }
 }

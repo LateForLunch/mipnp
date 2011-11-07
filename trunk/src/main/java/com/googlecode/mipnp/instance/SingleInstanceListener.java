@@ -31,4 +31,6 @@ package com.googlecode.mipnp.instance;
 public interface SingleInstanceListener {
 
     public void instanceStarted(String[] args);
+
+    public void alreadyStarted();
 }
