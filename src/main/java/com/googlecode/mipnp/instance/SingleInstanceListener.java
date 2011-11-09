@@ -32,5 +32,5 @@ public interface SingleInstanceListener {
 
     public void instanceStarted(String[] args);
 
-    public void alreadyStarted();
+//    public void alreadyStarted(); // TODO: maybe add support for this method
 }

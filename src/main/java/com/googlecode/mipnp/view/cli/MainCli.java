@@ -41,7 +41,10 @@ public class MainCli {
         printCopyNotice();
         start();
         mainLoop();
-        stop();
+    }
+
+    public void printAlreadyStarted() {
+        System.out.println("MiPnP is already running.");
     }
 
     private void printCopyNotice() {
@@ -69,9 +72,10 @@ public class MainCli {
         while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
             System.out.println("Unknown command.\nPress 'q' to stop.\n");
         }
+        stop();
     }
 
-    private void stop() {
+    public void stop() {
         try {
             controller.stop();
         } catch (IOException ex) {
@@ -80,7 +84,6 @@ public class MainCli {
         } catch (InterruptedException ex) {
             // This should not happen
         }
-//        controller.exit(); // TODO
-        System.exit(0);
+        System.exit(0); // TODO
     }
 }

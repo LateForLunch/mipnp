@@ -42,11 +42,18 @@ class GuiController extends AbstractMainController {
         this.view = new PreferencesView(this, prefs);
 
         if (prefs.isFirstRun() || prefs.getDisplayPreferences()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    view.createView();
-                }
-            });
+            createView();
+        }
+    }
+
+    @Override
+    public void instanceStarted(Preferences prefs) {
+        if (prefs.isStopCommand()) {
+            view.stopMediaServer();
+        } else if (prefs.getDisplayPreferences()) {
+            if (!view.isShowingView()) {
+                createView();
+            }
         }
     }
 
@@ -57,5 +64,13 @@ class GuiController extends AbstractMainController {
         } catch (Exception ex) {
             // Fall back to default look & feel
         }
+    }
+
+    private void createView() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                view.createView();
+            }
+        });
     }
 }

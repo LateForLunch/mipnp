@@ -59,9 +59,9 @@ public abstract class AbstractMainController
         try {
             prefs.loadPreferencesFile();
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(); // TODO
         } catch (IOException ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(); // TODO
         }
     }
 
@@ -119,8 +119,9 @@ public abstract class AbstractMainController
     }
 
     public void instanceStarted(String[] args) {
+        Preferences newPrefs = new Preferences(args);
+        instanceStarted(newPrefs);
     }
 
-    public void alreadyStarted() {
-    }
+    public abstract void instanceStarted(Preferences prefs);
 }

@@ -33,11 +33,13 @@ import java.awt.GraphicsEnvironment;
  */
 public class ControllerFactory {
 
+    private static SingleInstance singleInstance = SingleInstance.getInstance();
+
     public static MainController createMainController(Preferences prefs) {
-        SingleInstance singleInstance = SingleInstance.getInstance();
         boolean lock = singleInstance.lock();
         if (!lock) {
-            singleInstance.notifyListeners();
+            singleInstance.notifyOtherInstance(prefs.getProgramArguments());
+            System.out.println("MiPnP is already running."); // TODO: maybe replace
             System.exit(0);
         }
 
