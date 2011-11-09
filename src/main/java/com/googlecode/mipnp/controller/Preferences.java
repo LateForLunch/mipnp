@@ -44,20 +44,18 @@ import java.util.regex.Pattern;
  */
 public class Preferences {
 
-    protected static final File PREFERENCES_FILE =
-            new File("src/main/resources/mediaserver/preferences.xml");
+    private static final String PREF_UUID = "uuid";
+    private static final String PREF_NETWORK_INTERFACE = "network-interface";
+    private static final String PREF_HTTP_PORT = "http-port";
+    private static final String PREF_MEDIA_DIRS = "media-directories";
+    private static final String PREF_FRIENDLY_NAME = "friendly-name";
+    private static final String PREF_FIRST_RUN = "first-run";
+    private static final String PREF_DISPLAY_PREFERENCES = "display-preferences";
+    private static final String PREF_CFG = "cfg";
 
-    protected static final String PREF_UUID = "uuid";
-    protected static final String PREF_NETWORK_INTERFACE = "network-interface";
-    protected static final String PREF_HTTP_PORT = "http-port";
-    protected static final String PREF_MEDIA_DIRS = "media-directories";
-    protected static final String PREF_FRIENDLY_NAME = "friendly-name";
-    protected static final String PREF_FIRST_RUN = "first-run";
-    protected static final String PREF_DISPLAY_PREFERENCES = "display-preferences";
-
-    protected Properties defaults;
-    protected Properties prefsFromFile;
-    protected Properties prefs;
+    private Properties defaults;
+    private Properties prefsFromFile;
+    private Properties prefs;
 
     public Preferences(String[] args) {
         initDefaults();
@@ -69,7 +67,10 @@ public class Preferences {
     public void loadPreferencesFile()
             throws FileNotFoundException, IOException {
 
-        prefsFromFile.loadFromXML(new FileInputStream(PREFERENCES_FILE));
+        String cfg = getPreference(PREF_CFG);
+        if (cfg != null) {
+            prefsFromFile.loadFromXML(new FileInputStream(cfg));
+        }
     }
 
     public void storePreferencesToFile()
@@ -83,7 +84,11 @@ public class Preferences {
         if (!prefsFromFile.containsKey(PREF_FIRST_RUN)) {
             prefsFromFile.setProperty(PREF_FIRST_RUN, String.valueOf(false));
         }
-        prefsFromFile.storeToXML(new FileOutputStream(PREFERENCES_FILE), null);
+
+        String cfg = getPreference(PREF_CFG);
+        if (cfg != null) {
+            prefsFromFile.storeToXML(new FileOutputStream(cfg), null);
+        }
     }
 
     public UUID getUuid() {
@@ -218,14 +223,15 @@ public class Preferences {
     }
 
     private void parseArgs(String[] args) {
-        // --name (-n) NAME
+        // --friendly-name (-f) NAME
         // --interface (-i) INTERFACE
         // --port (-p) PORT
         // --media (-m) DIRECTORIES
         // --preferences (-P)
+        // --cfg (-c) FILE
 
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("--name") || args[i].equals("-n")) {
+            if (args[i].equals("--friendly-name") || args[i].equals("-f")) {
                 i++;
                 prefs.setProperty(PREF_FRIENDLY_NAME, args[i]);
             } else if (args[i].equals("--interface") || args[i].equals("-i")) {
@@ -239,6 +245,9 @@ public class Preferences {
                 prefs.setProperty(PREF_MEDIA_DIRS, args[i]);
             } else if (args[i].equals("--preferences") || args[i].equals("-P")) {
                 prefs.setProperty(PREF_DISPLAY_PREFERENCES, String.valueOf(true));
+            } else if (args[i].equals("--cfg") || args[i].equals("-c")) {
+                i++;
+                prefs.setProperty(PREF_CFG, args[i]);
             }
         }
     }
