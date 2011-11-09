@@ -32,8 +32,17 @@ import com.googlecode.mipnp.view.cli.MainCli;
  */
 class CliController extends AbstractMainController {
 
+    private MainCli cli;
+
     public CliController(Preferences prefs) {
         super(prefs);
-        MainCli cli = new MainCli(this);
+        this.cli = new MainCli(this);
+    }
+
+    @Override
+    public void instanceStarted(Preferences prefs) {
+        if (prefs.isStopCommand()) {
+            cli.stop();
+        }
     }
 }

@@ -107,14 +107,6 @@ public class SingleInstance {
         return listeners.remove(l);
     }
 
-    // TODO: method name, maybe 2 separate methods
-    public void notifyListeners() {
-        notifyOtherInstance();
-        for (SingleInstanceListener l : listeners) {
-            l.alreadyStarted();
-        }
-    }
-
     public void notifyOtherInstance() {
         notifyOtherInstance(null);
     }

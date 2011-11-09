@@ -34,6 +34,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
@@ -63,6 +65,7 @@ public class PreferencesView implements ActionListener {
 
     private MainController controller;
     private Preferences prefs;
+    private boolean showingView;
 
     private JFrame frame;
 
@@ -84,6 +87,11 @@ public class PreferencesView implements ActionListener {
     public PreferencesView(MainController controller, Preferences prefs) {
         this.controller = controller;
         this.prefs = prefs;
+        this.showingView = false;
+    }
+
+    public boolean isShowingView() {
+        return showingView;
     }
 
     public void createView() {
@@ -92,12 +100,20 @@ public class PreferencesView implements ActionListener {
         createMainPanel();
         frame.add(pnl_main);
 
-//        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // TODO
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                frame.dispose();
+                showingView = false;
+                stopMediaServer();
+            }
+        });
 
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        this.showingView = true;
     }
 
     private void createMainPanel() {
@@ -227,8 +243,8 @@ public class PreferencesView implements ActionListener {
         if (event.getSource() == btn_close) {
             savePrefs();
             startMediaServer();
-
             frame.dispose();
+            showingView = false;
         } else if (event.getSource() == btn_addMedia) {
             addMediaDirectory();
         } else if (event.getSource() == btn_removeMedia) {
@@ -264,6 +280,19 @@ public class PreferencesView implements ActionListener {
         } catch (InterruptedException ex) {
             // This should not happen
         }
+    }
+
+    public void stopMediaServer() {
+        try {
+            controller.stop();
+        } catch (IOException ex) {
+            displayError(
+                    "An I/O Error Occurred",
+                    "An I/O error occurred while stopping MiPnP", ex);
+        } catch (InterruptedException ex) {
+            // This should not happen
+        }
+        System.exit(0); // TODO
     }
 
     private void addMediaDirectory() {

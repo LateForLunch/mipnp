@@ -51,17 +51,22 @@ public class Preferences {
     private static final String PREF_FRIENDLY_NAME = "friendly-name";
     private static final String PREF_FIRST_RUN = "first-run";
     private static final String PREF_DISPLAY_PREFERENCES = "display-preferences";
+
     private static final String PREF_CFG = "cfg";
+    private static final String PREF_STOP = "stop";
+
+    private String[] args;
 
     private Properties defaults;
     private Properties prefsFromFile;
     private Properties prefs;
 
     public Preferences(String[] args) {
+        this.args = args;
         initDefaults();
         this.prefsFromFile = new Properties(defaults);
         this.prefs = new Properties(prefsFromFile);
-        parseArgs(args);
+        parseArgs();
     }
 
     public void loadPreferencesFile()
@@ -160,6 +165,14 @@ public class Preferences {
         setPreference(PREF_DISPLAY_PREFERENCES, String.valueOf(b));
     }
 
+    public boolean isStopCommand() {
+        return getPreferenceAsBoolean(PREF_STOP, false);
+    }
+
+    protected String[] getProgramArguments() {
+        return args;
+    }
+
     protected String getPreference(String key) {
         return prefs.getProperty(key);
     }
@@ -222,16 +235,17 @@ public class Preferences {
         defaults.setProperty(PREF_DISPLAY_PREFERENCES, String.valueOf(false));
     }
 
-    private void parseArgs(String[] args) {
-        // --friendly-name (-f) NAME
+    private void parseArgs() {
+        // --name (-n) NAME
         // --interface (-i) INTERFACE
         // --port (-p) PORT
         // --media (-m) DIRECTORIES
         // --preferences (-P)
         // --cfg (-c) FILE
+        // --stop (-s)
 
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("--friendly-name") || args[i].equals("-f")) {
+            if (args[i].equals("--name") || args[i].equals("-n")) {
                 i++;
                 prefs.setProperty(PREF_FRIENDLY_NAME, args[i]);
             } else if (args[i].equals("--interface") || args[i].equals("-i")) {
@@ -248,6 +262,8 @@ public class Preferences {
             } else if (args[i].equals("--cfg") || args[i].equals("-c")) {
                 i++;
                 prefs.setProperty(PREF_CFG, args[i]);
+            } else if (args[i].equals("--stop") || args[i].equals("-s")) {
+                prefs.setProperty(PREF_STOP, String.valueOf(true));
             }
         }
     }
