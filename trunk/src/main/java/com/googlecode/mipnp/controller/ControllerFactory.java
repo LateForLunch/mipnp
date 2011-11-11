@@ -44,7 +44,7 @@ public class ControllerFactory {
         }
 
         AbstractMainController controller = null;
-        if (GraphicsEnvironment.isHeadless()) {
+        if (GraphicsEnvironment.isHeadless() || prefs.isCli()) {
             controller = new CliController(prefs);
         } else {
             controller = new GuiController(prefs);

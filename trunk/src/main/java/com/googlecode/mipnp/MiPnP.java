@@ -39,6 +39,7 @@ public class MiPnP {
 //        System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
 //                "org.apache.cxf.bus.CXFBusFactory");
 
+        args = new String[] {"--cli", "--stop"};
         Preferences prefs = new Preferences(args);
         ControllerFactory.createMainController(prefs);
 

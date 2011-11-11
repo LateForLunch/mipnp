@@ -24,7 +24,6 @@
  */
 package com.googlecode.mipnp.controller;
 
-import com.googlecode.mipnp.instance.SingleInstanceListener;
 import java.io.IOException;
 import java.net.SocketException;
 
@@ -39,6 +38,8 @@ public interface MainController {
     public void stop() throws IOException, InterruptedException;
 
     public void restart() throws IOException, InterruptedException;
+
+    public void exit();
 
     public String[] getNetworkInterfaceNames() throws SocketException;
 }

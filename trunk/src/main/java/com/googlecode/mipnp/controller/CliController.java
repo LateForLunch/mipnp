@@ -37,12 +37,23 @@ class CliController extends AbstractMainController {
     public CliController(Preferences prefs) {
         super(prefs);
         this.cli = new MainCli(this);
+        createView();
     }
 
     @Override
     public void instanceStarted(Preferences prefs) {
         if (prefs.isStopCommand()) {
-            cli.stop();
+            cli.stopMediaServer();
         }
+    }
+
+    private void createView() {
+        new Thread(new Runnable() {
+            public void run() {
+                cli.printCopyNotice();
+                cli.startMediaServer();
+                cli.mainLoop();
+            }
+        }).start();
     }
 }

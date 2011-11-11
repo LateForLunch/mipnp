@@ -52,6 +52,7 @@ public class Preferences {
     private static final String PREF_FIRST_RUN = "first-run";
     private static final String PREF_DISPLAY_PREFERENCES = "display-preferences";
 
+    private static final String PREF_CLI = "cli";
     private static final String PREF_CFG = "cfg";
     private static final String PREF_STOP = "stop";
 
@@ -69,7 +70,7 @@ public class Preferences {
         parseArgs();
     }
 
-    public void loadPreferencesFile()
+    public void loadPreferencesFromFile()
             throws FileNotFoundException, IOException {
 
         String cfg = getPreference(PREF_CFG);
@@ -165,6 +166,10 @@ public class Preferences {
         setPreference(PREF_DISPLAY_PREFERENCES, String.valueOf(b));
     }
 
+    public boolean isCli() {
+        return getPreferenceAsBoolean(PREF_CLI, false);
+    }
+
     public boolean isStopCommand() {
         return getPreferenceAsBoolean(PREF_STOP, false);
     }
@@ -241,7 +246,8 @@ public class Preferences {
         // --port (-p) PORT
         // --media (-m) DIRECTORIES
         // --preferences (-P)
-        // --cfg (-c) FILE
+        // --cli (-c)
+        // --cfg (-f) FILE
         // --stop (-s)
 
         for (int i = 0; i < args.length; i++) {
@@ -259,7 +265,9 @@ public class Preferences {
                 prefs.setProperty(PREF_MEDIA_DIRS, args[i]);
             } else if (args[i].equals("--preferences") || args[i].equals("-P")) {
                 prefs.setProperty(PREF_DISPLAY_PREFERENCES, String.valueOf(true));
-            } else if (args[i].equals("--cfg") || args[i].equals("-c")) {
+            } else if (args[i].equals("--cli") || args[i].equals("-c")) {
+                prefs.setProperty(PREF_CLI, String.valueOf(true));
+            } else if (args[i].equals("--cfg") || args[i].equals("-f")) {
                 i++;
                 prefs.setProperty(PREF_CFG, args[i]);
             } else if (args[i].equals("--stop") || args[i].equals("-s")) {

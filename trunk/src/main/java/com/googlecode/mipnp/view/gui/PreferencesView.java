@@ -270,7 +270,7 @@ public class PreferencesView implements ActionListener {
         }
     }
 
-    private void startMediaServer() {
+    public void startMediaServer() {
         try {
             controller.restart();
         } catch (IOException ex) {
@@ -292,7 +292,7 @@ public class PreferencesView implements ActionListener {
         } catch (InterruptedException ex) {
             // This should not happen
         }
-        System.exit(0); // TODO
+        controller.exit();
     }
 
     private void addMediaDirectory() {
