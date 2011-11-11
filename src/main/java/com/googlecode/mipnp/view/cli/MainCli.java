@@ -38,16 +38,9 @@ public class MainCli {
 
     public MainCli(MainController controller) {
         this.controller = controller;
-        printCopyNotice();
-        start();
-        mainLoop();
     }
 
-    public void printAlreadyStarted() {
-        System.out.println("MiPnP is already running.");
-    }
-
-    private void printCopyNotice() {
+    public void printCopyNotice() {
         System.out.println("MiPnP  Copyright (C) 2010, 2011  Jochem Van denbussche");
         System.out.println("This program comes with ABSOLUTELY NO WARRANTY.");
         System.out.println("This is free software, and you are welcome to redistribute it under certain conditions.");
@@ -55,7 +48,7 @@ public class MainCli {
         System.out.println();
     }
 
-    private void start() {
+    public void startMediaServer() {
         try {
             controller.start();
             System.out.println();
@@ -66,16 +59,16 @@ public class MainCli {
         }
     }
 
-    private void mainLoop() {
+    public void mainLoop() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Press 'q' to stop.");
         while (!(scanner.nextLine().equalsIgnoreCase("q"))) {
             System.out.println("Unknown command.\nPress 'q' to stop.\n");
         }
-        stop();
+        stopMediaServer();
     }
 
-    public void stop() {
+    public void stopMediaServer() {
         try {
             controller.stop();
         } catch (IOException ex) {
@@ -84,6 +77,7 @@ public class MainCli {
         } catch (InterruptedException ex) {
             // This should not happen
         }
-        System.exit(0); // TODO
+
+        controller.exit();
     }
 }

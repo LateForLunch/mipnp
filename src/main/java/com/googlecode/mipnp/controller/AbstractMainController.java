@@ -24,6 +24,7 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.instance.SingleInstance;
 import com.googlecode.mipnp.instance.SingleInstanceListener;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
 import com.googlecode.mipnp.mediaserver.library.FileSystemSource;
@@ -57,7 +58,7 @@ public abstract class AbstractMainController
         this.prefs = prefs;
 
         try {
-            prefs.loadPreferencesFile();
+            prefs.loadPreferencesFromFile();
         } catch (FileNotFoundException ex) {
             ex.printStackTrace(); // TODO
         } catch (IOException ex) {
@@ -112,6 +113,19 @@ public abstract class AbstractMainController
     public void restart() throws IOException, InterruptedException {
         stop();
         start();
+    }
+
+    public void exit() {
+        try {
+            stop();
+        } catch (IOException ex) {
+        } catch (InterruptedException ex) {
+        }
+
+        SingleInstance si = SingleInstance.getInstance();
+        si.unlock();
+
+        System.exit(0);
     }
 
     public String[] getNetworkInterfaceNames() throws SocketException {
