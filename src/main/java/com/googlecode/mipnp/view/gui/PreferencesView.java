@@ -104,9 +104,11 @@ public class PreferencesView implements ActionListener {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                savePrefs();
+//                startMediaServer();
                 frame.dispose();
                 showingView = false;
-                stopMediaServer();
+                stopMediaServer(); // TODO: start instead of stop
             }
         });
 
