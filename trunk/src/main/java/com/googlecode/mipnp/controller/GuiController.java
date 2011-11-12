@@ -43,6 +43,8 @@ class GuiController extends AbstractMainController {
 
         if (prefs.isFirstRun() || prefs.getDisplayPreferences()) {
             createView();
+        } else {
+            view.startMediaServer();
         }
     }
 

@@ -39,7 +39,13 @@ public class MiPnP {
 //        System.setProperty(BusFactory.BUS_FACTORY_PROPERTY_NAME,
 //                "org.apache.cxf.bus.CXFBusFactory");
 
-        args = new String[] {"--cli", "--stop"};
+        args = new String[] {
+            "--stop",
+            "--cfg",
+            "/home/jochem/NetBeansProjects/mipnp/" +
+                "src/main/resources/mediaserver/preferences.xml"
+        };
+
         Preferences prefs = new Preferences(args);
         ControllerFactory.createMainController(prefs);
 
