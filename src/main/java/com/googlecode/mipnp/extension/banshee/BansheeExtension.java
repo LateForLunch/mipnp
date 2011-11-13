@@ -24,7 +24,7 @@
  */
 package com.googlecode.mipnp.extension.banshee;
 
-import com.googlecode.mipnp.extension.Extension;
+import com.googlecode.mipnp.extension.ExtensionInfo;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.mediaserver.library.MusicAlbum;
 import com.googlecode.mipnp.mediaserver.library.MusicTrack;
@@ -47,10 +47,9 @@ import java.util.Map;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-@Extension(
+@ExtensionInfo(
         name="Banshee",
-        description="Import your library from Banshee",
-        extensionClass=MediaSource.class)
+        description="Import your library from Banshee")
 public class BansheeExtension implements MediaSource {
 
     private static final String SELECT_ALBUMS_V43 =

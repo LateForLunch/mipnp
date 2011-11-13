@@ -19,40 +19,24 @@
  */
 
 /*
- * Extension.java
- * Created on Nov 13, 2011, 11:39:23 AM
+ * ExtensionInfo.java
+ * Created on Nov 12, 2011, 1:41:14 PM
  */
 package com.googlecode.mipnp.extension;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class Extension<T> {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ExtensionInfo {
 
-    private T object;
-    private String name;
-    private String description;
-
-    public Extension(
-            T object,
-            String name,
-            String description) {
-
-        this.object = object;
-        this.name = name;
-        this.description = description;
-    }
-
-    public T getObject() {
-        return object;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
+    public String name();
+    public String description();
 }
