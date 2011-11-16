@@ -121,17 +121,17 @@ public class InetTools {
      * @return the display names of the network interfaces
      * @throws SocketException if an I/O error occurs
      */
-    public static String[] getNetworkInterfaceNames() throws SocketException {
-        List<String> result = new ArrayList<String>();
+    public static NetworkInterface[] getNetworkInterfaceNames() throws SocketException {
+        List<NetworkInterface> result = new ArrayList<NetworkInterface>();
         Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
 
         while (nis.hasMoreElements()) {
             NetworkInterface ni = nis.nextElement();
             if (!ni.isLoopback()) {
-                result.add(ni.getDisplayName());
+                result.add(ni);
             }
         }
 
-        return result.toArray(new String[result.size()]);
+        return result.toArray(new NetworkInterface[result.size()]);
     }
 }

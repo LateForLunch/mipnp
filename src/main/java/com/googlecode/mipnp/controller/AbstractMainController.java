@@ -88,7 +88,7 @@ public abstract class AbstractMainController
         this.upnpServer = new UpnpServer(
                 mediaServerDevice,
                 NetworkInterface.getByName(prefs.getNetworkInterface()));
-
+        
         MediaServlet mediaServlet = new MediaServlet(mediaLibrary);
         upnpServer.addServlet(mediaServlet, MEDIA_SERVLET_PATH + "/*");
 
@@ -128,7 +128,7 @@ public abstract class AbstractMainController
         System.exit(0);
     }
 
-    public String[] getNetworkInterfaceNames() throws SocketException {
+    public NetworkInterface[] getNetworkInterfaceNames() throws SocketException {
         return InetTools.getNetworkInterfaceNames();
     }
 
