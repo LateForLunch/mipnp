@@ -42,7 +42,7 @@ public class MiPnP {
         args = new String[] {
             "--stop",
             "--cfg",
-            "/home/jochem/NetBeansProjects/mipnp/" +
+            System.getProperty("user.home")+"/NetBeansProjects/mipnp/" +
                 "src/main/resources/mediaserver/preferences.xml"
         };
 
