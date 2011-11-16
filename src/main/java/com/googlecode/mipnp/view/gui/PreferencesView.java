@@ -227,8 +227,7 @@ public class PreferencesView implements ActionListener {
                    }
                });
             
-            cmb_networkInterface.setSelectedItem(
-                prefs.getNetworkInterface());
+            cmb_networkInterface.setSelectedItem(NetworkInterface.getByName(prefs.getNetworkInterface()));
         } catch (SocketException ex) {
             String[] message = new String[] {"An error occurred"};
             this.cmb_networkInterface = new JComboBox(message);
