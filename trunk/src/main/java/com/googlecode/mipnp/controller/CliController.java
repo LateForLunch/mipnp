@@ -25,6 +25,7 @@
 package com.googlecode.mipnp.controller;
 
 import com.googlecode.mipnp.view.cli.MainCli;
+import java.util.logging.Logger;
 
 /**
  *
@@ -55,5 +56,10 @@ class CliController extends AbstractMainController {
                 cli.mainLoop();
             }
         }).start();
+    }
+
+    public void displayConfiguration() {
+        //TODO: log something, should't be call bye the systemtray
+        //          because it's the GUI controller that start the Systray
     }
 }

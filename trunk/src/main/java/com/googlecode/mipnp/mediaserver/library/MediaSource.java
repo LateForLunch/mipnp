@@ -37,4 +37,6 @@ public interface MediaSource {
     public List<Video> getVideos();
 
     public List<Picture> getPictures();
+    
+    public Directory getRootDirectory();
 }
