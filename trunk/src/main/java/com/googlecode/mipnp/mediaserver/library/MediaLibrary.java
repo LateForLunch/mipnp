@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010, 2011  Jochem Van denbussche
+ * Copyright (C) 2010, 2011  Jochem Van denbussche, Pierre-Luc Plourde
  *
  * This file is part of MiPnP.
  *
@@ -32,6 +32,7 @@ import java.util.List;
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ * @author Pierre-Luc Plourde <pierrelucplourde2@gmail.com>
  */
 public class MediaLibrary {
 
@@ -44,7 +45,7 @@ public class MediaLibrary {
     public static final String ID_MUSIC_ARTIST = "6";
     public static final String ID_MUSIC_ALBUM = "7";
 //    public static final String ID_MUSIC_PLAYLISTS = "F";
-//    public static final String ID_MUSIC_FOLDERS = "14";
+    public static final String ID_MUSIC_FOLDERS = "14";
 
     public static final String ID_VIDEO = "2";
     public static final String ID_VIDEO_ALL = "8";
@@ -63,14 +64,13 @@ public class MediaLibrary {
     public static final String ID_PICTURES_FOLDERS = "16";
 
     private CdsObject root;
-    private CdsObject xbox_root;
-    private Directory rootDir;
 
     private CdsObject music;
     private CdsObject musicAll;
     private CdsObject musicGenre;
     private CdsObject musicArtist;
     private CdsObject musicAlbum;
+    private CdsObject musicFolders;
 
     private CdsObject video;
     private CdsObject videoAll;
@@ -85,17 +85,17 @@ public class MediaLibrary {
     }
 
     public void addMedia(MediaSource source) {
-        addMusic(source);
-        addVideos(source);
-        addPictures(source);
-        rootDir = source.getRootDirectory();
-        createVideoTree(videoFolders, rootDir);
+        MediaContainer container = source.getMediaContainer();
+        if (container == null) {
+            return;
+        }
+
+        addMusic(container, musicFolders);
+        addVideos(container, videoFolders);
+        addPictures(container, picturesFolders);
     }
 
     public CdsObject getObjectById(String id) {
-        if (id.equals(XBOX_ID_ROOT)) {
-            return xbox_root;
-        }
         if (id.equals(ID_ROOT)) {
             return root;
         }
@@ -128,8 +128,8 @@ public class MediaLibrary {
             str += " ";
         }
         String parent = obj.getParentId();
-        str += "(ID: " + obj.getId() + ", parentID: " + parent + ") " + obj.getTitle() + "\n";
-//        str += obj.getTitle() + "\n";
+        str += "(ID: " + obj.getId() + ", parentID: " + parent + ") ";
+        str += obj.getTitle() + "\n";
         if (obj.isContainer()) {
             for (CdsObject child : obj.getChildren()) {
                 str += toString(child, level + 1);
@@ -143,8 +143,7 @@ public class MediaLibrary {
          * Root
          */
         this.root = CdsObjectFactory.createStorageFolder(ID_ROOT, "Root");
-        this.xbox_root = CdsObjectFactory.createStorageFolder(XBOX_ID_ROOT, "Root");
-        
+
         /*
          * Music
          */
@@ -158,10 +157,13 @@ public class MediaLibrary {
                 ID_MUSIC_ARTIST, "Artist");
         this.musicAlbum = CdsObjectFactory.createStorageFolder(
                 ID_MUSIC_ALBUM, "Album");
+        this.musicFolders = CdsObjectFactory.createStorageFolder(
+                ID_MUSIC_FOLDERS, "Folders");
         music.addChild(musicAll);
         music.addChild(musicGenre);
         music.addChild(musicArtist);
         music.addChild(musicAlbum);
+        music.addChild(musicFolders);
 
         /*
          * Video
@@ -170,22 +172,9 @@ public class MediaLibrary {
                 ID_VIDEO, "Video");
         this.videoAll = CdsObjectFactory.createStorageFolder(
                 ID_VIDEO_ALL, "All Video");
-//        // TODO: temp fix
-//        CdsObject videoFoldersTemp = CdsObjectFactory.createStorageFolder(
-//                ID_VIDEO_FOLDERS, "Folders");
-//        this.videoFolders = CdsObjectFactory.createStorageFolder();
-//        videoFolders.setTitle("All Videos");
-//        videoFoldersTemp.addChild(videoFolders);
-//        video.addChild(videoFoldersTemp);
-//        // End temp fix
-        // TODO: temp fix
         this.videoFolders = CdsObjectFactory.createStorageFolder(
                 ID_VIDEO_FOLDERS, "Folders");
-//        this.videoFolders = CdsObjectFactory.createStorageFolder();
-//        videoFolders.setTitle("All Videos");
-//        videoFoldersTemp.addChild(videoFolders);
         video.addChild(videoFolders);
-        // End temp fix
         video.addChild(videoAll);
 
         /*
@@ -195,30 +184,26 @@ public class MediaLibrary {
                 ID_PICTURES, "Pictures");
         this.picturesAll = CdsObjectFactory.createStorageFolder(
                 ID_PICTURES_ALL, "All Pictures");
-        // TODO: temp fix
-        CdsObject picturesFoldersTemp = CdsObjectFactory.createStorageFolder(
+        this.picturesFolders = CdsObjectFactory.createStorageFolder(
                 ID_PICTURES_FOLDERS, "Folders");
-        this.picturesFolders = CdsObjectFactory.createStorageFolder();
-        picturesFolders.setTitle("All Pictures");
-        picturesFoldersTemp.addChild(picturesFolders);
-        pictures.addChild(picturesFoldersTemp);
-        // End temp fix
         pictures.addChild(picturesAll);
+        pictures.addChild(picturesFolders);
 
         root.addChild(music);
         root.addChild(video);
         root.addChild(pictures);
-        xbox_root.addChild(music);
-        xbox_root.addChild(video);
-        xbox_root.addChild(pictures);
     }
 
-    private void addMusic(MediaSource source) {
-        List<MusicTrack> musicTracks = source.getMusicTracks();
-        if (musicTracks == null) {
+    private void addMusic(MediaContainer container, CdsObject parentFolder) {
+        if (!container.containsMusicTrackDeepSearch()) {
             return;
         }
-        for (MusicTrack track : musicTracks) {
+
+        CdsObject musicFolder = CdsObjectFactory.createStorageFolder();
+        musicFolder.setTitle(container.getTitle());
+        parentFolder.addChild(musicFolder);
+
+        for (MusicTrack track : container.getMusicTracks()) {
             CdsObject item = CdsObjectFactory.createMusicItem(track);
             musicAll.addChild(item);
 
@@ -236,29 +221,51 @@ public class MediaLibrary {
             if (album != null) {
                 album.addChild(item, false);
             }
+
+            musicFolder.addChild(item, false);
+        }
+
+        for (MediaContainer mc : container.getMediaContainers()) {
+            addMusic(mc, musicFolder);
         }
     }
 
-    private void addVideos(MediaSource source) {
-        List<Video> videos = source.getVideos();
-        if (videos == null) {
+    private void addVideos(MediaContainer container, CdsObject parentFolder) {
+        if (!container.containsVideoDeepSearch()) {
             return;
         }
-        for (Video v : videos) {
+
+        CdsObject videoFolder = CdsObjectFactory.createStorageFolder();
+        videoFolder.setTitle(container.getTitle());
+        parentFolder.addChild(videoFolder);
+
+        for (Video v : container.getVideos()) {
             CdsObject item = CdsObjectFactory.createVideoItem(v);
             videoAll.addChild(item);
-            //videoFolders.addChild(item, false); // TODO: fix folders
+            videoFolder.addChild(item, false);
+        }
+
+        for (MediaContainer mc : container.getMediaContainers()) {
+            addVideos(mc, videoFolder);
         }
     }
 
-    private void addPictures(MediaSource source) {
-        List<Picture> pics = source.getPictures();
-        if (pics == null) {
+    private void addPictures(MediaContainer container, CdsObject parentFolder) {
+        if (!container.containsPictureDeepSearch()) {
             return;
         }
-        for (Picture p : pics) {
+
+        CdsObject pictureFolder = CdsObjectFactory.createStorageFolder();
+        pictureFolder.setTitle(container.getTitle());
+        parentFolder.addChild(pictureFolder);
+
+        for (Picture p : container.getPictures()) {
             picturesAll.addChild(p);
-            picturesFolders.addChild(p); // TODO: fix folders
+            pictureFolder.addChild(p, false);
+        }
+
+        for (MediaContainer mc : container.getMediaContainers()) {
+            addPictures(mc, pictureFolder);
         }
     }
 
@@ -306,30 +313,5 @@ public class MediaLibrary {
         CdsObject obj = CdsObjectFactory.createMusicAlbum(album);
         musicAlbum.addChild(obj);
         return obj;
-    }
-
-    private boolean createVideoTree(CdsObject cdsDir, Directory dir) {
-        List<Video> vidList = dir.getVideos();
-        boolean hasAddedVid = false;
-        
-        if(!vidList.isEmpty()){
-            hasAddedVid = true;
-        }
-        for(Video v : vidList){
-            CdsObject item = CdsObjectFactory.createVideoItem(v);
-            cdsDir.addChild(item, false);
-        }
-        
-        for(Directory d : dir.getChildDirectories()){
-            CdsObject cds = CdsObjectFactory.createStorageFolder();
-            cds.setTitle(d.getTitle());
-            
-            if(createVideoTree(cds, d)){
-                hasAddedVid = true;
-                cdsDir.addChild(cds);
-            }
-        }
-        return hasAddedVid;
-        
     }
 }

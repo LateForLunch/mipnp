@@ -26,8 +26,6 @@ package com.googlecode.mipnp.mediaserver.library;
 
 import com.googlecode.mipnp.mediaserver.cds.CdsConstants;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -35,46 +33,27 @@ import java.util.List;
  */
 public class FileSystemSource implements MediaSource {
 
-    private List<MusicTrack> allMusicTracks;
-    private List<Video> allVideos;
-    private List<Picture> allPictures;
-    private Directory rootDirectory;
+    private MediaContainer mediaContainer;
 
     public FileSystemSource(File directory) {
         if (directory == null || !directory.isDirectory()) {
             throw new IllegalArgumentException(
                     "given directory is null or not a directory at all.");
         }
-        this.allMusicTracks = new ArrayList<MusicTrack>();
-        this.allVideos = new ArrayList<Video>();
-        this.allPictures = new ArrayList<Picture>();
-        this.rootDirectory = addMedia(directory);
+        this.mediaContainer = addMedia(directory);
     }
 
-    public List<MusicTrack> getMusicTracks() {
-        return allMusicTracks;
+    public MediaContainer getMediaContainer() {
+        return mediaContainer;
     }
 
-    public List<Video> getVideos() {
-        return allVideos;
-    }
+    private MediaContainer addMedia(File dir) {
+        MediaContainer current = new MediaContainer(dir.getName());
 
-    public List<Picture> getPictures() {
-        return allPictures;
-    }
-    
-    public Directory getRootDirectory(){
-        return rootDirectory;
-    }
-
-    private Directory addMedia(File directory) {
-        
-        Directory currentDir = new Directory(directory.getName(), directory);
-        
-        File[] files = directory.listFiles();
+        File[] files = dir.listFiles();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
-                currentDir.addChildDirectory(addMedia(files[i])); ;
+                current.addMediaContainer(addMedia(files[i]));
             } else {
                 String type = CdsConstants.MIMETYPES.getContentType(files[i]);
                 String title = files[i].getName();
@@ -83,17 +62,15 @@ public class FileSystemSource implements MediaSource {
                     title = title.substring(0, lastPoint);
                 }
                 if (type.startsWith("audio")) {
-                    allMusicTracks.add(new MusicTrack(title, files[i]));
-                    currentDir.addMusic(new MusicTrack(title, files[i]));
+                    current.addMusic(new MusicTrack(title, files[i]));
                 } else if (type.startsWith("video")) {
-                    allVideos.add(new Video(title, files[i]));
-                    currentDir.addVideo(new Video(title, files[i]));
+                    current.addVideo(new Video(title, files[i]));
                 } else if (type.startsWith("image")) {
-                    allPictures.add(new Picture(title, files[i]));
-                    currentDir.addPicture(new Picture(title, files[i]));
+                    current.addPicture(new Picture(title, files[i]));
                 }
             }
         }
-        return currentDir;
+
+        return current;
     }
 }
