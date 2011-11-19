@@ -1,7 +1,7 @@
 
 package com.googlecode.mipnp.view.statusicon;
 
-import com.googlecode.mipnp.controller.ControllerFactory;
+import com.googlecode.mipnp.controller.MainController;
 import java.awt.AWTException;
 import java.awt.Image;
 import java.awt.SystemTray;
@@ -18,16 +18,17 @@ import javax.swing.JPopupMenu;
  * @author Pierre-Luc Plourde <pierrelucplourde2@gmail.com>
  */
 public class ServerStatus {
-    
+
+    private MainController controller;
     JPopupMenu menu;
     JXTrayIcon sysTrayIcon;
     
-    public ServerStatus(Image img){
-        this(img,null);
+    public ServerStatus(MainController controller, Image img){
+        this(controller, img, null);
     }
     
-    public ServerStatus(Image img,String txt){
-        
+    public ServerStatus(MainController controller, Image img,String txt){
+        this.controller = controller;
         this.menu = new JPopupMenu("Menu");
         this.sysTrayIcon = new JXTrayIcon(img);
         if(txt != null){
@@ -42,7 +43,7 @@ public class ServerStatus {
 
             public void actionPerformed(ActionEvent e) {
                 //TODO: Display something maybe just the pref window or a special one.
-                ControllerFactory.getMainController().displayConfiguration();
+                ServerStatus.this.controller.displayConfiguration();
             }  
         });
         
@@ -50,7 +51,7 @@ public class ServerStatus {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    ControllerFactory.getMainController().restart();
+                    ServerStatus.this.controller.restart();
                 } catch (IOException ex) {
                     Logger.getLogger(ServerStatus.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (InterruptedException ex) {
@@ -64,7 +65,7 @@ public class ServerStatus {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    ControllerFactory.getMainController().stop();
+                    ServerStatus.this.controller.stop();
                 } catch (IOException ex) {
                     Logger.getLogger(ServerStatus.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (InterruptedException ex) {
@@ -77,8 +78,7 @@ public class ServerStatus {
         mi_exit.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                ControllerFactory.getMainController().exit();
-                
+                ServerStatus.this.controller.exit();
             }
         });
         
