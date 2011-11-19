@@ -34,8 +34,7 @@ import java.awt.GraphicsEnvironment;
 public class ControllerFactory {
 
     private static SingleInstance singleInstance = SingleInstance.getInstance();
-    private static AbstractMainController controller = null;
-    
+
     public static MainController createMainController(Preferences prefs) {
         boolean lock = singleInstance.lock();
         if (!lock) {
@@ -44,7 +43,7 @@ public class ControllerFactory {
             System.exit(0);
         }
 
-        controller = null;
+        AbstractMainController controller = null;
         if (GraphicsEnvironment.isHeadless() || prefs.isCli()) {
             controller = new CliController(prefs);
         } else {
@@ -52,10 +51,6 @@ public class ControllerFactory {
         }
         singleInstance.addSingleInstanceListener(controller);
 
-        return controller;
-    }
-    
-    public static MainController getMainController() {
         return controller;
     }
 }

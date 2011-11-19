@@ -26,9 +26,7 @@ package com.googlecode.mipnp.controller;
 
 import com.googlecode.mipnp.view.gui.PreferencesView;
 import com.googlecode.mipnp.view.statusicon.ServerStatus;
-import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -45,7 +43,11 @@ class GuiController extends AbstractMainController {
         super(prefs);
         setSystemLookAndFeel();
         this.view = new PreferencesView(this, prefs);
-        this.status = new ServerStatus(Toolkit.getDefaultToolkit().getImage("src/main/resources/mediaserver/juk_48x48.png"),"Server is not running.");
+        this.status = new ServerStatus(
+                this,
+                Toolkit.getDefaultToolkit().getImage(
+                "src/main/resources/mediaserver/juk_48x48.png"),
+                "Server is not running.");
 
         if (prefs.isFirstRun() || prefs.getDisplayPreferences()) {
             createView();
