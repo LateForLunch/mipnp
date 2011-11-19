@@ -25,6 +25,7 @@
 package com.googlecode.mipnp.extension.banshee;
 
 import com.googlecode.mipnp.extension.ExtensionInfo;
+import com.googlecode.mipnp.mediaserver.library.Directory;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.mediaserver.library.MusicAlbum;
 import com.googlecode.mipnp.mediaserver.library.MusicTrack;
@@ -193,5 +194,11 @@ public class BansheeExtension implements MediaSource {
             } catch (SQLException ex) {
             }
         }
+    }
+
+    public Directory getRootDirectory() {
+        //TODO: Create a master Dir that contain the music and the vid and return that fake dir.
+        
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

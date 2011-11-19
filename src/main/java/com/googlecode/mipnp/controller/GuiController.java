@@ -25,6 +25,10 @@
 package com.googlecode.mipnp.controller;
 
 import com.googlecode.mipnp.view.gui.PreferencesView;
+import com.googlecode.mipnp.view.statusicon.ServerStatus;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -35,17 +39,21 @@ import javax.swing.UIManager;
 class GuiController extends AbstractMainController {
 
     private PreferencesView view;
+    private ServerStatus status;
 
     public GuiController(Preferences prefs) {
         super(prefs);
         setSystemLookAndFeel();
         this.view = new PreferencesView(this, prefs);
+        this.status = new ServerStatus(Toolkit.getDefaultToolkit().getImage("src/main/resources/mediaserver/juk_48x48.png"),"Server is not running.");
 
         if (prefs.isFirstRun() || prefs.getDisplayPreferences()) {
             createView();
         } else {
             view.startMediaServer();
         }
+        
+        status.AddInTray();
     }
 
     @Override
@@ -74,5 +82,11 @@ class GuiController extends AbstractMainController {
                 view.createView();
             }
         });
+    }
+    
+    public void displayConfiguration(){
+        if (!view.isShowingView()) {
+            createView();
+        }
     }
 }

@@ -36,7 +36,8 @@ import java.util.List;
 public class MediaLibrary {
 
     public static final String ID_ROOT = "0";
-
+    public static final String XBOX_ID_ROOT = "100000";
+    
     public static final String ID_MUSIC = "1";
     public static final String ID_MUSIC_ALL = "4";
     public static final String ID_MUSIC_GENRE = "5";
@@ -62,6 +63,8 @@ public class MediaLibrary {
     public static final String ID_PICTURES_FOLDERS = "16";
 
     private CdsObject root;
+    private CdsObject xbox_root;
+    private Directory rootDir;
 
     private CdsObject music;
     private CdsObject musicAll;
@@ -85,9 +88,14 @@ public class MediaLibrary {
         addMusic(source);
         addVideos(source);
         addPictures(source);
+        rootDir = source.getRootDirectory();
+        createVideoTree(videoFolders, rootDir);
     }
 
     public CdsObject getObjectById(String id) {
+        if (id.equals(XBOX_ID_ROOT)) {
+            return xbox_root;
+        }
         if (id.equals(ID_ROOT)) {
             return root;
         }
@@ -135,7 +143,8 @@ public class MediaLibrary {
          * Root
          */
         this.root = CdsObjectFactory.createStorageFolder(ID_ROOT, "Root");
-
+        this.xbox_root = CdsObjectFactory.createStorageFolder(XBOX_ID_ROOT, "Root");
+        
         /*
          * Music
          */
@@ -161,13 +170,21 @@ public class MediaLibrary {
                 ID_VIDEO, "Video");
         this.videoAll = CdsObjectFactory.createStorageFolder(
                 ID_VIDEO_ALL, "All Video");
+//        // TODO: temp fix
+//        CdsObject videoFoldersTemp = CdsObjectFactory.createStorageFolder(
+//                ID_VIDEO_FOLDERS, "Folders");
+//        this.videoFolders = CdsObjectFactory.createStorageFolder();
+//        videoFolders.setTitle("All Videos");
+//        videoFoldersTemp.addChild(videoFolders);
+//        video.addChild(videoFoldersTemp);
+//        // End temp fix
         // TODO: temp fix
-        CdsObject videoFoldersTemp = CdsObjectFactory.createStorageFolder(
+        this.videoFolders = CdsObjectFactory.createStorageFolder(
                 ID_VIDEO_FOLDERS, "Folders");
-        this.videoFolders = CdsObjectFactory.createStorageFolder();
-        videoFolders.setTitle("All Videos");
-        videoFoldersTemp.addChild(videoFolders);
-        video.addChild(videoFoldersTemp);
+//        this.videoFolders = CdsObjectFactory.createStorageFolder();
+//        videoFolders.setTitle("All Videos");
+//        videoFoldersTemp.addChild(videoFolders);
+        video.addChild(videoFolders);
         // End temp fix
         video.addChild(videoAll);
 
@@ -191,6 +208,9 @@ public class MediaLibrary {
         root.addChild(music);
         root.addChild(video);
         root.addChild(pictures);
+        xbox_root.addChild(music);
+        xbox_root.addChild(video);
+        xbox_root.addChild(pictures);
     }
 
     private void addMusic(MediaSource source) {
@@ -227,7 +247,7 @@ public class MediaLibrary {
         for (Video v : videos) {
             CdsObject item = CdsObjectFactory.createVideoItem(v);
             videoAll.addChild(item);
-            videoFolders.addChild(item, false); // TODO: fix folders
+            //videoFolders.addChild(item, false); // TODO: fix folders
         }
     }
 
@@ -286,5 +306,30 @@ public class MediaLibrary {
         CdsObject obj = CdsObjectFactory.createMusicAlbum(album);
         musicAlbum.addChild(obj);
         return obj;
+    }
+
+    private boolean createVideoTree(CdsObject cdsDir, Directory dir) {
+        List<Video> vidList = dir.getVideos();
+        boolean hasAddedVid = false;
+        
+        if(!vidList.isEmpty()){
+            hasAddedVid = true;
+        }
+        for(Video v : vidList){
+            CdsObject item = CdsObjectFactory.createVideoItem(v);
+            cdsDir.addChild(item, false);
+        }
+        
+        for(Directory d : dir.getChildDirectories()){
+            CdsObject cds = CdsObjectFactory.createStorageFolder();
+            cds.setTitle(d.getTitle());
+            
+            if(createVideoTree(cds, d)){
+                hasAddedVid = true;
+                cdsDir.addChild(cds);
+            }
+        }
+        return hasAddedVid;
+        
     }
 }

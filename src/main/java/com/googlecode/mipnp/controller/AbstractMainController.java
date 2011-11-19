@@ -83,7 +83,7 @@ public abstract class AbstractMainController
 
         this.mediaServerDevice = new MediaServerDevice(
                 prefs.getUuid(), mediaLibrary);
-        mediaServerDevice.setFriendlyName(prefs.getFriendlyName());
+        mediaServerDevice.setFriendlyName(prefs.getFriendlyName()+" :1");
 
         this.upnpServer = new UpnpServer(
                 mediaServerDevice,

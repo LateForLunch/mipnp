@@ -35,38 +35,46 @@ import java.util.List;
  */
 public class FileSystemSource implements MediaSource {
 
-    private List<MusicTrack> musicTracks;
-    private List<Video> videos;
-    private List<Picture> pictures;
+    private List<MusicTrack> allMusicTracks;
+    private List<Video> allVideos;
+    private List<Picture> allPictures;
+    private Directory rootDirectory;
 
     public FileSystemSource(File directory) {
         if (directory == null || !directory.isDirectory()) {
             throw new IllegalArgumentException(
                     "given directory is null or not a directory at all.");
         }
-        this.musicTracks = new ArrayList<MusicTrack>();
-        this.videos = new ArrayList<Video>();
-        this.pictures = new ArrayList<Picture>();
-        addMedia(directory);
+        this.allMusicTracks = new ArrayList<MusicTrack>();
+        this.allVideos = new ArrayList<Video>();
+        this.allPictures = new ArrayList<Picture>();
+        this.rootDirectory = addMedia(directory);
     }
 
     public List<MusicTrack> getMusicTracks() {
-        return musicTracks;
+        return allMusicTracks;
     }
 
     public List<Video> getVideos() {
-        return videos;
+        return allVideos;
     }
 
     public List<Picture> getPictures() {
-        return pictures;
+        return allPictures;
+    }
+    
+    public Directory getRootDirectory(){
+        return rootDirectory;
     }
 
-    private void addMedia(File directory) {
+    private Directory addMedia(File directory) {
+        
+        Directory currentDir = new Directory(directory.getName(), directory);
+        
         File[] files = directory.listFiles();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
-                addMedia(files[i]);
+                currentDir.addChildDirectory(addMedia(files[i])); ;
             } else {
                 String type = CdsConstants.MIMETYPES.getContentType(files[i]);
                 String title = files[i].getName();
@@ -75,13 +83,17 @@ public class FileSystemSource implements MediaSource {
                     title = title.substring(0, lastPoint);
                 }
                 if (type.startsWith("audio")) {
-                    musicTracks.add(new MusicTrack(title, files[i]));
+                    allMusicTracks.add(new MusicTrack(title, files[i]));
+                    currentDir.addMusic(new MusicTrack(title, files[i]));
                 } else if (type.startsWith("video")) {
-                    videos.add(new Video(title, files[i]));
+                    allVideos.add(new Video(title, files[i]));
+                    currentDir.addVideo(new Video(title, files[i]));
                 } else if (type.startsWith("image")) {
-                    pictures.add(new Picture(title, files[i]));
+                    allPictures.add(new Picture(title, files[i]));
+                    currentDir.addPicture(new Picture(title, files[i]));
                 }
             }
         }
+        return currentDir;
     }
 }

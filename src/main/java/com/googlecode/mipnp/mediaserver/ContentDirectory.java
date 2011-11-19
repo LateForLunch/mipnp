@@ -128,6 +128,7 @@ public class ContentDirectory extends ServiceImpl {
             return;
         }
 
+        //System.out.println(doc.toString());
         result.value = doc.toString();
         updateId.value = 0;
     }
