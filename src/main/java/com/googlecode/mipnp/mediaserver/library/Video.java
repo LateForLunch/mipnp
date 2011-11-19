@@ -59,12 +59,20 @@ public class Video {
         return duration;
     }
 
+    /**
+     * Sets the duration of this video in milliseconds.
+     * @param duration The duration of the video in milliseconds
+     */
     public void setDuration(int duration) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         setDuration(format.format(new Date(duration)));
     }
 
+    /**
+     * Sets the duration of this video in the format HH:mm:ss.SSS.
+     * @param duration The duration of the video in the format HH:mm:ss.SSS
+     */
     public void setDuration(String duration) {
         this.duration = duration;
     }

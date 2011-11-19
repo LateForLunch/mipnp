@@ -24,19 +24,11 @@
  */
 package com.googlecode.mipnp.mediaserver.library;
 
-import java.util.List;
-
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public interface MediaSource {
 
-    public List<MusicTrack> getMusicTracks();
-
-    public List<Video> getVideos();
-
-    public List<Picture> getPictures();
-    
-    public Directory getRootDirectory();
+    public MediaContainer getMediaContainer();
 }

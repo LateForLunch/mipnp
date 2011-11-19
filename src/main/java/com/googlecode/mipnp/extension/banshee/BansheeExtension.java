@@ -25,11 +25,10 @@
 package com.googlecode.mipnp.extension.banshee;
 
 import com.googlecode.mipnp.extension.ExtensionInfo;
-import com.googlecode.mipnp.mediaserver.library.Directory;
+import com.googlecode.mipnp.mediaserver.library.MediaContainer;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.mediaserver.library.MusicAlbum;
 import com.googlecode.mipnp.mediaserver.library.MusicTrack;
-import com.googlecode.mipnp.mediaserver.library.Picture;
 import com.googlecode.mipnp.mediaserver.library.Video;
 import java.io.File;
 import java.net.URI;
@@ -80,7 +79,20 @@ public class BansheeExtension implements MediaSource {
         this.db = new File(""); // TODO
     }
 
-    public List<MusicTrack> getMusicTracks() {
+    public MediaContainer getMediaContainer() {
+        MediaContainer root = new MediaContainer("Banshee");
+
+        for (MusicTrack m : getMusicTracks()) {
+            root.addMusic(m);
+        }
+        for (Video v : getVideos()) {
+            root.addVideo(v);
+        }
+
+        return root;
+    }
+
+    private List<MusicTrack> getMusicTracks() {
         List<MusicTrack> tracks = new ArrayList<MusicTrack>();
         Connection connection = null;
         Statement statement = null;
@@ -116,7 +128,7 @@ public class BansheeExtension implements MediaSource {
         return tracks;
     }
 
-    public List<Video> getVideos() {
+    private List<Video> getVideos() {
         List<Video> videos = new ArrayList<Video>();
         Connection connection = null;
         Statement statement = null;
@@ -144,10 +156,6 @@ public class BansheeExtension implements MediaSource {
         }
 
         return videos;
-    }
-
-    public List<Picture> getPictures() {
-        return null;
     }
 
     private Map<Integer, MusicAlbum> getAlbums(Connection connection)
@@ -194,11 +202,5 @@ public class BansheeExtension implements MediaSource {
             } catch (SQLException ex) {
             }
         }
-    }
-
-    public Directory getRootDirectory() {
-        //TODO: Create a master Dir that contain the music and the vid and return that fake dir.
-        
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

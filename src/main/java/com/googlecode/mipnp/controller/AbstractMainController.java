@@ -100,6 +100,8 @@ public abstract class AbstractMainController
                 upnpServer.getHttpPort(),
                 MEDIA_SERVLET_PATH);
         mediaServerDevice.setMediaServletPath(mediaServletPath);
+
+        System.out.println(mediaLibrary.toString());
     }
 
     public void stop() throws IOException, InterruptedException {
