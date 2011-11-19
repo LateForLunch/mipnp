@@ -1,5 +1,5 @@
 #summary UPnP Device Architecture - short description.
-#labels Phase-Requirements
+#labels Phase-Design
 
 = Introduction =
 
