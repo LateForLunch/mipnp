@@ -1,4 +1,3 @@
-
 package com.googlecode.mipnp.view.statusicon;
 
 import com.googlecode.mipnp.controller.MainController;
@@ -20,82 +19,69 @@ import javax.swing.JPopupMenu;
 public class ServerStatus {
 
     private MainController controller;
-    JPopupMenu menu;
-    JXTrayIcon sysTrayIcon;
-    
-    public ServerStatus(MainController controller, Image img){
-        this(controller, img, null);
-    }
-    
-    public ServerStatus(MainController controller, Image img,String txt){
+    private JPopupMenu menu;
+    private JXTrayIcon sysTrayIcon;
+    private JMenuItem mi_startStop;
+
+    public ServerStatus(MainController controller, Image img) {
         this.controller = controller;
         this.menu = new JPopupMenu("Menu");
         this.sysTrayIcon = new JXTrayIcon(img);
-        if(txt != null){
-            sysTrayIcon.setToolTip(txt);
-        }
-        JMenuItem mi_addFolder = new JMenuItem("Configure"); //TODO: Or config
-        JMenuItem mi_start = new JMenuItem("Start");
-        JMenuItem mi_stop = new JMenuItem("Stop");
+        JMenuItem mi_prefs = new JMenuItem("Preferences");
+        this.mi_startStop = new JMenuItem();
         JMenuItem mi_exit = new JMenuItem("Exit");
-        
-        mi_addFolder.addActionListener(new ActionListener() {
+
+        updateStatus();
+
+        mi_prefs.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                //TODO: Display something maybe just the pref window or a special one.
                 ServerStatus.this.controller.displayConfiguration();
-            }  
+            }
         });
-        
-        mi_start.addActionListener(new ActionListener() {
+
+        mi_startStop.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    ServerStatus.this.controller.restart();
+                    if (ServerStatus.this.controller.isMediaServerRunning()) {
+                        ServerStatus.this.controller.stopMediaServer();
+                    } else {
+                        ServerStatus.this.controller.startMediaServer();
+                    }
+                    updateStatus();
                 } catch (IOException ex) {
-                    Logger.getLogger(ServerStatus.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(
+                            ServerStatus.class.getName()).log(
+                            Level.SEVERE, null, ex);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(ServerStatus.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(
+                            ServerStatus.class.getName()).log(
+                            Level.SEVERE, null, ex);
                 }
-                
-            }
-        });
-        
-        mi_stop.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    ServerStatus.this.controller.stop();
-                } catch (IOException ex) {
-                    Logger.getLogger(ServerStatus.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ServerStatus.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
             }
         });
-        
+
         mi_exit.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 ServerStatus.this.controller.exit();
             }
         });
-        
-        
-        menu.add(mi_addFolder);
-        menu.add(mi_start);
-        menu.add(mi_stop);
+
+        menu.add(mi_prefs);
+        menu.add(mi_startStop);
         menu.addSeparator();
         menu.add(mi_exit);
-        
+
         sysTrayIcon.setJPopupMenu(menu);
     }
-    
-    public void AddInTray(){
-        if(SystemTray.isSupported()){
+
+    public void addInTray() {
+        if (SystemTray.isSupported()) {
             SystemTray tray = SystemTray.getSystemTray();
-            
+
             try {
                 tray.add(sysTrayIcon);
             } catch (AWTException e) {
@@ -103,5 +89,14 @@ public class ServerStatus {
             }
         }
     }
-    
+
+    public void updateStatus() {
+        if (controller.isMediaServerRunning()) {
+            mi_startStop.setText("Stop");
+            sysTrayIcon.setToolTip("MiPnP is sharing your media");
+        } else {
+            mi_startStop.setText("Start");
+            sysTrayIcon.setToolTip("MiPnP is not sharing your media");
+        }
+    }
 }

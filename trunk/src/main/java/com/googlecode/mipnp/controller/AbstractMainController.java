@@ -66,7 +66,7 @@ public abstract class AbstractMainController
         }
     }
 
-    public void start() throws IOException {
+    public void startMediaServer() throws IOException {
         if (upnpServer != null) {
             throw new IllegalStateException("UPnP server is already running.");
         }
@@ -102,7 +102,7 @@ public abstract class AbstractMainController
         mediaServerDevice.setMediaServletPath(mediaServletPath);
     }
 
-    public void stop() throws IOException, InterruptedException {
+    public void stopMediaServer() throws IOException, InterruptedException {
         if (upnpServer != null) {
             upnpServer.stop();
             upnpServer.join();
@@ -110,14 +110,18 @@ public abstract class AbstractMainController
         }
     }
 
-    public void restart() throws IOException, InterruptedException {
-        stop();
-        start();
+    public void restartMediaServer() throws IOException, InterruptedException {
+        stopMediaServer();
+        startMediaServer();
+    }
+
+    public boolean isMediaServerRunning() {
+        return (upnpServer != null);
     }
 
     public void exit() {
         try {
-            stop();
+            stopMediaServer();
         } catch (IOException ex) {
         } catch (InterruptedException ex) {
         }

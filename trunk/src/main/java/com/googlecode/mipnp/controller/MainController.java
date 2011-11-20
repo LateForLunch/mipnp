@@ -34,11 +34,13 @@ import java.net.SocketException;
  */
 public interface MainController {
 
-    public void start() throws IOException;
+    public void startMediaServer() throws IOException;
 
-    public void stop() throws IOException, InterruptedException;
+    public void stopMediaServer() throws IOException, InterruptedException;
 
-    public void restart() throws IOException, InterruptedException;
+    public void restartMediaServer() throws IOException, InterruptedException;
+
+    public boolean isMediaServerRunning();
 
     public void exit();
 

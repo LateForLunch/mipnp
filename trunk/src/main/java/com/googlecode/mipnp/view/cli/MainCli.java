@@ -50,7 +50,7 @@ public class MainCli {
 
     public void startMediaServer() {
         try {
-            controller.start();
+            controller.startMediaServer();
             System.out.println();
             System.out.println("MiPnP started");
         } catch (IOException ex) {
@@ -70,7 +70,7 @@ public class MainCli {
 
     public void stopMediaServer() {
         try {
-            controller.stop();
+            controller.stopMediaServer();
         } catch (IOException ex) {
             System.out.println("An I/O error occurred while stopping MiPnP:");
             System.out.println(ex.getMessage());
