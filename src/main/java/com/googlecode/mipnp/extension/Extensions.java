@@ -35,7 +35,7 @@ import java.util.ServiceLoader;
  */
 public class Extensions {
 
-    public static <T> Iterable<Extension<T>> load(Class<T> service) {
+    public static <T> List<Extension<T>> load(Class<T> service) {
         List<Extension<T>> extensions = new ArrayList<Extension<T>>();
 
         ServiceLoader<T> sl = ServiceLoader.load(service);

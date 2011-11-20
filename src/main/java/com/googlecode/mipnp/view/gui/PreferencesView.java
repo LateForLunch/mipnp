@@ -55,6 +55,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
@@ -86,6 +87,8 @@ public class PreferencesView implements ActionListener {
     private JComboBox cmb_networkInterface;
     private JTextField txt_httpPort;
     private JCheckBox chk_displayPrefs;
+
+    private JPanel pnl_extensions;
 
     public PreferencesView(MainController controller, Preferences prefs) {
         this.controller = controller;
@@ -136,6 +139,11 @@ public class PreferencesView implements ActionListener {
         pnl_advanced.setBorder(
                 BorderFactory.createEmptyBorder(10, 10, 10, 10));
         tabbedPane.addTab("Advanced", pnl_advanced);
+
+        createExtensionsPanel();
+        pnl_extensions.setBorder(
+                BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        tabbedPane.addTab("Extensions", pnl_extensions);
 
         pnl_main.add(tabbedPane, BorderLayout.CENTER);
 
@@ -214,7 +222,7 @@ public class PreferencesView implements ActionListener {
         try {
             nis = controller.getNetworkInterfaceNames();
             this.cmb_networkInterface = new JComboBox(nis);
-            
+
             this.cmb_networkInterface.setRenderer(new DefaultListCellRenderer() {
                    @Override
                    public Component getListCellRendererComponent(
@@ -226,12 +234,12 @@ public class PreferencesView implements ActionListener {
                        return this;
                    }
                });
-            
+
             cmb_networkInterface.setSelectedItem(NetworkInterface.getByName(prefs.getNetworkInterface()));
         } catch (SocketException ex) {
             String[] message = new String[] {"An error occurred"};
             this.cmb_networkInterface = new JComboBox(message);
-            
+
             displayError(
                     "An Error Occurred",
                     "An error occurred while getting the " +
@@ -257,6 +265,12 @@ public class PreferencesView implements ActionListener {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.weightx = 0.0;
         pnl_advanced.add(chk_displayPrefs, gbc);
+    }
+
+    private void createExtensionsPanel() {
+        this.pnl_extensions = new JPanel(new BorderLayout(10, 10));
+
+        JTable tbl_extensions = new JTable();
     }
 
     public void actionPerformed(ActionEvent event) {

@@ -24,9 +24,12 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.extension.Extension;
+import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.List;
 
 /**
  *
@@ -47,4 +50,6 @@ public interface MainController {
     public NetworkInterface[] getNetworkInterfaceNames() throws SocketException;
     
     public void displayConfiguration();
+
+    public List<Extension<MediaSource>> getMediaSourceExtensions();
 }
