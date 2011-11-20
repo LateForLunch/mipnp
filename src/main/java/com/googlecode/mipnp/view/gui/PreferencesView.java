@@ -292,7 +292,7 @@ public class PreferencesView implements ActionListener {
 
     public void startMediaServer() {
         try {
-            controller.restart();
+            controller.restartMediaServer();
         } catch (IOException ex) {
             displayError(
                     "An I/O Error Occurred",
@@ -304,7 +304,7 @@ public class PreferencesView implements ActionListener {
 
     public void stopMediaServer() {
         try {
-            controller.stop();
+            controller.stopMediaServer();
         } catch (IOException ex) {
             displayError(
                     "An I/O Error Occurred",
