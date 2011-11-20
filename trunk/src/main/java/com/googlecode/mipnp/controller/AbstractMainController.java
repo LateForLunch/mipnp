@@ -24,20 +24,26 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.extension.Extension;
+import com.googlecode.mipnp.extension.Extensions;
 import com.googlecode.mipnp.instance.SingleInstance;
 import com.googlecode.mipnp.instance.SingleInstanceListener;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
 import com.googlecode.mipnp.mediaserver.library.FileSystemSource;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.library.MediaServlet;
+import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -134,6 +140,10 @@ public abstract class AbstractMainController
 
     public NetworkInterface[] getNetworkInterfaceNames() throws SocketException {
         return InetTools.getNetworkInterfaceNames();
+    }
+
+    public List<Extension<MediaSource>> getMediaSourceExtensions() {
+        return Extensions.load(MediaSource.class);
     }
 
     public void instanceStarted(String[] args) {
