@@ -19,35 +19,30 @@
  */
 
 /*
- * ExtensionLoader.java
- * Created on Nov 12, 2011, 1:40:33 PM
+ * ExtensionLoadException.java
+ * Created on Nov 26, 2011, 4:31:34 PM
  */
 package com.googlecode.mipnp.extension;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ServiceLoader;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class ExtensionLoader {
+public class ExtensionLoadException extends Exception {
 
-    public static <T> List<ExtensionHolder<T>> load(Class<T> extensionClass) {
-        List<ExtensionHolder<T>> extensions = new ArrayList<ExtensionHolder<T>>();
+    public ExtensionLoadException() {
+        super("An exception occurred while loading an extension.");
+    }
 
-        ServiceLoader<T> sl = ServiceLoader.load(extensionClass);
-        for (T obj : sl) {
-            Class<?> objClass = obj.getClass();
-            Extension ext = objClass.getAnnotation(Extension.class);
-            if (ext != null) {
-                ExtensionHolder<T> extHolder = new ExtensionHolder<T>(
-                        ext.name(), ext.description(), obj);
-                extensions.add(extHolder);
-            }
-        }
+    public ExtensionLoadException(String message) {
+        super(message);
+    }
 
-        return extensions;
+    public ExtensionLoadException(Throwable cause) {
+        super(cause);
+    }
+
+    public ExtensionLoadException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
