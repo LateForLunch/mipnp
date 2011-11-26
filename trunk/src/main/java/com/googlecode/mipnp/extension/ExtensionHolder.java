@@ -19,35 +19,40 @@
  */
 
 /*
- * Extensions.java
- * Created on Nov 12, 2011, 1:40:33 PM
+ * ExtensionHolder.java
+ * Created on Nov 13, 2011, 11:39:23 AM
  */
 package com.googlecode.mipnp.extension;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ServiceLoader;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class Extensions {
+public class ExtensionHolder<T> {
 
-    public static <T> List<Extension<T>> load(Class<T> service) {
-        List<Extension<T>> extensions = new ArrayList<Extension<T>>();
+    private T extensionObject;
+    private String name;
+    private String description;
 
-        ServiceLoader<T> sl = ServiceLoader.load(service);
-        for (T obj : sl) {
-            Annotation a = obj.getClass().getAnnotation(ExtensionInfo.class);
-            if (a != null) {
-                ExtensionInfo e = (ExtensionInfo) a;
-                extensions.add(
-                        new Extension<T>(obj, e.name(), e.description()));
-            }
-        }
+    public ExtensionHolder(
+            T extensionObject,
+            String name,
+            String description) {
 
-        return extensions;
+        this.extensionObject = extensionObject;
+        this.name = name;
+        this.description = description;
+    }
+
+    public T getExtensionObject() {
+        return extensionObject;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
