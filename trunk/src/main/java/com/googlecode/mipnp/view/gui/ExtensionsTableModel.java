@@ -42,24 +42,42 @@ public class ExtensionsTableModel extends AbstractTableModel {
     };
 
     private MainController controller;
-    private List<ExtensionHolder<MediaSource>> mediaSourceExtensions;
+    private List<ExtensionHolder<MediaSource>> extensions;
     private Boolean[] enabled;
 
     public ExtensionsTableModel(MainController controller) {
         this.controller = controller;
-        this.mediaSourceExtensions = controller.getMediaSourceExtensions();
-        this.enabled = new Boolean[mediaSourceExtensions.size()];
+        this.extensions = controller.getMediaSourceExtensions();
+        this.enabled = new Boolean[extensions.size()];
     }
 
     public int getRowCount() {
-        return mediaSourceExtensions.size();
+        return extensions.size();
     }
 
     public int getColumnCount() {
-        return 2;
+        return COLUMN_NAMES.length;
     }
 
-    public Object getValueAt(int i, int i1) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Object getValueAt(int row, int column) {
+        if (column == 0) {
+            return extensions.get(row).getName();
+        } else {
+            return enabled[row];
+        }
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return COLUMN_NAMES[column];
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        if (columnIndex == 0) {
+            return String.class;
+        } else {
+            return Boolean.class;
+        }
     }
 }

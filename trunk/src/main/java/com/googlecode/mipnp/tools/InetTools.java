@@ -116,12 +116,11 @@ public class InetTools {
     }
 
     /**
-     * Returns the display names of the network interfaces.<br/>
-     * This method filters out the loopback interfaces.
-     * @return the display names of the network interfaces
+     * Returns all non-loopback network interfaces.
+     * @return all non-loopback the network interfaces
      * @throws SocketException if an I/O error occurs
      */
-    public static NetworkInterface[] getNetworkInterfaceNames() throws SocketException {
+    public static NetworkInterface[] getNetworkInterfaces() throws SocketException {
         List<NetworkInterface> result = new ArrayList<NetworkInterface>();
         Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
 

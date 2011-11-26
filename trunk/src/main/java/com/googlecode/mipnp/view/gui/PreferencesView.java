@@ -27,7 +27,6 @@ package com.googlecode.mipnp.view.gui;
 import com.googlecode.mipnp.controller.MainController;
 import com.googlecode.mipnp.controller.Preferences;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -39,10 +38,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.NetworkInterface;
 import java.net.SocketException;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -218,34 +215,19 @@ public class PreferencesView implements ActionListener {
         gbc.weightx = 0.5;
         pnl_advanced.add(txt_friendlyName, gbc);
 
-        NetworkInterface[] nis;
+        String[] niNames = null;
         try {
-            nis = controller.getNetworkInterfaceNames();
-            this.cmb_networkInterface = new JComboBox(nis);
-
-            this.cmb_networkInterface.setRenderer(new DefaultListCellRenderer() {
-                   @Override
-                   public Component getListCellRendererComponent(
-                       JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                       if (value instanceof NetworkInterface) {
-                           setText(((NetworkInterface)value).getDisplayName());
-                       }
-                       return this;
-                   }
-               });
-
-            cmb_networkInterface.setSelectedItem(NetworkInterface.getByName(prefs.getNetworkInterface()));
+            niNames = controller.getNetworkInterfaceNames();
         } catch (SocketException ex) {
-            String[] message = new String[] {"An error occurred"};
-            this.cmb_networkInterface = new JComboBox(message);
-
+            niNames = new String[] {"An error occurred"};
             displayError(
                     "An Error Occurred",
                     "An error occurred while getting the " +
                     "available network interfaces.", ex);
         }
-        
+        this.cmb_networkInterface = new JComboBox(niNames);
+        cmb_networkInterface.setSelectedItem(prefs.getNetworkInterface());
+
         gbc.gridy = 1;
         pnl_advanced.add(cmb_networkInterface, gbc);
 
@@ -289,7 +271,7 @@ public class PreferencesView implements ActionListener {
     private void savePrefs() {
         prefs.setFriendlyName(txt_friendlyName.getText());
         prefs.setNetworkInterface(
-                ((NetworkInterface) cmb_networkInterface.getSelectedItem()).getName());
+                (String) cmb_networkInterface.getSelectedItem());
         try {
             int port = Integer.parseInt(txt_httpPort.getText());
             prefs.setHttpPort(port);
