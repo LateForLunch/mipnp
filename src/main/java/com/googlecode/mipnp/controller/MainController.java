@@ -47,8 +47,8 @@ public interface MainController {
 
     public void exit();
 
-    public NetworkInterface[] getNetworkInterfaceNames() throws SocketException;
-    
+    public String[] getNetworkInterfaceNames() throws SocketException;
+
     public void displayConfiguration();
 
     public List<ExtensionHolder<MediaSource>> getMediaSourceExtensions();

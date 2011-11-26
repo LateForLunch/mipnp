@@ -38,11 +38,9 @@ import com.googlecode.mipnp.upnp.UpnpServer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -138,8 +136,13 @@ public abstract class AbstractMainController
         System.exit(0);
     }
 
-    public NetworkInterface[] getNetworkInterfaceNames() throws SocketException {
-        return InetTools.getNetworkInterfaceNames();
+    public String[] getNetworkInterfaceNames() throws SocketException {
+        NetworkInterface[] nis = InetTools.getNetworkInterfaces();
+        String[] names = new String[nis.length];
+        for (int i = 0; i < nis.length; i++) {
+            names[i] = nis[i].getName();
+        }
+        return names;
     }
 
     public List<ExtensionHolder<MediaSource>> getMediaSourceExtensions() {
