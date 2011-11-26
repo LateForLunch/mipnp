@@ -24,28 +24,24 @@
  */
 package com.googlecode.mipnp.extension;
 
+import java.lang.reflect.Method;
+
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 public class ExtensionHolder<T> {
 
-    private T extensionObject;
     private String name;
     private String description;
+    private T extensionObject;
+    private boolean loaded;
 
-    public ExtensionHolder(
-            T extensionObject,
-            String name,
-            String description) {
-
-        this.extensionObject = extensionObject;
+    public ExtensionHolder(String name, String description, T extensionObject) {
         this.name = name;
         this.description = description;
-    }
-
-    public T getExtensionObject() {
-        return extensionObject;
+        this.extensionObject = extensionObject;
+        this.loaded = false;
     }
 
     public String getName() {
@@ -54,5 +50,35 @@ public class ExtensionHolder<T> {
 
     public String getDescription() {
         return description;
+    }
+
+    public T getExtensionObject() {
+        if (!loaded) {
+            throw new IllegalStateException(
+                    "The extension has not been loaded yet.");
+        }
+        return extensionObject;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public synchronized void loadExtension() throws ExtensionLoadException {
+        if (!loaded) {
+            Class<?> objClass = extensionObject.getClass();
+            for (Method m : objClass.getMethods()) {
+                if (m.isAnnotationPresent(ExtensionLoadMethod.class)) {
+                    try {
+                        m.invoke(extensionObject);
+                    } catch (Throwable ex) {
+                        throw new ExtensionLoadException(
+                                "An error occurred while loading \"" +
+                                getName() + "\" extension.", ex);
+                    }
+                }
+            }
+            this.loaded = true;
+        }
     }
 }
