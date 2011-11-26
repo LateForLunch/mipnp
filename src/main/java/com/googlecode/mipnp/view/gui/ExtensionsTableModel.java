@@ -25,7 +25,7 @@
 package com.googlecode.mipnp.view.gui;
 
 import com.googlecode.mipnp.controller.MainController;
-import com.googlecode.mipnp.extension.Extension;
+import com.googlecode.mipnp.extension.ExtensionHolder;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -42,7 +42,7 @@ public class ExtensionsTableModel extends AbstractTableModel {
     };
 
     private MainController controller;
-    private List<Extension<MediaSource>> mediaSourceExtensions;
+    private List<ExtensionHolder<MediaSource>> mediaSourceExtensions;
     private Boolean[] enabled;
 
     public ExtensionsTableModel(MainController controller) {

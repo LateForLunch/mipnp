@@ -24,7 +24,7 @@
  */
 package com.googlecode.mipnp.controller;
 
-import com.googlecode.mipnp.extension.Extension;
+import com.googlecode.mipnp.extension.ExtensionHolder;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import java.io.IOException;
 import java.net.NetworkInterface;
@@ -51,5 +51,5 @@ public interface MainController {
     
     public void displayConfiguration();
 
-    public List<Extension<MediaSource>> getMediaSourceExtensions();
+    public List<ExtensionHolder<MediaSource>> getMediaSourceExtensions();
 }

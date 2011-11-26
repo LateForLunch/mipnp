@@ -24,7 +24,8 @@
  */
 package com.googlecode.mipnp.extension.banshee;
 
-import com.googlecode.mipnp.extension.ExtensionInfo;
+import com.googlecode.mipnp.extension.Extension;
+import com.googlecode.mipnp.extension.ExtensionLoadMethod;
 import com.googlecode.mipnp.mediaserver.library.MediaContainer;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.mediaserver.library.MusicAlbum;
@@ -47,10 +48,14 @@ import java.util.Map;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-@ExtensionInfo(
+@Extension(
         name="Banshee",
         description="Import your library from Banshee")
 public class BansheeExtension implements MediaSource {
+
+    private static final File DB_FILE =
+            new File(System.getProperty("user.home") +
+            "/.config/banshee-1/banshee.db");
 
     private static final String SELECT_ALBUMS_V43 =
             "SELECT al.AlbumID AS id, al.Title AS title, " +
@@ -74,9 +79,13 @@ public class BansheeExtension implements MediaSource {
 
     private File db;
 
-    public BansheeExtension() throws ClassNotFoundException {
+    public BansheeExtension() {
+    }
+
+    @ExtensionLoadMethod
+    public void loadExtension() throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
-        this.db = new File(""); // TODO
+        this.db = DB_FILE;
     }
 
     public MediaContainer getMediaContainer() {

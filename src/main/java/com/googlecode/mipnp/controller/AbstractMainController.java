@@ -24,8 +24,8 @@
  */
 package com.googlecode.mipnp.controller;
 
-import com.googlecode.mipnp.extension.Extension;
-import com.googlecode.mipnp.extension.Extensions;
+import com.googlecode.mipnp.extension.ExtensionHolder;
+import com.googlecode.mipnp.extension.ExtensionLoader;
 import com.googlecode.mipnp.instance.SingleInstance;
 import com.googlecode.mipnp.instance.SingleInstanceListener;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
@@ -142,8 +142,8 @@ public abstract class AbstractMainController
         return InetTools.getNetworkInterfaceNames();
     }
 
-    public List<Extension<MediaSource>> getMediaSourceExtensions() {
-        return Extensions.load(MediaSource.class);
+    public List<ExtensionHolder<MediaSource>> getMediaSourceExtensions() {
+        return ExtensionLoader.load(MediaSource.class);
     }
 
     public void instanceStarted(String[] args) {

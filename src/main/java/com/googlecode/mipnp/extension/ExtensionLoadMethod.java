@@ -19,8 +19,8 @@
  */
 
 /*
- * ExtensionInfo.java
- * Created on Nov 12, 2011, 1:41:14 PM
+ * ExtensionLoadMethod.java
+ * Created on Nov 26, 2011, 3:29:09 PM
  */
 package com.googlecode.mipnp.extension;
 
@@ -34,9 +34,6 @@ import java.lang.annotation.Target;
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface ExtensionInfo {
-
-    public String name();
-    public String description();
+@Target(ElementType.METHOD)
+public @interface ExtensionLoadMethod {
 }
