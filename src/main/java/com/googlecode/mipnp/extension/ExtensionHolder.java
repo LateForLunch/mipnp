@@ -55,7 +55,7 @@ public class ExtensionHolder<T> {
     public T getExtensionObject() {
         if (!loaded) {
             throw new IllegalStateException(
-                    "The extension has not been loaded yet.");
+                    "The extension is not loaded.");
         }
         return extensionObject;
     }
@@ -64,21 +64,39 @@ public class ExtensionHolder<T> {
         return loaded;
     }
 
-    public synchronized void loadExtension() throws ExtensionLoadException {
+    public synchronized void loadExtension() throws ExtensionException {
         if (!loaded) {
-            Class<?> objClass = extensionObject.getClass();
-            for (Method m : objClass.getMethods()) {
-                if (m.isAnnotationPresent(ExtensionLoadMethod.class)) {
-                    try {
-                        m.invoke(extensionObject);
-                    } catch (Throwable ex) {
-                        throw new ExtensionLoadException(
-                                "An error occurred while loading \"" +
-                                getName() + "\" extension.", ex);
-                    }
-                }
+            try {
+                invokeMethods(ExtensionMethodType.LOAD);
+            } catch (Throwable ex) {
+                throw new ExtensionException(
+                        "An error occurred while loading extension: " +
+                        getName(), ex);
             }
             this.loaded = true;
+        }
+    }
+
+    public synchronized void unloadExtension() throws ExtensionException {
+        if (loaded) {
+            try {
+                invokeMethods(ExtensionMethodType.UNLOAD);
+            } catch (Throwable ex) {
+                throw new ExtensionException(
+                        "An error occurred while unloading extension: " +
+                        getName(), ex);
+            }
+            this.loaded = false;
+        }
+    }
+
+    private void invokeMethods(ExtensionMethodType type) throws Throwable {
+        Class<?> objClass = extensionObject.getClass();
+        for (Method m : objClass.getMethods()) {
+            ExtensionMethod em = m.getAnnotation(ExtensionMethod.class);
+            if (em != null && em.value() == type) {
+                m.invoke(extensionObject);
+            }
         }
     }
 }

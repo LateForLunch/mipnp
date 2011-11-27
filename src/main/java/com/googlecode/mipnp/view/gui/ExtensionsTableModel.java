@@ -43,12 +43,10 @@ public class ExtensionsTableModel extends AbstractTableModel {
 
     private MainController controller;
     private List<ExtensionHolder<MediaSource>> extensions;
-    private Boolean[] enabled;
 
     public ExtensionsTableModel(MainController controller) {
         this.controller = controller;
         this.extensions = controller.getMediaSourceExtensions();
-        this.enabled = new Boolean[extensions.size()];
     }
 
     public int getRowCount() {
@@ -60,11 +58,13 @@ public class ExtensionsTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int column) {
+        ExtensionHolder<?> extHolder = extensions.get(row);
         if (column == 0) {
-            return extensions.get(row).getName();
-        } else {
-            return enabled[row];
+            return extHolder;
+        } else if (column == 1) {
+            return extHolder.isLoaded();
         }
+        return null;
     }
 
     @Override
@@ -75,9 +75,10 @@ public class ExtensionsTableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         if (columnIndex == 0) {
-            return String.class;
-        } else {
+            return ExtensionHolder.class;
+        } else if (columnIndex == 1) {
             return Boolean.class;
         }
+        return null;
     }
 }
