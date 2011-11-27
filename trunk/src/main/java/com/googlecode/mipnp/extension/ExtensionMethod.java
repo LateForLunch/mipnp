@@ -19,7 +19,7 @@
  */
 
 /*
- * ExtensionLoadMethod.java
+ * ExtensionMethod.java
  * Created on Nov 26, 2011, 3:29:09 PM
  */
 package com.googlecode.mipnp.extension;
@@ -35,5 +35,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface ExtensionLoadMethod {
+public @interface ExtensionMethod {
+
+    public ExtensionMethodType value();
 }

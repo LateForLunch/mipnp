@@ -19,8 +19,8 @@
  */
 
 /*
- * ExtensionLoadException.java
- * Created on Nov 26, 2011, 4:31:34 PM
+ * ExtensionMethodType.java
+ * Created on Nov 27, 2011, 11:06:35 AM
  */
 package com.googlecode.mipnp.extension;
 
@@ -28,21 +28,8 @@ package com.googlecode.mipnp.extension;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class ExtensionLoadException extends Exception {
+public enum ExtensionMethodType {
 
-    public ExtensionLoadException() {
-        super("An exception occurred while loading an extension.");
-    }
-
-    public ExtensionLoadException(String message) {
-        super(message);
-    }
-
-    public ExtensionLoadException(Throwable cause) {
-        super(cause);
-    }
-
-    public ExtensionLoadException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    LOAD,
+    UNLOAD
 }

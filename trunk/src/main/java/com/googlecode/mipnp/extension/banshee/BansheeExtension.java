@@ -25,7 +25,8 @@
 package com.googlecode.mipnp.extension.banshee;
 
 import com.googlecode.mipnp.extension.Extension;
-import com.googlecode.mipnp.extension.ExtensionLoadMethod;
+import com.googlecode.mipnp.extension.ExtensionMethod;
+import com.googlecode.mipnp.extension.ExtensionMethodType;
 import com.googlecode.mipnp.mediaserver.library.MediaContainer;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.mediaserver.library.MusicAlbum;
@@ -82,7 +83,7 @@ public class BansheeExtension implements MediaSource {
     public BansheeExtension() {
     }
 
-    @ExtensionLoadMethod
+    @ExtensionMethod(ExtensionMethodType.LOAD)
     public void loadExtension() throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
         this.db = DB_FILE;
