@@ -55,6 +55,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -252,7 +253,11 @@ public class PreferencesView implements ActionListener {
     private void createExtensionsPanel() {
         this.pnl_extensions = new JPanel(new BorderLayout(10, 10));
 
-        JTable tbl_extensions = new JTable();
+        TableModel tableModel =
+                new ExtensionsTableModel(controller.getExtensionsController());
+        JTable tbl_extensions = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(tbl_extensions);
+        pnl_extensions.add(scrollPane, BorderLayout.CENTER);
     }
 
     public void actionPerformed(ActionEvent event) {

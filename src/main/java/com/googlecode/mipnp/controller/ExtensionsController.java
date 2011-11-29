@@ -19,33 +19,41 @@
  */
 
 /*
- * MainController.java
- * Created on Oct 4, 2011, 4:58:30 PM
+ * ExtensionsController.java
+ * Created on Nov 29, 2011, 8:27:55 PM
  */
 package com.googlecode.mipnp.controller;
 
-import java.io.IOException;
-import java.net.SocketException;
+import com.googlecode.mipnp.extension.ExtensionHolder;
+import com.googlecode.mipnp.mediaserver.library.MediaSource;
+import com.googlecode.mipnp.model.ExtensionsModel;
+import java.util.List;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public interface MainController {
+public class ExtensionsController {
 
-    public void startMediaServer() throws IOException;
+    private ExtensionsModel model;
 
-    public void stopMediaServer() throws IOException, InterruptedException;
+    public ExtensionsController() {
+        this.model = new ExtensionsModel();
+    }
 
-    public void restartMediaServer() throws IOException, InterruptedException;
+    public int getNumberOfExtensions() {
+        return model.getNumberOfExtensions();
+    }
 
-    public boolean isMediaServerRunning();
+    public List<ExtensionHolder<?>> getExtensions() {
+        return model.getExtensions();
+    }
 
-    public void exit();
+    public ExtensionHolder<?> getExtension(int index) {
+        return model.getExtension(index);
+    }
 
-    public String[] getNetworkInterfaceNames() throws SocketException;
-
-    public void displayConfiguration();
-
-    public ExtensionsController getExtensionsController();
+    public List<ExtensionHolder<MediaSource>> getMediaSourceExtensions() {
+        return model.getMediaSourceExtensions();
+    }
 }
