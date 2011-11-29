@@ -24,15 +24,12 @@
  */
 package com.googlecode.mipnp.controller;
 
-import com.googlecode.mipnp.extension.ExtensionHolder;
-import com.googlecode.mipnp.extension.ExtensionLoader;
 import com.googlecode.mipnp.instance.SingleInstance;
 import com.googlecode.mipnp.instance.SingleInstanceListener;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
 import com.googlecode.mipnp.mediaserver.library.FileSystemSource;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.library.MediaServlet;
-import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import java.io.File;
@@ -41,7 +38,6 @@ import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
-import java.util.List;
 
 /**
  *
@@ -53,6 +49,7 @@ public abstract class AbstractMainController
     private static final String MEDIA_SERVLET_PATH = "/cds";
 
     protected Preferences prefs;
+    protected ExtensionsController extensionsController;
 
     private UpnpServer upnpServer;
     private MediaServerDevice mediaServerDevice;
@@ -60,6 +57,7 @@ public abstract class AbstractMainController
 
     public AbstractMainController(Preferences prefs) {
         this.prefs = prefs;
+        this.extensionsController = new ExtensionsController();
 
         try {
             prefs.loadPreferencesFromFile();
@@ -145,8 +143,8 @@ public abstract class AbstractMainController
         return names;
     }
 
-    public List<ExtensionHolder<MediaSource>> getMediaSourceExtensions() {
-        return ExtensionLoader.load(MediaSource.class);
+    public ExtensionsController getExtensionsController() {
+        return extensionsController;
     }
 
     public void instanceStarted(String[] args) {

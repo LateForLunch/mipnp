@@ -24,10 +24,8 @@
  */
 package com.googlecode.mipnp.view.gui;
 
-import com.googlecode.mipnp.controller.MainController;
+import com.googlecode.mipnp.controller.ExtensionsController;
 import com.googlecode.mipnp.extension.ExtensionHolder;
-import com.googlecode.mipnp.mediaserver.library.MediaSource;
-import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -41,16 +39,14 @@ public class ExtensionsTableModel extends AbstractTableModel {
         "Enabled"
     };
 
-    private MainController controller;
-    private List<ExtensionHolder<MediaSource>> extensions;
+    private ExtensionsController controller;
 
-    public ExtensionsTableModel(MainController controller) {
+    public ExtensionsTableModel(ExtensionsController controller) {
         this.controller = controller;
-        this.extensions = controller.getMediaSourceExtensions();
     }
 
     public int getRowCount() {
-        return extensions.size();
+        return controller.getNumberOfExtensions();
     }
 
     public int getColumnCount() {
@@ -58,9 +54,9 @@ public class ExtensionsTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int column) {
-        ExtensionHolder<?> extHolder = extensions.get(row);
+        ExtensionHolder<?> extHolder = controller.getExtension(row);
         if (column == 0) {
-            return extHolder;
+            return extHolder.getName() + "\n" + extHolder.getDescription();
         } else if (column == 1) {
             return extHolder.isLoaded();
         }
@@ -75,7 +71,7 @@ public class ExtensionsTableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         if (columnIndex == 0) {
-            return ExtensionHolder.class;
+            return String.class;
         } else if (columnIndex == 1) {
             return Boolean.class;
         }
