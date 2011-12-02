@@ -25,7 +25,6 @@
 package com.googlecode.mipnp.mediaserver;
 
 import com.googlecode.mipnp.upnp.ServiceImpl;
-import java.io.File;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -41,7 +40,7 @@ import javax.xml.ws.Holder;
 public class MediaReceiverRegistrar extends ServiceImpl {
 
     private static final String XML_SERVICE_DESCRIPTION =
-            "src/main/resources/mediaserver/X_MS_MediaReceiverRegistrar-1.xml";
+            "/mediaserver/X_MS_MediaReceiverRegistrar-1.xml";
     
     public MediaReceiverRegistrar() {
         super("microsoft.com", "X_MS_MediaReceiverRegistrar",
@@ -50,7 +49,9 @@ public class MediaReceiverRegistrar extends ServiceImpl {
 //        setUniformResourceName("urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1");
 //        setIdentifier("urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
         try {
-            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+//            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+            parseDescription(
+                    getClass().getResourceAsStream(XML_SERVICE_DESCRIPTION));
         } catch (Exception ex) {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright

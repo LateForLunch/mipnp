@@ -26,8 +26,9 @@ package com.googlecode.mipnp.controller;
 
 import com.googlecode.mipnp.view.gui.PreferencesView;
 import com.googlecode.mipnp.view.statusicon.ServerStatus;
-import java.awt.Toolkit;
+import java.awt.Image;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -44,10 +45,15 @@ class GuiController extends AbstractMainController {
         super(prefs);
         setSystemLookAndFeel();
         this.view = new PreferencesView(this, prefs);
-        this.status = new ServerStatus(
-                this,
-                Toolkit.getDefaultToolkit().getImage(
-                "src/main/resources/mediaserver/juk_48x48.png"));
+
+        try {
+            Image img = ImageIO.read(GuiController.class.getResourceAsStream(
+                    "/mediaserver/juk_48x48.png"));
+            this.status = new ServerStatus(this, img);
+        } catch (IOException ex) {
+            // This should not happen
+            ex.printStackTrace();
+        }
 
         if (prefs.isFirstRun() || prefs.getDisplayPreferences()) {
             createView();
