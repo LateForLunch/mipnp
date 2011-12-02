@@ -25,7 +25,6 @@
 package com.googlecode.mipnp.mediaserver;
 
 import com.googlecode.mipnp.upnp.ServiceImpl;
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import javax.jws.WebMethod;
@@ -43,7 +42,7 @@ import javax.xml.ws.Holder;
 public class MSContentDirectoryWrapper extends ServiceImpl {
 
     private static final String XML_SERVICE_DESCRIPTION =
-            "src/main/resources/mediaserver/MSContentDirectory-1.xml";
+            "/mediaserver/MSContentDirectory-1.xml";
 
     private static final List<String> browseInsteadOfSearch =
             Arrays.asList(
@@ -64,7 +63,9 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
     public MSContentDirectoryWrapper(ContentDirectory cd) {
         super("microsoft.com", "MSContentDirectory", "MSContentDirectory", 1);
         try {
-            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+//            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+            parseDescription(
+                    getClass().getResourceAsStream(XML_SERVICE_DESCRIPTION));
         } catch (Exception ex) {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright

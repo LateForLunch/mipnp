@@ -30,7 +30,6 @@ import com.googlecode.mipnp.mediaserver.cds.DidlLiteDocument;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
 import com.googlecode.mipnp.upnp.ServiceImpl;
-import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +48,7 @@ import javax.xml.ws.Holder;
 public class ContentDirectory extends ServiceImpl {
 
     private static final String XML_SERVICE_DESCRIPTION =
-            "src/main/resources/mediaserver/ContentDirectory-1.xml";
+            "/mediaserver/ContentDirectory-1.xml";
 
     private MediaLibrary library;
     private URL mediaServletPath;
@@ -57,7 +56,9 @@ public class ContentDirectory extends ServiceImpl {
     public ContentDirectory(MediaLibrary library) {
         super("ContentDirectory", "ContentDirectory", 1);
         try {
-            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+//            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+            parseDescription(
+                    getClass().getResourceAsStream(XML_SERVICE_DESCRIPTION));
         } catch (Exception ex) {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright

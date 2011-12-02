@@ -25,7 +25,6 @@
 package com.googlecode.mipnp.mediaserver;
 
 import com.googlecode.mipnp.upnp.ServiceImpl;
-import java.io.File;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -41,12 +40,14 @@ import javax.xml.ws.Holder;
 public class ConnectionManager extends ServiceImpl {
 
     private static final String XML_SERVICE_DESCRIPTION =
-            "src/main/resources/mediaserver/ConnectionManager-1.xml";
+            "/mediaserver/ConnectionManager-1.xml";
 
     public ConnectionManager() {
         super("ConnectionManager", "ConnectionManager", 1);
         try {
-            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+//            parseDescription(new File(XML_SERVICE_DESCRIPTION));
+            parseDescription(
+                    getClass().getResourceAsStream(XML_SERVICE_DESCRIPTION));
         } catch (Exception ex) {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright
