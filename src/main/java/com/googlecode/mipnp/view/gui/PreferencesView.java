@@ -64,6 +64,8 @@ import javax.swing.table.TableModel;
 public class PreferencesView implements ActionListener {
 
     private static final Insets DEFAULT_INSETS = new Insets(5, 5, 5, 5);
+    private static final Dimension DIM_LIST = new Dimension(400, 200);
+    private static final Dimension DIM_TABLE = new Dimension(400, 200);
 
     private MainController controller;
     private Preferences prefs;
@@ -170,7 +172,7 @@ public class PreferencesView implements ActionListener {
         lst_media.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane listScrollPane = new JScrollPane(lst_media);
-        listScrollPane.setPreferredSize(new Dimension(400, 200));
+        listScrollPane.setPreferredSize(DIM_LIST);
         pnl_general.add(listScrollPane, BorderLayout.CENTER);
 
         this.btn_addMedia = new JButton("Add...");
@@ -253,10 +255,17 @@ public class PreferencesView implements ActionListener {
     private void createExtensionsPanel() {
         this.pnl_extensions = new JPanel(new BorderLayout(10, 10));
 
-        TableModel tableModel =
+        TableModel tblModel =
                 new ExtensionsTableModel(controller.getExtensionsController());
-        JTable tbl_extensions = new JTable(tableModel);
+
+        JTable tbl_extensions = new JTable(tblModel);
+        tbl_extensions.setDefaultRenderer(
+                String.class, new MultiLineTableCellRenderer());
+        tbl_extensions.getColumnModel().getColumn(1).setMaxWidth(100);
+        tbl_extensions.setTableHeader(null);
+
         JScrollPane scrollPane = new JScrollPane(tbl_extensions);
+        scrollPane.setPreferredSize(DIM_TABLE);
         pnl_extensions.add(scrollPane, BorderLayout.CENTER);
     }
 
