@@ -26,6 +26,7 @@ package com.googlecode.mipnp.model;
 
 import com.googlecode.mipnp.extension.ExtensionHolder;
 import com.googlecode.mipnp.extension.ExtensionLoader;
+import com.googlecode.mipnp.extension.banshee.BansheeExtension;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,14 @@ public class ExtensionsModel {
     private List<ExtensionHolder<MediaSource>> mediaSources;
 
     public ExtensionsModel() {
-        this.mediaSources = ExtensionLoader.load(MediaSource.class);
+        // TODO: load instead of manual add
+//        this.mediaSources = ExtensionLoader.load(MediaSource.class);
+        this.mediaSources = new ArrayList<ExtensionHolder<MediaSource>>();
+        ExtensionHolder<MediaSource> ext = new ExtensionHolder<MediaSource>(
+                "Banshee",
+                "Import your library from Banshee",
+                new BansheeExtension());
+        mediaSources.add(ext);
     }
 
     public List<ExtensionHolder<?>> getExtensions() {

@@ -56,7 +56,12 @@ public class ExtensionsTableModel extends AbstractTableModel {
     public Object getValueAt(int row, int column) {
         ExtensionHolder<?> extHolder = controller.getExtension(row);
         if (column == 0) {
-            return extHolder.getName() + "\n" + extHolder.getDescription();
+            String str = "<html>";
+            str += "<b>" + extHolder.getName() + "</b>";
+            str += "<br />";
+            str += extHolder.getDescription();
+            str += "</html>";
+            return str;
         } else if (column == 1) {
             return extHolder.isLoaded();
         }
@@ -76,5 +81,20 @@ public class ExtensionsTableModel extends AbstractTableModel {
             return Boolean.class;
         }
         return null;
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        if (columnIndex == 0) {
+            return false;
+        } else if (columnIndex == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        fireTableCellUpdated(rowIndex, columnIndex);
     }
 }
