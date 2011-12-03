@@ -24,12 +24,14 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.extension.ExtensionHolder;
 import com.googlecode.mipnp.instance.SingleInstance;
 import com.googlecode.mipnp.instance.SingleInstanceListener;
 import com.googlecode.mipnp.mediaserver.MediaServerDevice;
 import com.googlecode.mipnp.mediaserver.library.FileSystemSource;
 import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.library.MediaServlet;
+import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import com.googlecode.mipnp.tools.InetTools;
 import com.googlecode.mipnp.upnp.UpnpServer;
 import java.io.File;
@@ -57,8 +59,6 @@ public abstract class AbstractMainController
 
     public AbstractMainController(Preferences prefs) {
         this.prefs = prefs;
-        this.extensionsController = new ExtensionsController();
-
         try {
             prefs.loadPreferencesFromFile();
         } catch (FileNotFoundException ex) {
@@ -66,6 +66,7 @@ public abstract class AbstractMainController
         } catch (IOException ex) {
             ex.printStackTrace(); // TODO
         }
+        this.extensionsController = new ExtensionsController();
     }
 
     public void startMediaServer() throws IOException {
@@ -82,6 +83,16 @@ public abstract class AbstractMainController
                 mediaLibrary.addMedia(fss);
             }
         }
+
+        Iterable<ExtensionHolder<MediaSource>> it =
+                extensionsController.getMediaSourceExtensions();
+        for (ExtensionHolder<MediaSource> ext : it) {
+            if (ext.isLoaded()) {
+                mediaLibrary.addMedia(ext.getExtensionObject());
+            }
+        }
+
+        System.out.println(mediaLibrary.toString());
 
         this.mediaServerDevice = new MediaServerDevice(
                 prefs.getUuid(), mediaLibrary);

@@ -56,7 +56,7 @@ public class BansheeExtension implements MediaSource {
 
     private static final File DB_FILE =
             new File(System.getProperty("user.home") +
-            "/.config/banshee-1/banshee.db");
+            "/.config/banshee-1/banshee-backup.db");
 
     private static final String SELECT_ALBUMS_V43 =
             "SELECT al.AlbumID AS id, al.Title AS title, " +
@@ -91,6 +91,9 @@ public class BansheeExtension implements MediaSource {
 
     public MediaContainer getMediaContainer() {
         MediaContainer root = new MediaContainer("Banshee");
+        if (!db.exists()) {
+            return root;
+        }
 
         for (MusicTrack m : getMusicTracks()) {
             root.addMusic(m);

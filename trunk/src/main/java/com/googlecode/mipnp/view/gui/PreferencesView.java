@@ -26,6 +26,7 @@ package com.googlecode.mipnp.view.gui;
 
 import com.googlecode.mipnp.controller.MainController;
 import com.googlecode.mipnp.controller.Preferences;
+import com.googlecode.mipnp.extension.ExtensionException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -55,13 +56,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableModel;
 
 /**
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class PreferencesView implements ActionListener {
+public class PreferencesView implements ActionListener, ExtensionExceptionListener {
 
     private static final Insets DEFAULT_INSETS = new Insets(5, 5, 5, 5);
     private static final Dimension DIM_LIST = new Dimension(400, 200);
@@ -255,8 +255,9 @@ public class PreferencesView implements ActionListener {
     private void createExtensionsPanel() {
         this.pnl_extensions = new JPanel(new BorderLayout(10, 10));
 
-        TableModel tblModel =
+        ExtensionsTableModel tblModel =
                 new ExtensionsTableModel(controller.getExtensionsController());
+        tblModel.addExtensionExceptionListener(this);
 
         JTable tbl_extensions = new JTable(tblModel);
         tbl_extensions.setDefaultRenderer(
@@ -280,6 +281,12 @@ public class PreferencesView implements ActionListener {
         } else if (event.getSource() == btn_removeMedia) {
             removeMediaDirectory();
         }
+    }
+
+    public void extensionExceptionOccurred(ExtensionException ex) {
+        displayError(
+                "An Error Occurred",
+                "An error occurred while (un)loading the extension.", ex);
     }
 
     private void savePrefs() {
@@ -306,7 +313,7 @@ public class PreferencesView implements ActionListener {
         } catch (IOException ex) {
             displayError(
                     "An I/O Error Occurred",
-                    "An I/O error occurred while starting MiPnP", ex);
+                    "An I/O error occurred while starting MiPnP.", ex);
         } catch (InterruptedException ex) {
             // This should not happen
         }
@@ -318,7 +325,7 @@ public class PreferencesView implements ActionListener {
         } catch (IOException ex) {
             displayError(
                     "An I/O Error Occurred",
-                    "An I/O error occurred while stopping MiPnP", ex);
+                    "An I/O error occurred while stopping MiPnP.", ex);
         } catch (InterruptedException ex) {
             // This should not happen
         }
