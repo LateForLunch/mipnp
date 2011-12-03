@@ -19,13 +19,12 @@
  */
 
 /*
- * ExtensionsModel.java
+ * MediaSourceExtensionsModel.java
  * Created on Nov 29, 2011, 8:07:57 PM
  */
 package com.googlecode.mipnp.model;
 
 import com.googlecode.mipnp.extension.ExtensionHolder;
-import com.googlecode.mipnp.extension.ExtensionLoader;
 import com.googlecode.mipnp.extension.banshee.BansheeExtension;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
 import java.util.ArrayList;
@@ -35,36 +34,30 @@ import java.util.List;
  *
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
-public class ExtensionsModel {
+public class MediaSourceExtensionsModel {
 
-    private List<ExtensionHolder<MediaSource>> mediaSources;
+    private List<ExtensionHolder<MediaSource>> extensionHolders;
 
-    public ExtensionsModel() {
+    public MediaSourceExtensionsModel() {
         // TODO: load instead of manual add
 //        this.mediaSources = ExtensionLoader.load(MediaSource.class);
-        this.mediaSources = new ArrayList<ExtensionHolder<MediaSource>>();
+        this.extensionHolders = new ArrayList<ExtensionHolder<MediaSource>>();
         ExtensionHolder<MediaSource> ext = new ExtensionHolder<MediaSource>(
                 "Banshee",
                 "Import your library from Banshee",
                 new BansheeExtension());
-        mediaSources.add(ext);
+        extensionHolders.add(ext);
     }
 
-    public List<ExtensionHolder<?>> getExtensions() {
-        List<ExtensionHolder<?>> list = new ArrayList<ExtensionHolder<?>>();
-        list.addAll(mediaSources);
-        return list;
+    public List<ExtensionHolder<MediaSource>> getExtensions() {
+        return extensionHolders;
     }
 
     public int getNumberOfExtensions() {
-        return getExtensions().size();
+        return extensionHolders.size();
     }
 
-    public ExtensionHolder<?> getExtension(int index) {
-        return getExtensions().get(index);
-    }
-
-    public List<ExtensionHolder<MediaSource>> getMediaSourceExtensions() {
-        return mediaSources;
+    public ExtensionHolder<MediaSource> getExtension(int index) {
+        return extensionHolders.get(index);
     }
 }

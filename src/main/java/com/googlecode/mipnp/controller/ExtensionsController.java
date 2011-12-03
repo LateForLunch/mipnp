@@ -24,9 +24,10 @@
  */
 package com.googlecode.mipnp.controller;
 
+import com.googlecode.mipnp.extension.ExtensionException;
 import com.googlecode.mipnp.extension.ExtensionHolder;
 import com.googlecode.mipnp.mediaserver.library.MediaSource;
-import com.googlecode.mipnp.model.ExtensionsModel;
+import com.googlecode.mipnp.model.MediaSourceExtensionsModel;
 import java.util.List;
 
 /**
@@ -35,25 +36,37 @@ import java.util.List;
  */
 public class ExtensionsController {
 
-    private ExtensionsModel model;
+    private MediaSourceExtensionsModel mediaSourceExtensionsModel;
 
     public ExtensionsController() {
-        this.model = new ExtensionsModel();
+        this.mediaSourceExtensionsModel = new MediaSourceExtensionsModel();
     }
 
-    public int getNumberOfExtensions() {
-        return model.getNumberOfExtensions();
-    }
-
-    public List<ExtensionHolder<?>> getExtensions() {
-        return model.getExtensions();
-    }
-
-    public ExtensionHolder<?> getExtension(int index) {
-        return model.getExtension(index);
+    public int getNumberOfMediaSourceExtensions() {
+        return mediaSourceExtensionsModel.getNumberOfExtensions();
     }
 
     public List<ExtensionHolder<MediaSource>> getMediaSourceExtensions() {
-        return model.getMediaSourceExtensions();
+        return mediaSourceExtensionsModel.getExtensions();
+    }
+
+    public ExtensionHolder<MediaSource> getMediaSourceExtension(int index) {
+        return mediaSourceExtensionsModel.getExtension(index);
+    }
+
+    public void loadMediaSourceExtension(int index)
+            throws ExtensionException {
+
+        ExtensionHolder<MediaSource> extHolder =
+                mediaSourceExtensionsModel.getExtension(index);
+        extHolder.loadExtension();
+    }
+
+    public void unloadMediaSourceExtension(int index)
+            throws ExtensionException {
+
+        ExtensionHolder<MediaSource> extHolder =
+                mediaSourceExtensionsModel.getExtension(index);
+        extHolder.unloadExtension();
     }
 }

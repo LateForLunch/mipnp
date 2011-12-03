@@ -25,7 +25,11 @@
 package com.googlecode.mipnp.view.gui;
 
 import com.googlecode.mipnp.controller.ExtensionsController;
+import com.googlecode.mipnp.extension.ExtensionException;
 import com.googlecode.mipnp.extension.ExtensionHolder;
+import com.googlecode.mipnp.mediaserver.library.MediaSource;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -40,13 +44,15 @@ public class ExtensionsTableModel extends AbstractTableModel {
     };
 
     private ExtensionsController controller;
+    private List<ExtensionExceptionListener> listeners;
 
     public ExtensionsTableModel(ExtensionsController controller) {
         this.controller = controller;
+        this.listeners = new ArrayList<ExtensionExceptionListener>();
     }
 
     public int getRowCount() {
-        return controller.getNumberOfExtensions();
+        return controller.getNumberOfMediaSourceExtensions();
     }
 
     public int getColumnCount() {
@@ -54,7 +60,8 @@ public class ExtensionsTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int column) {
-        ExtensionHolder<?> extHolder = controller.getExtension(row);
+        ExtensionHolder<MediaSource> extHolder =
+                controller.getMediaSourceExtension(row);
         if (column == 0) {
             String str = "<html>";
             str += "<b>" + extHolder.getName() + "</b>";
@@ -95,6 +102,33 @@ public class ExtensionsTableModel extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        fireTableCellUpdated(rowIndex, columnIndex);
+        if (columnIndex == 1) {
+            Boolean b = (Boolean) aValue;
+            try {
+                if (b) {
+                    controller.loadMediaSourceExtension(rowIndex);
+                } else {
+                    controller.unloadMediaSourceExtension(rowIndex);
+                }
+            } catch (ExtensionException ex) {
+                fireExtensionExceptionOccurred(ex);
+            }
+
+            fireTableCellUpdated(rowIndex, columnIndex);
+        }
+    }
+
+    public void addExtensionExceptionListener(ExtensionExceptionListener l) {
+        listeners.add(l);
+    }
+
+    public void removeExtensionExceptionListener(ExtensionExceptionListener l) {
+        listeners.remove(l);
+    }
+
+    protected void fireExtensionExceptionOccurred(ExtensionException ex) {
+        for (ExtensionExceptionListener l : listeners) {
+            l.extensionExceptionOccurred(ex);
+        }
     }
 }
