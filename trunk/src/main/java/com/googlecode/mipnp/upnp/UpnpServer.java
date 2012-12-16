@@ -25,9 +25,9 @@
 package com.googlecode.mipnp.upnp;
 
 import com.googlecode.mipnp.tools.InetTools;
-import com.googlecode.mipnp.upnp.discovery.DiscoveryServer;
 import com.googlecode.mipnp.upnp.description.DeviceDescriptionServlet;
 import com.googlecode.mipnp.upnp.description.ServiceDescriptionServlet;
+import com.googlecode.mipnp.upnp.discovery.DiscoveryServer;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -37,13 +37,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EnumSet;
+import javax.servlet.DispatcherType;
 import javax.servlet.Servlet;
 import javax.xml.ws.Endpoint;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
-//import org.eclipse.jetty.server.DispatcherType;
-import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;

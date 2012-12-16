@@ -1,0 +1,134 @@
+/*
+ * MiPnP, a minimal Plug and Play Server.
+ * Copyright (C) 2010-2012  Jochem Van denbussche
+ *
+ * This file is part of MiPnP.
+ *
+ * MiPnP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MiPnP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * ShotwellExtension.java
+ * Created on Dec 14, 2012, 2:14:46 PM
+ */
+package com.googlecode.mipnp.extension.shotwell;
+
+import com.googlecode.mipnp.extension.Extension;
+import com.googlecode.mipnp.extension.ExtensionMethod;
+import com.googlecode.mipnp.extension.ExtensionMethodType;
+import com.googlecode.mipnp.mediaserver.library.MediaContainer;
+import com.googlecode.mipnp.mediaserver.library.MediaSource;
+import com.googlecode.mipnp.mediaserver.library.Picture;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This extension can retrieve the album information from Shotwell Photo Manager.<br/>
+ * This extension has been written for Shotwell version 0.12.3 with database shema version 15.
+ * @author Jochem Van denbussche <jvandenbussche@gmail.com>
+ */
+@Extension(
+        name="Shotwell",
+        description="Import your Shotwell library")
+public class ShotwellExtension implements MediaSource{
+
+    private static final File DB_FILE =
+            new File(System.getProperty("user.home") +
+            "/Downloads/photo.db"); // TODO: refer to real file instead of test
+
+    private static final String SELECT_PHOTOS =
+            "SELECT p.filename AS file, p.title AS title " +
+            "FROM phototable AS p;";
+
+    private File db;
+
+    public ShotwellExtension() {
+    }
+
+    @ExtensionMethod(ExtensionMethodType.LOAD)
+    public void loadExtension() throws ClassNotFoundException {
+        Class.forName("org.sqlite.JDBC");
+        this.db = DB_FILE;
+    }
+
+    public MediaContainer getMediaContainer() {
+        MediaContainer root = new MediaContainer("Shotwell");
+        if (!db.exists()) {
+            return root;
+        }
+
+        for (Picture p : getPictures()) {
+            root.addPicture(p);
+        }
+
+        return root;
+    }
+
+    private List<Picture> getPictures() {
+        List<Picture> pictures = new ArrayList<Picture>();
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            connection = getConnection();
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(SELECT_PHOTOS);
+
+            while (rs.next()) {
+                File file = new File(rs.getString("file"));
+                String title = rs.getString("title");
+                if (title == null || title.isEmpty()) {
+                    title = file.getName();
+                }
+                Picture picture = new Picture(title, file);
+                pictures.add(picture);
+            }
+        } catch (SQLException ex) {
+        } finally {
+            close(statement);
+            close(connection);
+        }
+
+        return pictures;
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                "jdbc:sqlite:" + db.getAbsolutePath());
+    }
+
+    private void close(Statement statement) {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (SQLException ex) {
+            }
+        }
+    }
+
+    private void close(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+            }
+        }
+    }
+}
