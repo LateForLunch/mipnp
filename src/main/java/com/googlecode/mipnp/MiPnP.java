@@ -24,8 +24,8 @@
  */
 package com.googlecode.mipnp;
 
-import com.googlecode.mipnp.controller.Preferences;
 import com.googlecode.mipnp.controller.ControllerFactory;
+import com.googlecode.mipnp.controller.Preferences;
 
 /**
  *

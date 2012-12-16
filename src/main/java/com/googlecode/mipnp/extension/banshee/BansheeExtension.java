@@ -51,7 +51,7 @@ import java.util.Map;
  */
 @Extension(
         name="Banshee",
-        description="Import your library from Banshee")
+        description="Import your Banshee library")
 public class BansheeExtension implements MediaSource {
 
     private static final File DB_FILE =
