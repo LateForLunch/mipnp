@@ -38,10 +38,16 @@ import javax.xml.ws.Holder;
  */
 @WebService(
         portName="MSContentDirectory",
-        targetNamespace="urn:schemas-upnp-org:service:ContentDirectory:1")
+        targetNamespace=MSContentDirectoryWrapper.TYPE_AS_URN)
 public class MSContentDirectoryWrapper extends ServiceImpl {
 
-    private static final String XML_SERVICE_DESCRIPTION =
+    public static final String TYPE_AS_URN =
+            "urn:schemas-microsoft-com:service:MSContentDirectory:1";
+
+    public static final String ID_AS_URN =
+            "urn:upnp-org:serviceId:MSContentDirectory";
+
+    private static final String XML_DESCRIPTION =
             "/mediaserver/MSContentDirectory-1.xml";
 
     private static final List<String> browseInsteadOfSearch =
@@ -61,11 +67,12 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
     private ContentDirectory cd;
 
     public MSContentDirectoryWrapper(ContentDirectory cd) {
-        super("microsoft.com", "MSContentDirectory", "MSContentDirectory", 1);
+//        super("microsoft.com", "MSContentDirectory", "MSContentDirectory", 1);
+        super(TYPE_AS_URN, ID_AS_URN);
         try {
 //            parseDescription(new File(XML_SERVICE_DESCRIPTION));
             parseDescription(
-                    getClass().getResourceAsStream(XML_SERVICE_DESCRIPTION));
+                    getClass().getResourceAsStream(XML_DESCRIPTION));
         } catch (Exception ex) {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright
@@ -73,7 +80,9 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
         this.cd = cd;
     }
 
-    @WebMethod(operationName="Browse")
+    @WebMethod(
+            operationName="Browse",
+            action=TYPE_AS_URN + "#Browse")
     public void browse(
             @WebParam(name="ContainerID")
             String containerId,
@@ -101,7 +110,9 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
                 sortCriteria, result, numberReturned, totalMatches, updateId);
     }
 
-    @WebMethod(operationName="Search")
+    @WebMethod(
+            operationName="Search",
+            action=TYPE_AS_URN + "#Search")
     public void search(
             @WebParam(name="ContainerID")
             String containerId,
@@ -135,7 +146,9 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
         }
     }
 
-    @WebMethod(operationName="GetSystemUpdateID")
+    @WebMethod(
+            operationName="GetSystemUpdateID",
+            action=TYPE_AS_URN + "#GetSystemUpdateID")
     public void getSystemUpdateId(
             @WebParam(name="Id", mode=WebParam.Mode.OUT)
             Holder<Integer> id) {
@@ -143,7 +156,9 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
         cd.getSystemUpdateId(id);
     }
 
-    @WebMethod(operationName="GetSearchCapabilities")
+    @WebMethod(
+            operationName="GetSearchCapabilities",
+            action=TYPE_AS_URN + "#GetSearchCapabilities")
     public void getSearchCapabilities(
             @WebParam(name="SearchCaps", mode=WebParam.Mode.OUT)
             Holder<String> searchCaps) {
@@ -151,7 +166,9 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
         cd.getSearchCapabilities(searchCaps);
     }
 
-    @WebMethod(operationName="GetSortCapabilities")
+    @WebMethod(
+            operationName="GetSortCapabilities",
+            action=TYPE_AS_URN + "#GetSortCapabilities")
     public void getSortCapabilities(
             @WebParam(name="SortCaps", mode=WebParam.Mode.OUT)
             Holder<String> sortCaps) {

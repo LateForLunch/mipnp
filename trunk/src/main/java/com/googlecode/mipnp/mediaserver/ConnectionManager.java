@@ -36,25 +36,34 @@ import javax.xml.ws.Holder;
  */
 @WebService(
         portName="ConnectionManager",
-        targetNamespace="urn:schemas-upnp-org:service:ConnectionManager:1")
+        targetNamespace=ConnectionManager.TYPE_AS_URN)
 public class ConnectionManager extends ServiceImpl {
 
-    private static final String XML_SERVICE_DESCRIPTION =
+    public static final String TYPE_AS_URN =
+            "urn:schemas-upnp-org:service:ConnectionManager:1";
+
+    public static final String ID_AS_URN =
+            "urn:upnp-org:serviceId:ConnectionManager";
+
+    private static final String XML_DESCRIPTION =
             "/mediaserver/ConnectionManager-1.xml";
 
     public ConnectionManager() {
-        super("ConnectionManager", "ConnectionManager", 1);
+//        super("ConnectionManager", "ConnectionManager", 1);
+        super(TYPE_AS_URN, ID_AS_URN);
         try {
 //            parseDescription(new File(XML_SERVICE_DESCRIPTION));
             parseDescription(
-                    getClass().getResourceAsStream(XML_SERVICE_DESCRIPTION));
+                    getClass().getResourceAsStream(XML_DESCRIPTION));
         } catch (Exception ex) {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright
         }
     }
 
-    @WebMethod(operationName="GetProtocolInfo")
+    @WebMethod(
+            operationName="GetProtocolInfo",
+            action=TYPE_AS_URN + "#GetProtocolInfo")
     public void getProtocolInfo(
             @WebParam(name="Source", mode=WebParam.Mode.OUT)
             Holder<String> source,
@@ -64,7 +73,9 @@ public class ConnectionManager extends ServiceImpl {
         System.out.println("TODO: implement ConnectionManager.getProtocolInfo"); // TODO
     }
 
-    @WebMethod(operationName="GetCurrentConnectionIDs")
+    @WebMethod(
+            operationName="GetCurrentConnectionIDs",
+            action=TYPE_AS_URN + "#GetCurrentConnectionIDs")
     public void getCurrentConnectionIDs(
             @WebParam(name="ConnectionIDs", mode=WebParam.Mode.OUT)
             Holder<String> connectionIds) {
@@ -72,7 +83,9 @@ public class ConnectionManager extends ServiceImpl {
         System.out.println("TODO: implement ConnectionManager.getCurrentConnectionIDs"); // TODO
     }
 
-    @WebMethod(operationName="GetCurrentConnectionInfo")
+    @WebMethod(
+            operationName="GetCurrentConnectionInfo",
+            action=TYPE_AS_URN + "#GetCurrentConnectionInfo")
     public void getCurrentConnectionInfo(
             @WebParam(name="ConnectionID")
             int connectionId,

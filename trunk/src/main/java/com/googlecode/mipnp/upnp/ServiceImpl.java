@@ -63,10 +63,20 @@ public class ServiceImpl implements Service {
             String id,
             int version) {
 
+        this();
         this.vendorDomainName = vendorDomainName;
         this.type = type;
         this.id = id;
         this.version = version;
+    }
+
+    public ServiceImpl(String typeAsUrn, String idAsUrn) {
+        this();
+        parseTypeAsUrn(typeAsUrn);
+        parseIdAsUrn(idAsUrn);
+    }
+
+    private ServiceImpl() {
         this.actions = new ArrayList<Action>();
         this.stateVariables = new ArrayList<StateVariable>();
     }
@@ -200,5 +210,21 @@ public class ServiceImpl implements Service {
             }
         }
         return null;
+    }
+
+    private void parseTypeAsUrn(String typeAsUrn) {
+        // "urn:schemas-upnp-org:service:<i>serviceType</i>:<i>ver</i>"<br/>
+        // "urn:<i>domain-name</i>:service:<i>serviceType</i>:<i>ver</i>"
+        String[] split = typeAsUrn.split(":");
+        this.type = split[3];
+        this.version = Integer.parseInt(split[4]);
+    }
+
+    private void parseIdAsUrn(String idAdUrn) {
+        // "urn:upnp-org:serviceId:<i>serviceID</i>"<br/>
+        // "urn:<i>domain-name</i>:serviceId:<i>serviceID</i>"
+        String[] split = idAdUrn.split(":");
+        this.vendorDomainName = split[1].replace('-', '.');
+        this.id = split[3];
     }
 }
