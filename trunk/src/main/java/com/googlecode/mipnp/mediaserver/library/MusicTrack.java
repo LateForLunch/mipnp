@@ -88,6 +88,10 @@ public class MusicTrack {
         return duration;
     }
 
+    /**
+     * Sets the duration of the music track.
+     * @param duration the duration of the track in milliseconds
+     */
     public void setDuration(int duration) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
