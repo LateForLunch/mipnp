@@ -36,29 +36,38 @@ import javax.xml.ws.Holder;
  */
 @WebService(
         portName="X_MS_MediaReceiverRegistrar",
-        targetNamespace="urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1")
+        targetNamespace=MediaReceiverRegistrar.TYPE_AS_URN)
 public class MediaReceiverRegistrar extends ServiceImpl {
 
-    private static final String XML_SERVICE_DESCRIPTION =
+    public static final String TYPE_AS_URN =
+            "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1";
+
+    public static final String ID_AS_URN =
+            "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar";
+
+    private static final String XML_DESCRIPTION =
             "/mediaserver/X_MS_MediaReceiverRegistrar-1.xml";
-    
+
     public MediaReceiverRegistrar() {
-        super("microsoft.com", "X_MS_MediaReceiverRegistrar",
-                "X_MS_MediaReceiverRegistrar", 1);
+//        super(SERVICE_VENDOR_DOMAIN_NAME, SERVICE_TYPE,
+//                SERVICE_ID, SERVICE_VERSION);
+        super(TYPE_AS_URN, ID_AS_URN);
         // TODO: check urn -> urn:microsoft.com should be urn:microsoft-com
 //        setUniformResourceName("urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1");
 //        setIdentifier("urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
         try {
 //            parseDescription(new File(XML_SERVICE_DESCRIPTION));
             parseDescription(
-                    getClass().getResourceAsStream(XML_SERVICE_DESCRIPTION));
+                    getClass().getResourceAsStream(XML_DESCRIPTION));
         } catch (Exception ex) {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright
         }
     }
 
-    @WebMethod(operationName="IsAuthorized")
+    @WebMethod(
+            operationName="IsAuthorized",
+            action=TYPE_AS_URN + "#IsAuthorized")
     public void isAuthorized(
             @WebParam(name="DeviceID")
             String deviceId,
@@ -68,7 +77,9 @@ public class MediaReceiverRegistrar extends ServiceImpl {
         result.value = 1;
     }
 
-    @WebMethod(operationName="RegisterDevice")
+    @WebMethod(
+            operationName="RegisterDevice",
+            action=TYPE_AS_URN + "#RegisterDevice")
     public void registerDevice(
             @WebParam(name="RegistrationReqMsg")
             byte[] registrationReqMsg,
@@ -78,7 +89,9 @@ public class MediaReceiverRegistrar extends ServiceImpl {
         System.out.println("TODO: implement MediaReceiverRegistrar.registerDevice"); // TODO
     }
 
-    @WebMethod(operationName="IsValidated")
+    @WebMethod(
+            operationName="IsValidated",
+            action=TYPE_AS_URN + "#IsValidated")
     public void isValidated(
             @WebParam(name="DeviceID")
             String deviceId,

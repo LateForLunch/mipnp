@@ -27,8 +27,8 @@ package com.googlecode.mipnp.mediaserver;
 import com.googlecode.mipnp.mediaserver.cds.CdsObject;
 import com.googlecode.mipnp.mediaserver.cds.CdsObjectComparator;
 import com.googlecode.mipnp.mediaserver.cds.DidlLiteDocument;
-import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.mediaserver.cds.SearchCriteria;
+import com.googlecode.mipnp.mediaserver.library.MediaLibrary;
 import com.googlecode.mipnp.upnp.ServiceImpl;
 import java.net.URL;
 import java.util.Collections;
@@ -44,21 +44,28 @@ import javax.xml.ws.Holder;
  */
 @WebService(
         portName="ContentDirectory",
-        targetNamespace="urn:schemas-upnp-org:service:ContentDirectory:1")
+        targetNamespace=ContentDirectory.TYPE_AS_URN)
 public class ContentDirectory extends ServiceImpl {
 
-    private static final String XML_SERVICE_DESCRIPTION =
+    public static final String TYPE_AS_URN =
+            "urn:schemas-upnp-org:service:ContentDirectory:1";
+
+    public static final String ID_AS_URN =
+            "urn:upnp-org:serviceId:ContentDirectory";
+
+    private static final String XML_DESCRIPTION =
             "/mediaserver/ContentDirectory-1.xml";
 
     private MediaLibrary library;
     private URL mediaServletPath;
 
     public ContentDirectory(MediaLibrary library) {
-        super("ContentDirectory", "ContentDirectory", 1);
+//        super(SERVICE_TYPE, SERVICE_ID, SERVICE_VERSION);
+        super(TYPE_AS_URN, ID_AS_URN);
         try {
 //            parseDescription(new File(XML_SERVICE_DESCRIPTION));
             parseDescription(
-                    getClass().getResourceAsStream(XML_SERVICE_DESCRIPTION));
+                    getClass().getResourceAsStream(XML_DESCRIPTION));
         } catch (Exception ex) {
             // This should not happen
             ex.printStackTrace(); // TODO: remove line if everything seems alright
@@ -66,7 +73,9 @@ public class ContentDirectory extends ServiceImpl {
         this.library = library;
     }
 
-    @WebMethod(operationName="Browse")
+    @WebMethod(
+            operationName="Browse",
+            action=TYPE_AS_URN + "#Browse")
     public void browse(
             @WebParam(name="ObjectID")
             String objectId,
@@ -134,7 +143,9 @@ public class ContentDirectory extends ServiceImpl {
         updateId.value = 0;
     }
 
-    @WebMethod(operationName="Search")
+    @WebMethod(
+            operationName="Search",
+            action=TYPE_AS_URN + "#Search")
     public void search(
             @WebParam(name="ContainerID")
             String containerId,
@@ -215,7 +226,9 @@ public class ContentDirectory extends ServiceImpl {
         updateId.value = 0;
     }
 
-    @WebMethod(operationName="DestroyObject")
+    @WebMethod(
+            operationName="DestroyObject",
+            action=TYPE_AS_URN + "#DestroyObject")
     public void destroyObject(
             @WebParam(name="ObjectID")
             String objectId) {
@@ -223,7 +236,9 @@ public class ContentDirectory extends ServiceImpl {
         System.out.println("TODO: implement ContentDirectory.destroyObject"); // TODO
     }
 
-    @WebMethod(operationName="GetSystemUpdateID")
+    @WebMethod(
+            operationName="GetSystemUpdateID",
+            action=TYPE_AS_URN + "#GetSystemUpdateID")
     public void getSystemUpdateId(
             @WebParam(name="Id", mode=WebParam.Mode.OUT)
             Holder<Integer> id) {
@@ -231,7 +246,9 @@ public class ContentDirectory extends ServiceImpl {
         System.out.println("TODO: implement ContentDirectory.getSystemUpdateId"); // TODO
     }
 
-    @WebMethod(operationName="GetSearchCapabilities")
+    @WebMethod(
+            operationName="GetSearchCapabilities",
+            action=TYPE_AS_URN + "#GetSearchCapabilities")
     public void getSearchCapabilities(
             @WebParam(name="SearchCaps", mode=WebParam.Mode.OUT)
             Holder<String> searchCaps) {
@@ -239,7 +256,9 @@ public class ContentDirectory extends ServiceImpl {
         System.out.println("TODO: implement ContentDirectory.getSearchCapabilities"); // TODO
     }
 
-    @WebMethod(operationName="GetSortCapabilities")
+    @WebMethod(
+            operationName="GetSortCapabilities",
+            action=TYPE_AS_URN + "#GetSortCapabilities")
     public void getSortCapabilities(
             @WebParam(name="SortCaps", mode=WebParam.Mode.OUT)
             Holder<String> sortCaps) {
@@ -247,7 +266,9 @@ public class ContentDirectory extends ServiceImpl {
         System.out.println("TODO: implement ContentDirectory.getSortCapabilities"); // TODO
     }
 
-    @WebMethod(operationName="UpdateObject")
+    @WebMethod(
+            operationName="UpdateObject",
+            action=TYPE_AS_URN + "#UpdateObject")
     public void updateObject(
             @WebParam(name="ObjectID")
             String objectId,
