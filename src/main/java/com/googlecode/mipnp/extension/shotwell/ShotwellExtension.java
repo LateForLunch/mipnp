@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * This extension can retrieve the album information from Shotwell Photo Manager.<br/>
- * This extension has been written for Shotwell version 0.12.3 with database shema version 15.
+ * This extension has been written for Shotwell version 0.12.3 with database schema version 15.
  * @author Jochem Van denbussche <jvandenbussche@gmail.com>
  */
 @Extension(
