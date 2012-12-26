@@ -5,7 +5,7 @@
 <entry key="uuid">ae5629e3-2699-42fe-8ad9-e97f0428694a</entry>
 <entry key="network-interface">eth1</entry>
 <entry key="display-preferences">true</entry>
-<entry key="media-directories">/windows/Storage/Serie/Lost/Lost Season 2:/home/jochem/ushare:</entry>
+<entry key="media-directories"/>
 <entry key="friendly-name">MiPnP</entry>
 <entry key="first-run">false</entry>
 </properties>
