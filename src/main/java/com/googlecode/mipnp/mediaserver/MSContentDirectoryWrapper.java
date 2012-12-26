@@ -38,11 +38,14 @@ import javax.xml.ws.Holder;
  */
 @WebService(
         portName="MSContentDirectory",
-        targetNamespace=MSContentDirectoryWrapper.TYPE_AS_URN)
+//        targetNamespace=MSContentDirectoryWrapper.TYPE_AS_URN)
+        targetNamespace="urn:schemas-upnp-org:service:ContentDirectory:1")
 public class MSContentDirectoryWrapper extends ServiceImpl {
 
+//    public static final String TYPE_AS_URN =
+//            "urn:schemas-microsoft-com:service:MSContentDirectory:1";
     public static final String TYPE_AS_URN =
-            "urn:schemas-microsoft-com:service:MSContentDirectory:1";
+            "urn:schemas-upnp-org:service:ContentDirectory:1";
 
     public static final String ID_AS_URN =
             "urn:upnp-org:serviceId:MSContentDirectory";
@@ -67,8 +70,8 @@ public class MSContentDirectoryWrapper extends ServiceImpl {
     private ContentDirectory cd;
 
     public MSContentDirectoryWrapper(ContentDirectory cd) {
-//        super("microsoft.com", "MSContentDirectory", "MSContentDirectory", 1);
-        super(TYPE_AS_URN, ID_AS_URN);
+        super("microsoft.com", "MSContentDirectory", "MSContentDirectory", 1);
+//        super(TYPE_AS_URN, ID_AS_URN);
         try {
 //            parseDescription(new File(XML_SERVICE_DESCRIPTION));
             parseDescription(
