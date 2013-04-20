@@ -141,6 +141,9 @@ public class ContentDirectory extends ServiceImpl {
         //System.out.println(doc.toString());
         result.value = doc.toString();
         updateId.value = 0;
+
+//        System.out.format("Browse - ObjectID=%s (%s) - SortCriteria=%s\n",
+//                objectId, obj.getTitle(), sortCriteria); // TODO: TEMP
     }
 
     @WebMethod(

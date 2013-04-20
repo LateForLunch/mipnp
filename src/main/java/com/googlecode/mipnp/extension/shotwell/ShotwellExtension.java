@@ -36,8 +36,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * This extension can retrieve the album information from Shotwell Photo Manager.<br/>
@@ -54,8 +61,13 @@ public class ShotwellExtension implements MediaSource{
             "/Downloads/photo.db"); // TODO: refer to real file instead of test
 
     private static final String SELECT_PHOTOS =
-            "SELECT p.filename AS file, p.title AS title " +
+            "SELECT p.filename AS file, p.title AS title, " +
+            "p.event_id AS event_id, p.timestamp AS timestamp " +
             "FROM phototable AS p;";
+
+    private static final String SELECT_EVENTS =
+            "SELECT e.id AS id, e.name AS name " +
+            "FROM eventtable AS e;";
 
     private File db;
 
@@ -74,14 +86,51 @@ public class ShotwellExtension implements MediaSource{
             return root;
         }
 
-        for (Picture p : getPictures()) {
-            root.addPicture(p);
+        Map<Integer, MediaContainer> events = getEvents();
+        Calendar calendar = new GregorianCalendar();
+        // Sun Nov 4, 2012
+        DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd, yyyy", Locale.US);
+
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(SELECT_PHOTOS);
+
+            while (rs.next()) {
+                File file = new File(rs.getString("file"));
+                String title = rs.getString("title");
+                if (title == null || title.isEmpty()) {
+                    title = file.getName();
+                }
+                int eventId = rs.getInt("event_id");
+                if (eventId != -1) {
+                    Picture picture = new Picture(title, file);
+
+                    MediaContainer event = events.get(eventId);
+                    if (event.getTitle() == null || event.getTitle().isEmpty()) {
+                        long timestamp = rs.getLong("timestamp");
+                        calendar.setTimeInMillis(timestamp * 1000);
+                        event.setTitle(dateFormat.format(calendar.getTime()));
+                    }
+                    event.addPicture(picture);
+                }
+            }
+        } catch (SQLException ex) {
+        } finally {
+            close(statement);
+            close(connection);
+        }
+
+        for (MediaContainer event : events.values()) {
+            root.addMediaContainer(event);
         }
 
         return root;
     }
 
-    private List<Picture> getPictures() {
+    /*private List<Picture> getPictures() {
         List<Picture> pictures = new ArrayList<Picture>();
         Connection connection = null;
         Statement statement = null;
@@ -107,6 +156,34 @@ public class ShotwellExtension implements MediaSource{
         }
 
         return pictures;
+    }*/
+
+    private Map<Integer, MediaContainer> getEvents() {
+        Map<Integer, MediaContainer> events = new HashMap<Integer, MediaContainer>();
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            connection = getConnection();
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(SELECT_EVENTS);
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                if (name == null) {
+                    name = "";
+                }
+                MediaContainer container = new MediaContainer(name);
+                events.put(id, container);
+            }
+        } catch (SQLException ex) {
+        } finally {
+            close(statement);
+            close(connection);
+        }
+
+        return events;
     }
 
     private Connection getConnection() throws SQLException {
