@@ -1,6 +1,6 @@
 /*
  * MiPnP, a minimal Plug and Play Server.
- * Copyright (C) 2010-2012  Jochem Van denbussche
+ * Copyright (C) 2010-2013  Jochem Van denbussche
  *
  * This file is part of MiPnP.
  *
@@ -38,11 +38,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -62,7 +60,7 @@ public class ShotwellExtension implements MediaSource{
 
     private static final String SELECT_PHOTOS =
             "SELECT p.filename AS file, p.title AS title, " +
-            "p.event_id AS event_id, p.timestamp AS timestamp " +
+            "p.event_id AS event_id, p.exposure_time AS time " +
             "FROM phototable AS p;";
 
     private static final String SELECT_EVENTS =
@@ -89,7 +87,8 @@ public class ShotwellExtension implements MediaSource{
         Map<Integer, MediaContainer> events = getEvents();
         Calendar calendar = new GregorianCalendar();
         // Sun Nov 4, 2012
-        DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd, yyyy", Locale.US);
+        DateFormat dateFormat =
+                new SimpleDateFormat("EEE MMM dd, yyyy", Locale.US);
 
         Connection connection = null;
         Statement statement = null;
@@ -110,8 +109,8 @@ public class ShotwellExtension implements MediaSource{
 
                     MediaContainer event = events.get(eventId);
                     if (event.getTitle() == null || event.getTitle().isEmpty()) {
-                        long timestamp = rs.getLong("timestamp");
-                        calendar.setTimeInMillis(timestamp * 1000);
+                        long time = rs.getLong("time");
+                        calendar.setTimeInMillis(time * 1000);
                         event.setTitle(dateFormat.format(calendar.getTime()));
                     }
                     event.addPicture(picture);
@@ -129,34 +128,6 @@ public class ShotwellExtension implements MediaSource{
 
         return root;
     }
-
-    /*private List<Picture> getPictures() {
-        List<Picture> pictures = new ArrayList<Picture>();
-        Connection connection = null;
-        Statement statement = null;
-
-        try {
-            connection = getConnection();
-            statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(SELECT_PHOTOS);
-
-            while (rs.next()) {
-                File file = new File(rs.getString("file"));
-                String title = rs.getString("title");
-                if (title == null || title.isEmpty()) {
-                    title = file.getName();
-                }
-                Picture picture = new Picture(title, file);
-                pictures.add(picture);
-            }
-        } catch (SQLException ex) {
-        } finally {
-            close(statement);
-            close(connection);
-        }
-
-        return pictures;
-    }*/
 
     private Map<Integer, MediaContainer> getEvents() {
         Map<Integer, MediaContainer> events = new HashMap<Integer, MediaContainer>();
